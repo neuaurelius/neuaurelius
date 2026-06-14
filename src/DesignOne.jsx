@@ -418,7 +418,7 @@ const Hero = () => {
 
 
                 <Reveal delay={200}>
-                    <h1 style={{ fontSize: 'clamp(2.8rem, 9vw, 7.5rem)', fontWeight: 600, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--text)', marginBottom: 28, maxWidth: '12ch' }}>
+                    <h1 style={{ fontSize: 'clamp(2rem, 5vw, 5.5rem)', fontWeight: 600, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--text)', marginBottom: 28, maxWidth: '12ch' }}>
                         Manufacturing<br />
                         <span style={{ color: 'var(--muted)' }}>the Humanoid</span><br />
                         <span style={{ color: 'var(--muted)' }}>Future.</span>
