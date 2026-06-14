@@ -14,8 +14,8 @@ const GlobalStyles = () => (
       --text2: #c8c8c8;
       --muted: #777777;
       --border: rgba(255,255,255,0.15);
-      --accent: #ff6aaa;
-      --accent2: #f40069;
+--accent: #f40069;
+      --accent2: #ff6aaa;
       --font: 'Gilmer', 'Inter', sans-serif;
       --mono: 'JetBrains Mono', monospace;
     }
@@ -174,6 +174,12 @@ const GlobalStyles = () => (
         gap: 32px;
       }
     }
+
+        @media (max-width: 768px) {
+            .hero-globe {
+                display: none !important;
+            }
+        }
   `}} />
 );
 
@@ -338,13 +344,19 @@ const Nav = ({ theme, toggleTheme }) => {
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
           .mobile-menu-btn { display: flex !important; }
+                    .hero-layout {
+                        grid-template-columns: 1fr !important;
+                    }
+                    .hero-copy {
+                        max-width: 100% !important;
+                    }
         }
       `}</style>
         </>
     );
 };
 
-const Globe = () => {
+const KineticActuator = () => {
     const canvasRef = useRef(null);
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -354,48 +366,122 @@ const Globe = () => {
 
         const S = 1000;
         canvas.width = S; canvas.height = S;
-        const cx = S / 2, cy = S / 2, R = 440;
-        const pts = [];
-        for (let i = 2; i < 34; i++) {
-            const lat = Math.PI * (-0.5 + i / 36);
-            for (let j = 0; j < 68; j++) {
-                pts.push({ x: Math.cos(lat) * Math.cos(2 * Math.PI * j / 68), y: Math.sin(lat), z: Math.cos(lat) * Math.sin(2 * Math.PI * j / 68), t: 'g' });
-            }
-        }
-        for (let i = 0; i < 2800; i++) {
-            const y = 1 - (i / 2799) * 2, r = Math.sqrt(1 - y * y), t = Math.PI * (3 - Math.sqrt(5)) * i;
-            pts.push({ x: Math.cos(t) * r, y, z: Math.sin(t) * r, t: 'd' });
-        }
-        let angle = 0, raf;
+        const cx = S / 2, cy = S / 2;
+
+        let time = 0;
+        let raf;
+
+        const levels = 12;
+        const nodesPerLevel = 24;
+        const height = 700;
+        const baseR = 220;
+
         const draw = () => {
             ctx.clearRect(0, 0, S, S);
-            angle += 0.0008;
-            const cosY = Math.cos(angle), sinY = Math.sin(angle), cosX = Math.cos(0.12), sinX = Math.sin(0.12);
-            const proj = pts.map(p => {
-                const x1 = p.x * cosY - p.z * sinY, z1 = p.z * cosY + p.x * sinY;
-                const y2 = p.y * cosX - z1 * sinX, z2 = z1 * cosX + p.y * sinX;
-                const sc = 3.5 / (3.5 + z2);
-                return { x: cx + x1 * R * sc, y: cy + y2 * R * sc, z: z2, sc, t: p.t };
-            }).filter(p => p.z > -0.1).sort((a, b) => b.z - a.z);
+            time += 0.004;
 
-            for (const p of proj) {
-                const a = Math.min(1, (p.z + 1.2) * 0.8);
-                if (p.t === 'g') {
-                    ctx.fillStyle = `rgba(232,200,122,${a * 0.4})`;
-                    ctx.fillRect(p.x, p.y, 1.5 * p.sc, 1.5 * p.sc);
-                } else {
-                    ctx.fillStyle = `rgba(180,140,60,${a * 0.2})`;
-                    ctx.fillRect(p.x, p.y, 1 * p.sc, 1 * p.sc);
+            const rotX = 0.4 + Math.sin(time * 0.8) * 0.1;
+            const rotY = time * 0.6;
+
+            const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+            const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+
+            const project = (x, y, z) => {
+                let x1 = x * cosY - z * sinY;
+                let z1 = z * cosY + x * sinY;
+
+                let y2 = y * cosX - z1 * sinX;
+                let z2 = z1 * cosX + y * sinX;
+
+                const sc = 4 / (4 + z2 / 300);
+                return { x: cx + x1 * sc, y: cy + y2 * sc, z: z2, sc };
+            };
+
+            const points = [];
+            for (let i = 0; i < levels; i++) {
+                const yNorm = i / (levels - 1);
+                const yOffset = (yNorm - 0.5) * height;
+
+                const r = baseR * (0.8 + 0.3 * Math.sin(yNorm * Math.PI));
+                const twist = Math.sin(time * 2 + yNorm * Math.PI * 2) * 0.5;
+
+                const levelPoints = [];
+                for (let j = 0; j < nodesPerLevel; j++) {
+                    const a = (j / nodesPerLevel) * Math.PI * 2 + twist;
+                    const x = Math.cos(a) * r;
+                    const z = Math.sin(a) * r;
+
+                    levelPoints.push(project(x, yOffset, z));
+                }
+                points.push(levelPoints);
+            }
+
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i < levels; i++) {
+                for (let j = 0; j < nodesPerLevel; j++) {
+                    const p1 = points[i][j];
+                    const p2 = points[i][(j + 1) % nodesPerLevel];
+
+                    const alpha = Math.max(0.02, Math.min(0.7, (p1.z + 400) / 800));
+
+                    ctx.strokeStyle = `rgba(255, 106, 170, ${alpha * 0.4})`;
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.stroke();
+
+                    if (i < levels - 1) {
+                        const p3 = points[i + 1][j];
+                        const p4 = points[i + 1][(j + 1) % nodesPerLevel];
+
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.2})`;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p3.x, p3.y);
+                        ctx.stroke();
+
+                        ctx.strokeStyle = `rgba(244, 0, 105, ${alpha * 0.5})`;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p4.x, p4.y);
+                        ctx.stroke();
+                    }
+
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(p1.x, p1.y, 1.2 * p1.sc, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             }
+
+            for (let i = 1; i < levels - 1; i++) {
+                const p = project(0, (i / (levels - 1) - 0.5) * height, 0);
+                ctx.fillStyle = `rgba(255, 106, 170, 0.8)`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 3 * p.sc, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (i > 1) {
+                    const prevP = project(0, ((i - 1) / (levels - 1) - 0.5) * height, 0);
+                    ctx.strokeStyle = `rgba(255, 106, 170, 0.5)`;
+                    ctx.lineWidth = 2 * p.sc;
+                    ctx.beginPath();
+                    ctx.moveTo(prevP.x, prevP.y);
+                    ctx.lineTo(p.x, p.y);
+                    ctx.stroke();
+                }
+            }
+
             raf = requestAnimationFrame(draw);
         };
         draw();
         return () => cancelAnimationFrame(raf);
     }, []);
+
     return (
-        <div style={{ position: 'absolute', right: '-30%', top: '50%', transform: 'translateY(-50%)', width: 800, height: 800, pointerEvents: 'none', zIndex: 0 }}>
-            <canvas ref={canvasRef} style={{ width: '100%', height: '100%', mixBlendMode: 'screen', opacity: 0.7 }} />
+        <div className="hero-globe" style={{ position: 'relative', width: '100%', maxWidth: 680, aspectRatio: '1 / 1', pointerEvents: 'none', zIndex: 0, marginLeft: 'auto' }}>
+            <canvas ref={canvasRef} style={{ width: '100%', height: '100%', mixBlendMode: 'screen', opacity: 0.9 }} />
         </div>
     );
 };
@@ -410,52 +496,54 @@ const Hero = () => {
 
     return (
         <section id="hero" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', overflow: 'hidden', paddingTop: 80 }}>
-            <div style={{ transform: `translateY(${scrollY * 0.25}px)`, position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-                <Globe />
-            </div>
-
             <div style={{ maxWidth: 1320, margin: '0 auto', padding: '32px', width: '100%', position: 'relative', zIndex: 1 }}>
+                <div className="hero-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.05fr) minmax(360px, 0.95fr)', gap: 'clamp(32px, 5vw, 80px)', alignItems: 'center' }}>
+                    <div className="hero-copy" style={{ maxWidth: 560 }}>
+                        <Reveal delay={200}>
+                            <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 4.8rem)', fontWeight: 600, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--text)', marginBottom: 28, maxWidth: '12ch' }}>
+                                Manufacturing<br />
+                                <span style={{ color: 'var(--muted)' }}>the Humanoid</span><br />
+                                <span style={{ color: 'var(--muted)' }}>Future.</span>
+                            </h1>
+                        </Reveal>
 
+                        <Reveal delay={350}>
+                            <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: 'var(--text2)', maxWidth: 480, lineHeight: 1.6, marginBottom: 48, fontWeight: 400 }}>
+                                Neuaurelius builds production ready humanoid robots for the world's most demanding environments. We target factories, warehouses, defense, and eldercare.
+                            </p>
+                        </Reveal>
 
-                <Reveal delay={200}>
-                    <h1 style={{ fontSize: 'clamp(2rem, 5vw, 5.5rem)', fontWeight: 600, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--text)', marginBottom: 28, maxWidth: '12ch' }}>
-                        Manufacturing<br />
-                        <span style={{ color: 'var(--muted)' }}>the Humanoid</span><br />
-                        <span style={{ color: 'var(--muted)' }}>Future.</span>
-                    </h1>
-                </Reveal>
-
-                <Reveal delay={350}>
-                    <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: 'var(--text2)', maxWidth: 480, lineHeight: 1.6, marginBottom: 48, fontWeight: 400 }}>
-                        Neuaurelius builds production ready humanoid robots for the world's most demanding environments. We target factories, warehouses, defense, and eldercare.
-                    </p>
-                </Reveal>
-
-                <Reveal delay={500}>
-                    <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                        <button className="sharp-button" onClick={() => document.getElementById('investors')?.scrollIntoView({ behavior: 'smooth' })}>
-                            Investor Relations
-                        </button>
-                        <button className="sharp-button-outline" onClick={() => document.getElementById('opportunity')?.scrollIntoView({ behavior: 'smooth' })}>
-                            Our Vision
-                        </button>
-                    </div>
-                </Reveal>
-
-                <Reveal delay={700}>
-                    <div className="responsive-grid-3" style={{ marginTop: 80, paddingTop: 48, borderTop: '1px solid var(--border)', maxWidth: 600 }}>
-                        {[
-                            { val: '$251B', sub: 'Market by 2035' },
-                            { val: '49%', sub: 'Annual CAGR' },
-                            { val: '2026', sub: 'Entry Window' }
-                        ].map(s => (
-                            <div key={s.val}>
-                                <div className="accent-num" style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 600, marginBottom: 4 }}>{s.val}</div>
-                                <div style={{ fontSize: '0.65rem', color: 'var(--muted)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'var(--mono)' }}>{s.sub}</div>
+                        <Reveal delay={500}>
+                            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                                <button className="sharp-button" onClick={() => document.getElementById('investors')?.scrollIntoView({ behavior: 'smooth' })}>
+                                    Investor Relations
+                                </button>
+                                <button className="sharp-button-outline" onClick={() => document.getElementById('opportunity')?.scrollIntoView({ behavior: 'smooth' })}>
+                                    Our Vision
+                                </button>
                             </div>
-                        ))}
+                        </Reveal>
+
+                        <Reveal delay={700}>
+                            <div className="responsive-grid-3" style={{ marginTop: 80, paddingTop: 48, borderTop: '1px solid var(--border)', maxWidth: 600 }}>
+                                {[
+                                    { val: '$251B', sub: 'Market by 2035' },
+                                    { val: '49%', sub: 'Annual CAGR' },
+                                    { val: '2026', sub: 'Entry Window' }
+                                ].map(s => (
+                                    <div key={s.val}>
+                                        <div className="accent-num" style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 600, marginBottom: 4 }}>{s.val}</div>
+                                        <div style={{ fontSize: '0.65rem', color: 'var(--muted)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'var(--mono)' }}>{s.sub}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </Reveal>
                     </div>
-                </Reveal>
+
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', transform: `translateY(${scrollY * 0.08}px)` }}>
+                        <KineticActuator />
+                    </div>
+                </div>
             </div>
 
 
