@@ -125,22 +125,21 @@ const Navbar = ({ setNotice }) => {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         scrolled ? "bg-white/80 backdrop-blur-2xl border-b border-black/[0.05] py-3 lg:py-4 shadow-[0_4px_24px_rgba(0,0,0,0.02)]" : "bg-white py-5 lg:py-6"
       }`}
     >
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 flex items-center justify-between">
+      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 flex items-center justify-between relative z-[100]">
         
-        {/* Standalone Icon SVG in Navbar */}
         <a 
           href="#" 
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
-          className="flex items-center group z-50 py-1"
+          className="flex items-center group py-1 cursor-pointer"
         >
           <div className="h-8 w-8 text-[#1d1d1f] shrink-0" dangerouslySetInnerHTML={{ __html: iconSvg }} />
         </a>
 
-        {/* Desktop Nav - Premium Segmented Pill Style */}
+        {}
         <div className="hidden md:flex items-center gap-1 bg-[#f5f5f7]/80 rounded-full p-1 border border-transparent transition-all">
           {navItems.map((item) => {
             const isActive = activeSection === item.toLowerCase() || (item === 'Career' && activeSection === 'careers');
@@ -162,50 +161,67 @@ const Navbar = ({ setNotice }) => {
           })}
         </div>
 
-        {/* Mobile Menu Toggle Button */}
+        {}
         <button 
-          className="md:hidden z-50 p-2.5 -mr-2 text-[#1d1d1f] bg-[#f5f5f7]/80 hover:bg-[#e5e5ea] rounded-full transition-colors cursor-pointer"
+          className="md:hidden w-11 h-11 flex flex-col justify-center items-center gap-[6px] -mr-3 text-[#1d1d1f] bg-transparent hover:bg-black/[0.04] rounded-full transition-colors cursor-pointer"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle Menu"
           aria-expanded={mobileMenuOpen}
         >
-          <div className="w-5 h-4 relative flex flex-col justify-between">
-            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 origin-center ${mobileMenuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
-            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 ${mobileMenuOpen ? 'opacity-0 scale-x-0' : ''}`} />
-            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 origin-center ${mobileMenuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
-          </div>
+          <span className={`w-[22px] h-[2px] bg-current rounded-full transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] origin-center ${mobileMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}`} />
+          <span className={`w-[22px] h-[2px] bg-current rounded-full transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] ${mobileMenuOpen ? 'opacity-0 scale-x-0' : ''}`} />
+          <span className={`w-[22px] h-[2px] bg-current rounded-full transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] origin-center ${mobileMenuOpen ? '-rotate-45 -translate-y-[8px]' : ''}`} />
         </button>
 
       </div>
 
-      {/* Smooth Apple-Style Mobile Menu Overlay */}
+      {}
       <div 
-        className={`fixed inset-0 bg-white/95 backdrop-blur-2xl z-40 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden flex flex-col justify-between pt-24 sm:pt-28 pb-8 sm:pb-12 px-6 sm:px-8 ${
-          mobileMenuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-4 pointer-events-none"
+        className={`fixed inset-0 bg-white z-[90] h-[100dvh] flex flex-col justify-between pt-[100px] sm:pt-28 pb-10 sm:pb-12 px-6 sm:px-8 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${
+          mobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         }`}
       >
-        <div className="flex flex-col gap-6">
-          <div className="text-xs font-semibold tracking-widest text-[#86868b] uppercase mb-2">Navigation</div>
+        <div className="flex flex-col gap-2 mt-4">
+          <div 
+            className="text-xs font-semibold tracking-widest text-[#86868b] uppercase mb-4"
+            style={{
+              transition: 'all 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
+              opacity: mobileMenuOpen ? 1 : 0,
+              transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(20px)',
+              transitionDelay: '100ms'
+            }}
+          >
+            Navigation
+          </div>
           {navItems.map((item, index) => (
             <a 
               key={item} 
               href={`#${item.toLowerCase()}`}
               onClick={(e) => handleNavClick(e, item)}
-              className="group flex items-center justify-between text-3xl font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors py-2 border-b border-[#f5f5f7]"
+              className="group flex items-center justify-between text-[2.75rem] font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors py-2 border-b border-[#f5f5f7]"
               style={{ 
-                transitionDelay: `${index * 60}ms`, 
+                transition: 'all 0.8s cubic-bezier(0.22, 1, 0.36, 1)', 
                 opacity: mobileMenuOpen ? 1 : 0, 
-                transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(16px)', 
-                transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)' 
+                transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(24px)', 
+                transitionDelay: mobileMenuOpen ? `${150 + index * 60}ms` : '0ms' 
               }}
             >
               <span>{item}</span>
-              <span className="text-xl opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-[#0066cc]">→</span>
+              <span className="text-2xl opacity-0 group-hover:opacity-100 transform -translate-x-4 group-hover:translate-x-0 transition-all duration-500 ease-out text-[#0066cc]">→</span>
             </a>
           ))}
         </div>
 
-        <div className="pt-6 border-t border-[#e5e5ea] flex flex-col gap-4">
+        {}
+        <div 
+          className="pt-8 border-t border-[#e5e5ea] flex flex-col gap-6"
+          style={{
+            transition: 'all 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
+            opacity: mobileMenuOpen ? 1 : 0,
+            transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(20px)',
+            transitionDelay: mobileMenuOpen ? '400ms' : '0ms'
+          }}
+        >
           <div className="flex justify-between items-center text-xs font-semibold text-[#86868b] tracking-wider uppercase">
             <span>Offices: Jaipur & Kolkata</span>
             <span>Est. 2024</span>
@@ -213,9 +229,9 @@ const Navbar = ({ setNotice }) => {
           <a 
             href="mailto:post@neuaurelius.com"
             onClick={() => setMobileMenuOpen(false)}
-            className="w-full py-4 rounded-2xl bg-[#1d1d1f] text-white text-center font-semibold text-base shadow-md active:scale-[0.98] transition-transform"
+            className="text-[1.35rem] font-medium text-[#1d1d1f] hover:text-[#0066cc] transition-colors underline decoration-1 underline-offset-4 decoration-[#d2d2d7] hover:decoration-[#0066cc]"
           >
-            Contact post@neuaurelius.com
+            post@neuaurelius.com
           </a>
         </div>
       </div>
