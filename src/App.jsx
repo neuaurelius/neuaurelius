@@ -31,8 +31,8 @@ const FadeInSection = ({ children, delay = 0, className = "" }) => {
   return (
     <div
       ref={domRef}
-      className={`transition-all duration-300 ease-out transform ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       } ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
@@ -51,10 +51,9 @@ const Navbar = ({ setNotice }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const sections = ["about", "careers"];
+    const sections = ["research", "about", "careers"];
     const updateActiveSection = () => {
       const current = sections.reduce((active, id) => {
         const el = document.getElementById(id);
@@ -65,19 +64,9 @@ const Navbar = ({ setNotice }) => {
     };
 
     updateActiveSection();
-    const updateProgress = () => {
-      const scrollable = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-      setScrollProgress((window.scrollY / scrollable) * 100);
-    };
-
-    updateProgress();
     window.addEventListener("scroll", updateActiveSection, { passive: true });
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
     return () => {
       window.removeEventListener("scroll", updateActiveSection);
-      window.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
     };
   }, []);
 
@@ -109,7 +98,13 @@ const Navbar = ({ setNotice }) => {
     e.preventDefault();
     setMobileMenuOpen(false);
     
-    if (item === "Research" || item === "Blogs") {
+    if (item === "Research") {
+      const el = document.getElementById("research");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
+    if (item === "Blogs") {
       setNotice(`${item} section is currently under development.`);
       setTimeout(() => setNotice(""), 3500);
       return;
@@ -130,17 +125,13 @@ const Navbar = ({ setNotice }) => {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-        scrolled ? "bg-white/90 backdrop-blur-md border-b border-[#e5e5ea] py-3 shadow-[0_4px_24px_rgba(0,0,0,0.04)]" : "bg-white py-4"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        scrolled ? "bg-white/80 backdrop-blur-2xl border-b border-black/[0.05] py-3 lg:py-4 shadow-[0_4px_24px_rgba(0,0,0,0.02)]" : "bg-white py-5 lg:py-6"
       }`}
     >
-      <div
-        className="absolute left-0 bottom-0 h-[2px] bg-[#0066cc] transition-all duration-150"
-        style={{ width: `${Math.min(scrollProgress, 100)}%` }}
-      />
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 flex items-center justify-between">
         
-        {/* Only Standalone Icon SVG in Navbar */}
+        {/* Standalone Icon SVG in Navbar */}
         <a 
           href="#" 
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
@@ -149,62 +140,83 @@ const Navbar = ({ setNotice }) => {
           <div className="h-8 w-8 text-[#1d1d1f] shrink-0" dangerouslySetInnerHTML={{ __html: iconSvg }} />
         </a>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <a 
-              key={item} 
-              href={`#${item.toLowerCase()}`} 
-              onClick={(e) => handleNavClick(e, item)}
-              className={`text-[13px] font-semibold tracking-wide transition-colors relative group ${
-                activeSection === item.toLowerCase()
-                  ? "text-[#0066cc]"
-                  : "text-[#1d1d1f] hover:text-[#0066cc]"
-              }`}
-              aria-current={activeSection === item.toLowerCase() ? "location" : undefined}
-            >
-              {item}
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#0066cc] transition-all duration-300 ${
-                activeSection === item.toLowerCase() ? "w-full" : "w-0 group-hover:w-full"
-              }`}></span>
-            </a>
-          ))}
+        {/* Desktop Nav - Premium Segmented Pill Style */}
+        <div className="hidden md:flex items-center gap-1 bg-[#f5f5f7]/80 rounded-full p-1 border border-transparent transition-all">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.toLowerCase() || (item === 'Career' && activeSection === 'careers');
+            return (
+              <a 
+                key={item} 
+                href={`#${item.toLowerCase()}`} 
+                onClick={(e) => handleNavClick(e, item)}
+                className={`px-5 py-2 rounded-full text-[13px] font-semibold tracking-wide transition-all duration-300 ${
+                  isActive 
+                    ? "bg-white text-[#1d1d1f] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-black/[0.04]" 
+                    : "text-[#86868b] hover:text-[#1d1d1f] hover:bg-black/[0.02] border border-transparent"
+                }`}
+                aria-current={isActive ? "location" : undefined}
+              >
+                {item}
+              </a>
+            );
+          })}
         </div>
 
-        {/* Mobile Menu Toggle */}
+        {/* Mobile Menu Toggle Button */}
         <button 
-          className="md:hidden z-50 p-2 -mr-2 text-[#1d1d1f]"
+          className="md:hidden z-50 p-2.5 -mr-2 text-[#1d1d1f] bg-[#f5f5f7]/80 hover:bg-[#e5e5ea] rounded-full transition-colors cursor-pointer"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle Menu"
           aria-expanded={mobileMenuOpen}
         >
-          <div className="w-6 h-5 relative flex flex-col justify-between">
-            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-[9px]' : ''}`} />
-            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
-            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-[9px]' : ''}`} />
+          <div className="w-5 h-4 relative flex flex-col justify-between">
+            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 origin-center ${mobileMenuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 ${mobileMenuOpen ? 'opacity-0 scale-x-0' : ''}`} />
+            <span className={`w-full h-[2px] bg-current rounded-full transition-all duration-300 origin-center ${mobileMenuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
           </div>
         </button>
 
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Smooth Apple-Style Mobile Menu Overlay */}
       <div 
-        className={`fixed inset-0 bg-white z-40 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden ${
-          mobileMenuOpen ? "translate-y-0" : "-translate-y-full"
+        className={`fixed inset-0 bg-white/95 backdrop-blur-2xl z-40 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden flex flex-col justify-between pt-24 sm:pt-28 pb-8 sm:pb-12 px-6 sm:px-8 ${
+          mobileMenuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-4 pointer-events-none"
         }`}
       >
-        <div className="flex flex-col items-center justify-center h-full gap-8">
+        <div className="flex flex-col gap-6">
+          <div className="text-xs font-semibold tracking-widest text-[#86868b] uppercase mb-2">Navigation</div>
           {navItems.map((item, index) => (
             <a 
               key={item} 
               href={`#${item.toLowerCase()}`}
               onClick={(e) => handleNavClick(e, item)}
-              className="text-2xl font-semibold text-[#1d1d1f]"
-              style={{ transitionDelay: `${index * 50}ms`, opacity: mobileMenuOpen ? 1 : 0, transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(20px)', transition: 'all 0.5s ease' }}
+              className="group flex items-center justify-between text-3xl font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors py-2 border-b border-[#f5f5f7]"
+              style={{ 
+                transitionDelay: `${index * 60}ms`, 
+                opacity: mobileMenuOpen ? 1 : 0, 
+                transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(16px)', 
+                transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)' 
+              }}
             >
-              {item}
+              <span>{item}</span>
+              <span className="text-xl opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-[#0066cc]">→</span>
             </a>
           ))}
+        </div>
+
+        <div className="pt-6 border-t border-[#e5e5ea] flex flex-col gap-4">
+          <div className="flex justify-between items-center text-xs font-semibold text-[#86868b] tracking-wider uppercase">
+            <span>Offices: Jaipur & Kolkata</span>
+            <span>Est. 2024</span>
+          </div>
+          <a 
+            href="mailto:post@neuaurelius.com"
+            onClick={() => setMobileMenuOpen(false)}
+            className="w-full py-4 rounded-2xl bg-[#1d1d1f] text-white text-center font-semibold text-base shadow-md active:scale-[0.98] transition-transform"
+          >
+            Contact post@neuaurelius.com
+          </a>
         </div>
       </div>
     </nav>
@@ -268,7 +280,7 @@ const Hero = () => {
             className={`absolute inset-0 w-full h-full object-cover object-center transition-[opacity,transform] duration-1000 ${imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02]'}`}
             onLoad={() => setImageLoaded(true)}
             decoding="async"
-            fetchPriority="high" 
+            fetchpriority="high" 
           />
 
           {/* Darkening overlay for text contrast */}
@@ -352,6 +364,70 @@ const Problems = () => {
   );
 };
 
+const Research = () => {
+  const areas = [
+    {
+      number: "01",
+      title: "Research",
+      description: "We investigate artificial muscle fibers, proprioception, and embedded intelligence for more capable humanoid systems.",
+    },
+    {
+      number: "02",
+      title: "Prototype",
+      description: "Research is translated into physical systems that can be tested, refined, and validated in real conditions.",
+    },
+    {
+      number: "03",
+      title: "Manufacture",
+      description: "Our engineering approach is built around scalable robotics that can move from working prototypes toward practical deployment.",
+    },
+    {
+      number: "04",
+      title: "Publications",
+      description: "We are currently preparing several papers detailing our findings in artificial muscle performance. Expected publication soon.",
+    }
+  ];
+
+  return (
+    <section id="research" className="py-24 sm:py-32 bg-white px-5 sm:px-8 border-t border-[#f5f5f7]">
+      <div className="max-w-[1200px] mx-auto">
+        <FadeInSection>
+          <div className="max-w-2xl mb-14 sm:mb-16">
+            <p className="text-xs sm:text-sm font-semibold tracking-widest text-[#86868b] mb-4">
+              RESEARCH
+            </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#1d1d1f] tracking-tight leading-tight">
+              Building from fundamental research to practical robotics.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {areas.map((area, index) => (
+              <FadeInSection key={area.number} delay={index * 100} className="h-full">
+                <div className="group h-full min-h-[260px] p-8 sm:p-10 rounded-3xl border border-[#e5e5ea] bg-[#fafafa] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-white hover:border-[#1d1d1f] hover:shadow-[0_18px_40px_rgba(0,0,0,0.05)]">
+                  <div className="flex items-center justify-between mb-14">
+                    <span className="text-xs font-semibold tracking-widest text-[#86868b]">
+                      {area.number}
+                    </span>
+                    <span className="w-8 h-px bg-[#d2d2d7] transition-all duration-500 group-hover:w-12 group-hover:bg-[#1d1d1f]" />
+                  </div>
+
+                  <h3 className="text-xl sm:text-2xl font-semibold text-[#1d1d1f] tracking-tight mb-4">
+                    {area.title}
+                  </h3>
+                  <p className="text-[#86868b] leading-relaxed text-base">
+                    {area.description}
+                  </p>
+                </div>
+              </FadeInSection>
+            ))}
+          </div>
+        </FadeInSection>
+      </div>
+    </section>
+  );
+};
+
 const Team = () => {
   const team = [
     { name: "Arkadeep Nag", role: "CEO and Co-founder", link: "https://linkedin.com/in/arkadeepnag" },
@@ -367,7 +443,7 @@ const Team = () => {
   };
 
   return (
-    <section className="py-24 sm:py-32 bg-white px-5 sm:px-8 border-t border-[#f5f5f7]">
+    <section className="pb-24 sm:pb-32 bg-white px-5 sm:px-8">
       <div className="max-w-[1200px] mx-auto">
         <FadeInSection>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-6">
@@ -541,7 +617,17 @@ export default function App() {
       className="min-h-screen bg-white text-[#1d1d1f] antialiased selection:bg-[#1d1d1f] selection:text-white overflow-x-hidden"
       style={{ fontFamily: "'Gilmer', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}
     >
-      
+      <style>{`
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            scroll-behavior: auto !important;
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+      `}</style>
+
       {/* Apple-style notification pill for features under construction */}
       <div 
         className={`fixed top-6 left-1/2 -translate-x-1/2 z-[100] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
@@ -559,6 +645,7 @@ export default function App() {
         <Hero />
         <About />
         <Problems />
+        <Research />
         <Team />
         <Careers />
       </main>
