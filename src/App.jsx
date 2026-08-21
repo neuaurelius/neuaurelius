@@ -1,589 +1,947 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const useFadeIn = (threshold = 0.1) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const domRef = useRef();
+// Custom Hook for Scroll Reveal Animations
+const useScrollReveal = () => {
+    useEffect(() => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -10% 0px',
+            threshold: 0.1
+        };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observer.unobserve(entry.target);
-          }
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
         });
-      },
-      { threshold, rootMargin: "0px 0px -50px 0px" }
-    );
-    const currentRef = domRef.current;
-    if (currentRef) observer.observe(currentRef);
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
-  }, [threshold]);
 
-  return { isVisible, domRef };
+        return () => observer.disconnect();
+    }, []);
 };
 
-const FadeInSection = ({ children, delay = 0, className = "" }) => {
-  const { isVisible, domRef } = useFadeIn();
-  return (
-    <div
-      ref={domRef}
-      className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-      } ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </div>
-  );
-};
+const globalStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 
-const iconSvg = `<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg width="100%" height="100%" viewBox="0 0 3600 2700" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M867.653,1398.775c0,-95.009 14.242,-186.718 40.705,-273.106c116.865,-381.499 472.074,-659.241 891.642,-659.241c514.576,0 932.347,417.771 932.347,932.347c0,154.189 -37.51,299.686 -103.894,427.857c-43.229,83.463 -98.702,159.579 -164.035,225.962l-1596.76,-650.702l-0.005,-3.117Zm1513.317,327.004c54.551,-96.637 85.688,-208.213 85.688,-327.004c0,-367.939 -298.72,-666.658 -666.658,-666.658c-308.384,0 -568.143,209.844 -644.153,494.407l1225.124,499.255Zm-469.759,507.794l-777.869,-316.993l0,-292.809l1044.631,425.702l-105.906,184.1l-160.855,0Zm-777.869,-210.8l517.283,210.8l-517.283,0l0,-210.8Z"/></svg>`;
+    :root {
+        /* Brand Colors */
+        --brand-red: #EE3A24;
+        
+        /* UI Colors */
+        --bg-paper: #FAFAF9;
+        --surface: #FFFFFF;
+        --ink-main: #111111;
+        --ink-muted: #666666;
+        --ink-light: #999999;
+        --border-subtle: #E5E5E5;
+        
+        /* Shadows & Transitions */
+        --shadow-rest: 0 10px 30px rgba(0, 0, 0, 0.03);
+        --shadow-hover: 0 24px 50px rgba(0, 0, 0, 0.08);
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-const textSvg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" zoomAndPan="magnify" viewBox="0 0 375 74.999997" height="100%" preserveAspectRatio="xMidYMid meet" version="1.0"><path fill="#231f20" d="M 23.464844 26.515625 C 18.527344 26.515625 14.585938 28.503906 11.640625 32.523438 L 11.640625 27.605469 L 2.050781 27.605469 L 2.050781 67.667969 L 11.640625 67.667969 L 11.640625 47.277344 C 11.640625 43.863281 12.457031 41.121094 14.089844 39.054688 C 15.722656 36.992188 17.855469 35.976562 20.519531 35.976562 C 23.109375 35.976562 25.0625 36.839844 26.375 38.566406 C 27.691406 40.296875 28.367188 42.660156 28.367188 45.703125 L 28.367188 67.667969 L 37.988281 67.667969 L 37.988281 43.789062 C 37.988281 38.457031 36.746094 34.25 34.261719 31.171875 C 31.773438 28.09375 28.1875 26.554688 23.464844 26.554688 Z M 23.464844 26.515625 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 61.128906 67.59375 C 65.566406 67.59375 69.332031 66.464844 72.421875 64.25 C 75.511719 62.035156 77.640625 59.445312 78.847656 56.515625 L 70.183594 53.8125 C 68.480469 57.230469 65.496094 58.957031 61.234375 58.957031 C 58.039062 58.957031 55.554688 58.167969 53.742188 56.554688 C 51.929688 54.9375 50.867188 52.796875 50.546875 50.132812 L 79.132812 50.132812 C 79.273438 49.308594 79.34375 48.105469 79.34375 46.527344 C 79.34375 40.785156 77.640625 36.015625 74.230469 32.222656 C 70.824219 28.429688 66.171875 26.554688 60.3125 26.554688 C 54.59375 26.554688 49.941406 28.503906 46.390625 32.410156 C 42.839844 36.316406 41.0625 41.234375 41.0625 47.128906 C 41.0625 53.285156 42.910156 58.242188 46.605469 61.996094 C 50.296875 65.753906 55.089844 67.628906 61.019531 67.628906 Z M 50.476562 43.789062 C 50.757812 41.421875 51.789062 39.394531 53.5625 37.703125 C 55.339844 36.015625 57.542969 35.152344 60.203125 35.152344 C 62.972656 35.152344 65.210938 35.976562 66.953125 37.628906 C 68.691406 39.28125 69.6875 41.347656 69.933594 43.789062 L 50.472656 43.789062 Z M 50.476562 43.789062 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 108.945312 27.605469 L 108.945312 46.753906 C 108.945312 50.246094 108.128906 53.023438 106.53125 55.089844 C 104.933594 57.152344 102.769531 58.167969 100.035156 58.167969 C 97.476562 58.167969 95.523438 57.304688 94.175781 55.578125 C 92.824219 53.851562 92.148438 51.484375 92.148438 48.441406 L 92.148438 27.679688 L 82.5625 27.679688 L 82.5625 50.359375 C 82.5625 55.726562 83.804688 59.96875 86.253906 63.046875 C 88.707031 66.128906 92.328125 67.667969 97.085938 67.667969 C 102.09375 67.667969 106.035156 65.675781 108.910156 61.660156 L 108.910156 67.628906 L 118.535156 67.667969 L 118.535156 27.679688 Z M 108.945312 27.605469 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 140.289062 67.59375 C 145.332031 67.59375 149.273438 65.640625 152.113281 61.734375 L 152.367188 67.667969 L 161.808594 67.667969 L 161.808594 27.605469 L 152.113281 27.605469 L 152.113281 32.296875 C 149.273438 28.429688 145.332031 26.515625 140.289062 26.515625 C 135.140625 26.515625 130.808594 28.46875 127.328125 32.375 C 123.847656 36.277344 122.105469 41.195312 122.105469 47.089844 C 122.105469 52.910156 123.847656 57.792969 127.328125 61.734375 C 130.808594 65.675781 135.105469 67.628906 140.253906 67.628906 Z M 141.921875 58.542969 C 138.902344 58.542969 136.417969 57.453125 134.464844 55.3125 C 132.511719 53.175781 131.554688 50.394531 131.554688 47.015625 C 131.554688 43.675781 132.511719 40.933594 134.464844 38.792969 C 136.417969 36.652344 138.902344 35.601562 141.921875 35.601562 C 144.871094 35.601562 147.355469 36.691406 149.378906 38.832031 C 151.402344 40.972656 152.398438 43.675781 152.398438 46.941406 C 152.398438 50.28125 151.402344 53.023438 149.378906 55.203125 C 147.355469 57.378906 144.871094 58.46875 141.921875 58.46875 Z M 141.921875 58.542969 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 193.542969 27.605469 L 193.542969 46.753906 C 193.542969 50.246094 192.722656 53.023438 191.125 55.089844 C 189.527344 57.152344 187.363281 58.167969 184.628906 58.167969 C 182.070312 58.167969 180.117188 57.304688 178.769531 55.578125 C 177.417969 53.851562 176.746094 51.484375 176.746094 48.441406 L 176.746094 27.679688 L 167.15625 27.679688 L 167.15625 50.359375 C 167.15625 55.726562 168.398438 59.96875 170.851562 63.046875 C 173.300781 66.128906 176.921875 67.667969 181.679688 67.667969 C 186.6875 67.667969 190.628906 65.675781 193.503906 61.660156 L 193.503906 67.667969 L 203.128906 67.628906 L 203.128906 27.679688 Z M 193.542969 27.605469 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 218.527344 33.347656 L 218.527344 27.605469 L 208.9375 27.605469 L 208.9375 67.628906 L 218.527344 67.628906 L 218.527344 49.570312 C 218.527344 44.464844 219.554688 40.859375 221.582031 38.757812 C 223.605469 36.652344 226.621094 35.941406 230.636719 36.617188 L 230.636719 27.078125 C 224.953125 26.253906 220.90625 28.355469 218.492188 33.386719 Z M 218.527344 33.347656 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 249.0625 67.59375 C 253.5 67.59375 257.265625 66.464844 260.355469 64.25 C 263.445312 62.035156 265.574219 59.445312 266.78125 56.515625 L 258.117188 53.8125 C 256.414062 57.230469 253.429688 58.957031 249.167969 58.957031 C 245.972656 58.957031 243.488281 58.167969 241.675781 56.554688 C 239.867188 54.9375 238.800781 52.796875 238.480469 50.132812 L 267.066406 50.132812 C 267.210938 49.308594 267.28125 48.105469 267.28125 46.527344 C 267.28125 40.785156 265.574219 36.015625 262.167969 32.222656 C 258.757812 28.429688 254.105469 26.554688 248.246094 26.554688 C 242.527344 26.554688 237.878906 28.503906 234.324219 32.410156 C 230.773438 36.316406 229 41.234375 229 47.128906 C 229 53.285156 230.847656 58.242188 234.539062 61.996094 C 238.230469 65.753906 243.027344 67.628906 248.957031 67.628906 Z M 238.410156 43.789062 C 238.695312 41.421875 239.722656 39.394531 241.5 37.703125 C 243.273438 36.015625 245.476562 35.152344 248.140625 35.152344 C 250.910156 35.152344 253.148438 35.976562 254.886719 37.628906 C 256.625 39.28125 257.621094 41.347656 257.871094 43.789062 Z M 238.410156 43.789062 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 270.921875 67.667969 L 280.511719 67.628906 L 280.511719 7.023438 L 270.921875 7.023438 Z M 270.921875 67.667969 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 286.214844 67.628906 L 286.214844 27.226562 L 295.875 27.226562 L 295.875 67.667969 Z M 286.214844 67.628906 " fill-opacity="1" fill-rule="evenodd"/><path fill="#231f20" d="M 327.820312 27.605469 L 327.820312 46.753906 C 327.820312 50.246094 327.003906 53.023438 325.40625 55.089844 C 323.804688 57.152344 321.640625 58.167969 318.90625 58.167969 C 316.347656 58.167969 314.394531 57.304688 313.046875 55.578125 C 311.695312 53.851562 311.023438 51.484375 311.023438 48.441406 L 311.023438 27.679688 L 301.433594 27.679688 L 301.433594 50.359375 C 301.433594 55.726562 302.675781 59.96875 305.128906 63.046875 C 307.578125 66.128906 311.199219 67.667969 315.957031 67.667969 C 320.964844 67.667969 324.90625 65.675781 327.785156 61.660156 L 327.785156 67.628906 L 337.40625 67.667969 L 337.40625 27.679688 Z M 327.820312 27.605469 " fill-opacity="1" fill-rule="nonzero"/><path fill="#231f20" d="M 357.707031 67.59375 C 362.355469 67.59375 366.15625 66.390625 369.140625 63.988281 C 372.121094 61.585938 373.613281 58.542969 373.613281 54.863281 C 373.613281 51.671875 372.726562 49.308594 370.914062 47.730469 C 369.105469 46.152344 366.546875 44.839844 363.246094 43.824219 L 354.082031 41.046875 C 352.058594 40.40625 351.027344 39.394531 351.027344 37.96875 C 351.027344 37.027344 351.527344 36.203125 352.554688 35.488281 C 353.585938 34.777344 354.828125 34.4375 356.285156 34.4375 C 359.90625 34.4375 362.535156 35.941406 364.132812 38.980469 L 372.65625 36.351562 C 371.484375 33.386719 369.425781 31.019531 366.511719 29.21875 C 363.601562 27.417969 360.191406 26.515625 356.320312 26.515625 C 352.238281 26.515625 348.757812 27.640625 345.878906 29.933594 C 343.003906 32.222656 341.546875 34.964844 341.546875 38.191406 C 341.546875 43.261719 344.566406 46.714844 350.640625 48.554688 L 360.011719 51.484375 C 362.746094 52.347656 364.097656 53.625 364.097656 55.3125 C 364.097656 56.441406 363.527344 57.378906 362.394531 58.167969 C 361.257812 58.957031 359.800781 59.332031 357.988281 59.332031 C 355.609375 59.332031 353.585938 58.730469 351.882812 57.527344 C 350.175781 56.328125 349.003906 54.789062 348.367188 52.875 L 339.703125 55.539062 C 340.660156 58.804688 342.789062 61.621094 346.09375 63.988281 C 349.394531 66.351562 353.230469 67.554688 357.597656 67.554688 L 357.707031 67.589844 Z M 357.707031 67.59375 " fill-opacity="1" fill-rule="nonzero"/></svg>`;
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
+    html {
+        scroll-behavior: smooth;
+    }
 
-  useEffect(() => {
-    const sections = ["research", "about", "careers"];
-    const updateActiveSection = () => {
-      const current = sections.reduce((active, id) => {
-        const el = document.getElementById(id);
-        if (!el) return active;
-        return window.scrollY + 140 >= el.offsetTop ? id : active;
-      }, "");
-      setActiveSection(current);
-    };
+    body {
+        background-color: var(--bg-paper);
+        color: var(--ink-main);
+        font-family: "DM Sans", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
 
-    updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", updateActiveSection);
-    };
-  }, []);
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    button {
+        font-family: inherit;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
 
-  useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
-    const handleEscape = (event) => {
-      if (event.key === "Escape") setMobileMenuOpen(false);
-    };
-    if (mobileMenuOpen) window.addEventListener("keydown", handleEscape);
-    return () => {
-      document.body.style.overflow = "unset";
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, [mobileMenuOpen]);
+    ::selection {
+        background: var(--brand-red);
+        color: var(--surface);
+    }
 
-  const navItems = ["Research", "Career", "Investors"];
+    /* PRELOADER STYLES */
+    .preloader {
+        position: fixed;
+        inset: 0;
+        background-color: var(--brand-red);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    }
 
-  const handleNavClick = (e, item) => {
-    e.preventDefault();
-    setMobileMenuOpen(false);
+    .preloader.hidden {
+        transform: translateY(-100%);
+    }
+
+    .text-logo-svg {
+        width: 80vw;
+        max-width: 400px;
+    }
+
+    .text-logo-svg path {
+        fill: transparent;
+        stroke: #ffffff;
+        stroke-width: 0.5;
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation: drawOutline 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards, fillLogo 0.5s ease-out 1.2s forwards;
+    }
+
+    @keyframes drawOutline {
+        to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes fillLogo {
+        to { fill: #ffffff; stroke: transparent; }
+    }
+
+    /* MACRO LAYOUT & SPACING */
+    section, footer {
+        padding: 15vh 8vw;
+        position: relative;
+    }
+
+    nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 90px;
+        padding: 0 8vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(250, 250, 249, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(229, 229, 229, 0.5);
+        z-index: 100;
+    }
+
+    .logo {
+        width: 44px;
+        height: 44px;
+        color: var(--ink-main);
+        transition: transform 0.4s var(--ease-out), color 0.3s ease;
+        display: block;
+    }
+
+    .logo:hover {
+        transform: scale(1.05);
+        color: var(--brand-red);
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 28px;
+        background: var(--brand-red);
+        color: var(--surface);
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.4s var(--ease-out);
+        border: 1px solid var(--brand-red);
+    }
+
+    .btn-primary:hover {
+        background: var(--surface);
+        color: var(--brand-red);
+        box-shadow: 0 12px 24px rgba(238, 58, 36, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 28px;
+        background: var(--surface);
+        color: var(--ink-main);
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.4s var(--ease-out);
+        border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--ink-main);
+        box-shadow: var(--shadow-rest);
+        transform: translateY(-2px);
+    }
+
+    .menu-toggle {
+        display: block;
+        width: 44px;
+        height: 44px;
+        position: relative;
+        z-index: 1000;
+    }
+
+    .menu-toggle span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--ink-main);
+        position: absolute;
+        left: 10px;
+        transition: all 0.4s var(--ease-out);
+    }
+
+    .menu-toggle span:nth-child(1) { top: 16px; }
+    .menu-toggle span:nth-child(2) { top: 26px; }
+
+    .mobile-menu {
+        position: fixed;
+        inset: 0;
+        background: var(--bg-paper);
+        z-index: 999;
+        padding: 15vh 8vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4vh;
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .mobile-menu.active {
+        opacity: 1;
+        pointer-events: auto;
+        visibility: visible;
+    }
+
+    .menu-close {
+        position: absolute;
+        top: 25px;
+        right: 8vw;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--border-subtle);
+        border-radius: 50%;
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .menu-close:hover {
+        background: var(--ink-light);
+        transform: rotate(90deg);
+    }
     
-    if (item === "Research") {
-      const el = document.getElementById("research");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-      return;
+    .menu-close svg {
+        width: 20px;
+        height: 20px;
+        stroke: var(--ink-main);
     }
 
-    if (item === "Career") {
-      const el = document.getElementById("careers");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-      return;
+    .mobile-menu a {
+        font-size: clamp(32px, 8vw, 48px);
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: var(--ink-muted);
+        transform: translateY(30px);
+        opacity: 0;
+        transition: all 0.5s var(--ease-out);
+        border-bottom: 1px solid var(--border-subtle);
+        padding-bottom: 2vh;
     }
 
-    if (item === "Investors") {
-      const el = document.getElementById("footer");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-      return;
+    .mobile-menu a:hover {
+        color: var(--ink-main);
+        border-color: var(--ink-main);
     }
-  };
 
-  return (
-    <>
-      <nav 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-          scrolled ? "bg-white/95 backdrop-blur-md border-b border-[#e5e5ea] py-3 shadow-[0_4px_24px_rgba(0,0,0,0.04)]" : "bg-white py-4"
-        }`}
-      >
-        <div className="max-w-[1200px] mx-auto px-5 sm:px-8 flex items-center justify-between">
-          
-          <a 
-            href="#" 
-            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
-            className="flex items-center group z-50 py-1"
-          >
-            <div className="h-8 w-8 text-[#1d1d1f] shrink-0" dangerouslySetInnerHTML={{ __html: iconSvg }} />
-          </a>
+    .mobile-menu.active a {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .mobile-menu.active a:nth-child(2) { transition-delay: 0.1s; }
+    .mobile-menu.active a:nth-child(3) { transition-delay: 0.15s; }
+    .mobile-menu.active a:nth-child(4) { transition-delay: 0.2s; }
+    .mobile-menu.active a:nth-child(5) { transition-delay: 0.25s; }
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1 p-1 bg-[#f5f5f7] rounded-full border border-[#e5e5ea]">
-            {navItems.map((item) => {
-              const key = item.toLowerCase() === "career" ? "careers" : item.toLowerCase() === "investors" ? "footer" : item.toLowerCase();
-              const isActive = activeSection === key;
-              return (
-                <a 
-                  key={item} 
-                  href={`#${key}`} 
-                  onClick={(e) => handleNavClick(e, item)}
-                  className={`px-5 py-2 text-[13px] font-semibold tracking-wide rounded-full transition-all duration-300 ${
-                    isActive ? "bg-white text-[#1d1d1f] shadow-sm" : "text-[#86868b] hover:text-[#1d1d1f]"
-                  }`}
-                >
-                  {item}
-                </a>
-              );
-            })}
-          </div>
+    h1 {
+        font-size: clamp(48px, 6vw, 92px);
+        font-weight: 500;
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+        margin-bottom: 4vh;
+        color: var(--ink-main);
+    }
 
-          {/* Modern Hamburger Button */}
-          <button 
-            className="md:hidden z-50 p-3 -mr-2 text-[#1d1d1f] bg-[#f5f5f7] hover:bg-[#e5e5ea] rounded-full transition-all duration-300 cursor-pointer active:scale-95 group shadow-sm flex items-center justify-center"
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="Open Menu"
-          >
-            <div className="w-5 h-4 relative flex flex-col justify-between items-center">
-              <span className="w-full h-[2px] bg-current rounded-full" />
-              <span className="w-full h-[2px] bg-current rounded-full" />
-              <span className="w-full h-[2px] bg-current rounded-full" />
-            </div>
-          </button>
+    h2 {
+        font-size: clamp(36px, 4.5vw, 64px);
+        font-weight: 500;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin-bottom: 2vh;
+    }
 
-        </div>
-      </nav>
+    .section-label {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--brand-red);
+        margin-bottom: 2vh;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .section-label::after {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 1px;
+        background: var(--brand-red);
+    }
 
-      {/* Fully Opaque Solid White Dedicated Mobile Menu Overlay with Explicit Close Button */}
-      <div 
-        className={`fixed inset-0 z-[100000] bg-white transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden flex flex-col justify-between py-6 px-6 sm:px-8 ${
-          mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        {/* Top Header inside Mobile Menu with explicit cross close button */}
-        <div className="flex items-center justify-between">
-          <div className="h-8 w-8 text-[#1d1d1f]" dangerouslySetInnerHTML={{ __html: iconSvg }} />
-          <button 
-            onClick={() => setMobileMenuOpen(false)}
-            className="p-3 text-[#1d1d1f] bg-[#f5f5f7] hover:bg-[#e5e5ea] rounded-full transition-all duration-300 cursor-pointer active:scale-95 shadow-sm flex items-center justify-center"
-            aria-label="Close Menu"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
+    .lead-text {
+        font-size: clamp(18px, 2vw, 22px);
+        line-height: 1.6;
+        color: var(--ink-muted);
+        max-width: 600px;
+        margin-bottom: 6vh;
+    }
 
-        <div className="flex flex-col gap-6 my-auto">
-          <div className="text-xs font-semibold tracking-widest text-[#86868b] uppercase mb-2">Navigation</div>
-          {navItems.map((item, index) => (
-            <a 
-              key={item} 
-              href={`#${item.toLowerCase()}`}
-              onClick={(e) => handleNavClick(e, item)}
-              className="group flex items-center justify-between text-3xl font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors py-3 border-b border-[#f5f5f7]"
-              style={{ 
-                transitionDelay: `${index * 60}ms`, 
-                opacity: mobileMenuOpen ? 1 : 0, 
-                transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(16px)', 
-                transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)' 
-              }}
-            >
-              <span>{item}</span>
-              <span className="text-xl opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-[#0066cc]">→</span>
-            </a>
-          ))}
-        </div>
+    .grid-half {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8vw;
+        align-items: center;
+    }
+    
+    .grid-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3vw;
+    }
 
-        <div className="pt-6 border-t border-[#e5e5ea] flex flex-col gap-4">
-          <div className="flex justify-between items-center text-xs font-semibold text-[#86868b] tracking-wider uppercase">
-            <span>Offices: Jaipur & Kolkata</span>
-            <span>Est. 2024</span>
-          </div>
-          <a 
-            href="mailto:post@neuaurelius.com"
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-base font-medium text-[#1d1d1f] hover:text-[#0066cc] transition-colors underline decoration-1 underline-offset-4"
-          >
-            post@neuaurelius.com
-          </a>
-        </div>
-      </div>
-    </>
-  );
-};
+    .folder-card {
+        position: relative;
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 0 12px 12px 12px;
+        padding: 40px;
+        margin-top: 36px;
+        box-shadow: var(--shadow-rest);
+        transition: all 0.5s var(--ease-out);
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 36px);
+    }
 
-const Hero = () => {
-  const [scrollY, setScrollY] = useState(0);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+    .folder-tab {
+        position: absolute;
+        top: -36px;
+        left: -1px;
+        height: 37px;
+        padding: 0 24px;
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--ink-light);
+        transition: all 0.4s var(--ease-out);
+    }
 
-  useEffect(() => {
-    const handleScroll = () => { setScrollY(window.scrollY); };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    .folder-tab::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--surface);
+        z-index: 2;
+    }
 
-  const scrollProgress = Math.min(scrollY / 350, 1);
-  const containerStyle = {
-    paddingLeft: `${scrollProgress * 1.5}rem`,
-    paddingRight: `${scrollProgress * 1.5}rem`,
-    paddingTop: `${Math.max(0.2, scrollProgress * 0.8)}rem`,
-    paddingBottom: `${scrollProgress * 1.5}rem`,
-  };
-  const innerStyle = { borderRadius: `${scrollProgress * 1.5}rem` };
+    .folder-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--ink-light);
+        z-index: 10;
+    }
 
-  const scrollToAbout = () => {
-    const el = document.getElementById('about');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
+    .folder-card:hover .folder-tab {
+        border-color: var(--ink-light);
+        color: var(--brand-red);
+    }
 
-  return (
-    <section className="relative w-full h-[75vh] sm:h-[calc(80vh-2rem)] min-h-[500px] flex items-center justify-center pt-14 bg-white overflow-hidden">
-      <div className="w-full h-full max-w-[1920px] mx-auto transition-all duration-300 ease-out flex items-center justify-center" style={containerStyle}>
-        <div className="relative w-full h-full overflow-hidden transition-all duration-300 ease-out bg-[#1d1d1f] shadow-[0_24px_80px_rgba(0,0,0,0.08)]" style={innerStyle}>
-          
-          {/* Branded Loading Screen with Icon SVG Logo */}
-          <div className={`absolute inset-0 bg-[#1d1d1f] flex items-center justify-center transition-opacity duration-1000 z-20 ${imageLoaded || imageError ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-            <div className="w-14 h-14 text-white animate-pulse" dangerouslySetInnerHTML={{ __html: iconSvg }} />
-          </div>
+    .folder-card h3 {
+        font-size: 24px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+        color: var(--ink-main);
+    }
 
-          {!imageError ? (
-            <img 
-              src="https://plain-apac-prod-public.komododecks.com/202608/06/57avg6A0gyO6nKGgAs9s/image.png" 
-              alt="Intelligent Humanoid Robot"
-              className={`absolute inset-0 w-full h-full object-cover object-center transition-[opacity,transform] duration-1000 ${imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02]'}`}
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageError(true)}
-              decoding="async"
-              loading="eager"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0a0c] via-[#1c1c1e] to-[#2c2c2e] flex items-center justify-center">
-              <div className="text-white/40 text-sm tracking-widest uppercase font-semibold">Neuaurelius Robotics</div>
-            </div>
-          )}
+    .folder-card p {
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink-muted);
+        margin: 0;
+    }
 
-          <div className="absolute inset-0 bg-black/45"></div>
-          
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4 sm:px-8 text-center">
-            <h1 className="text-[2.25rem] sm:text-[3.5rem] md:text-[4.75rem] leading-[1.08] font-semibold text-white tracking-tight mb-8 max-w-[1100px]">
-              Creating Intelligent Humanoids That make a real difference.
-            </h1>
-            <button 
-              onClick={scrollToAbout}
-              className="bg-white text-[#1d1d1f] hover:bg-[#f5f5f7] px-8 py-4 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm cursor-pointer active:scale-95"
-            >
-              Learn More
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-y-1"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+    .hero {
+        padding-top: calc(15vh + 90px);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
 
-const About = () => {
-  return (
-    <section id="about" className="py-24 sm:py-32 bg-white px-5 sm:px-8 max-w-[1200px] mx-auto">
-      <FadeInSection>
-        <h2 className="text-3xl sm:text-4xl font-semibold text-[#1d1d1f] mb-16 tracking-tight">
-          ABOUT US
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
-          <div className="text-xl sm:text-2xl leading-relaxed text-[#1d1d1f] font-medium tracking-tight">
-            Neuaurelius develops intelligent humanoid robotics for practical applications. Our research focuses on artificial muscle fibers, proprioceptive systems, embedded intelligence, and scalable robotics engineering.
-          </div>
-          <div className="text-lg sm:text-xl leading-relaxed text-[#86868b] font-normal">
-            We build technologies that improve movement, perception, efficiency, and reliability. Every system is designed for practical deployment and long term manufacturing.
-          </div>
-        </div>
-      </FadeInSection>
-    </section>
-  );
-};
+    .doc-stack {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        height: 400px;
+        margin: auto;
+        perspective: 1000px;
+    }
 
-const Problems = () => {
-  const problems = [
-    { title: "Artificial Muscle Fibers", description: "Soft actuation inspired by biological muscle systems for smooth and efficient movement." },
-    { title: "Proprioceptive Systems", description: "Continuous body awareness for stable motion, balance, and precision control." },
-    { title: "Intelligent Energy Systems", description: "Efficient battery management and distributed electronics for reliable operation." },
-  ];
+    .doc-layer {
+        position: absolute;
+        inset: 0;
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 0 16px 16px 16px;
+        box-shadow: var(--shadow-rest);
+        transform-origin: bottom left;
+        transition: all 0.8s var(--ease-out);
+    }
 
-  return (
-    <section className="py-24 bg-[#fafafa] px-5 sm:px-8">
-      <div className="max-w-[1200px] mx-auto">
-        <FadeInSection>
-          <h2 className="text-3xl sm:text-4xl font-semibold text-[#1d1d1f] mb-12 tracking-tight">
-            PROBLEMS WE SOLVE
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {problems.map((problem, index) => (
-              <div key={index} className="bg-white p-10 rounded-3xl border border-[#e5e5ea] transition-all duration-300 hover:shadow-[0_12px_30px_rgb(0,0,0,0.05)] hover:border-[#1d1d1f] hover:-translate-y-1 group cursor-default">
-                <h3 className="text-xl font-semibold text-[#1d1d1f] mb-4 tracking-tight group-hover:text-black transition-colors">{problem.title}</h3>
-                <p className="text-[#86868b] leading-relaxed text-base">{problem.description}</p>
-              </div>
-            ))}
-          </div>
-        </FadeInSection>
-      </div>
-    </section>
-  );
-};
+    .doc-layer::before {
+        content: "";
+        position: absolute;
+        top: -24px;
+        left: -1px;
+        width: 120px;
+        height: 24px;
+        background: inherit;
+        border: 1px solid var(--border-subtle);
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+    }
 
-const Research = () => {
-  const areas = [
-    { number: "01", title: "Research", description: "We investigate artificial muscle fibers, proprioception, and embedded intelligence for more capable humanoid systems." },
-    { number: "02", title: "Prototype", description: "Research is translated into physical systems that can be tested, refined, and validated in real conditions." },
-    { number: "03", title: "Manufacture", description: "Our engineering approach is built around scalable robotics that can move from working prototypes toward practical deployment." },
-    { number: "04", title: "Publications", description: "We are currently preparing several papers detailing our findings in artificial muscle performance. Expected publication soon." }
-  ];
+    .doc-layer.bottom { transform: rotate(-6deg) translate(-10px, 10px) scale(0.95); z-index: 1; background: #F0F0F0; border-color: #E0E0E0;}
+    .doc-layer.middle { transform: rotate(-3deg) translate(-5px, 5px) scale(0.97); z-index: 2; background: #F8F8F8; }
+    .doc-layer.top { transform: rotate(0deg); z-index: 3; padding: 40px;}
 
-  return (
-    <section id="research" className="py-24 sm:py-32 bg-white px-5 sm:px-8 border-t border-[#f5f5f7]">
-      <div className="max-w-[1200px] mx-auto">
-        <FadeInSection>
-          <div className="max-w-2xl mb-14 sm:mb-16">
-            <p className="text-xs sm:text-sm font-semibold tracking-widest text-[#86868b] mb-4 uppercase">RESEARCH</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#1d1d1f] tracking-tight leading-tight">
-              Building from fundamental research to practical robotics.
-            </h2>
-          </div>
+    .doc-stack:hover .doc-layer.bottom { transform: rotate(-12deg) translate(-30px, 20px) scale(0.95); }
+    .doc-stack:hover .doc-layer.middle { transform: rotate(-6deg) translate(-15px, 10px) scale(0.97); }
+    .doc-stack:hover .doc-layer.top { transform: translateY(-10px); box-shadow: var(--shadow-hover); }
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {areas.map((area, index) => (
-              <FadeInSection key={area.number} delay={index * 100} className="h-full">
-                <div className="group h-full min-h-[260px] p-8 sm:p-10 rounded-3xl border border-[#e5e5ea] bg-[#fafafa] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-white hover:border-[#1d1d1f] hover:shadow-[0_18px_40px_rgba(0,0,0,0.05)]">
-                  <div className="flex items-center justify-between mb-14">
-                    <span className="text-xs font-semibold tracking-widest text-[#86868b]">{area.number}</span>
-                    <span className="w-8 h-px bg-[#d2d2d7] transition-all duration-500 group-hover:w-12 group-hover:bg-[#1d1d1f]" />
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-semibold text-[#1d1d1f] tracking-tight mb-4">{area.title}</h3>
-                  <p className="text-[#86868b] leading-relaxed text-base">{area.description}</p>
-                </div>
-              </FadeInSection>
-            ))}
-          </div>
-        </FadeInSection>
-      </div>
-    </section>
-  );
-};
+    .doc-content-line {
+        width: 100%;
+        height: 1px;
+        background: var(--border-subtle);
+        margin-bottom: 24px;
+    }
+    .doc-content-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-light);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 40px;
+    }
 
-const Team = () => {
-  const team = [
-    { name: "Arkadeep Nag", role: "CEO and Co-founder", link: "https://linkedin.com/in/arkadeepnag", desc: "Leading vision, corporate strategy, and advanced structural robotics deployment." },
-    { name: "Rahul Konar", role: "CTO and Co-founder", link: "https://www.linkedin.com/in/konar-rahul/", desc: "Directing core research in artificial muscle actuation and embedded hardware systems." },
-    { name: "Shreyas Raj", role: "COO and Co-founder", link: "https://www.linkedin.com/in/bshreeshreyasraj/", desc: "Managing operational execution, manufacturing pipelines, and strategic partnerships." },
-  ];
+    .job-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 32px 40px;
+        margin-top: 24px;
+    }
 
-  return (
-    <section className="pb-24 sm:pb-32 bg-white px-5 sm:px-8">
-      <div className="max-w-[1200px] mx-auto">
-        <FadeInSection>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-6">
-            <h2 className="text-3xl sm:text-4xl font-semibold text-[#1d1d1f] tracking-tight">
-              LEADERSHIP
-            </h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {team.map((member, index) => (
-              <a 
-                key={index}
-                href={member.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative bg-[#fafafa] hover:bg-black hover:text-white p-8 sm:p-10 rounded-3xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2 hover:shadow-[0_24px_60px_rgba(0,0,0,0.12)] flex flex-col justify-between border border-[#e5e5ea] hover:border-black cursor-pointer"
-              >
-                <div>
-                  <div className="w-12 h-12 rounded-2xl bg-white group-hover:bg-white/10 text-[#1d1d1f] group-hover:text-white flex items-center justify-center font-bold text-lg mb-8 shadow-sm transition-colors">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <h3 className="text-2xl font-semibold mb-2 tracking-tight">{member.name}</h3>
-                  <p className="text-[#0066cc] group-hover:text-[#4da6ff] text-sm font-medium mb-6 transition-colors">{member.role}</p>
-                  <p className="text-[#86868b] group-hover:text-[#a1a1a6] text-sm leading-relaxed mb-10 transition-colors">{member.desc}</p>
-                </div>
-                
-                <div className="flex items-center text-xs font-semibold uppercase tracking-wider opacity-70 group-hover:opacity-100 transition-opacity">
-                  View Profile <span className="ml-2 transform group-hover:translate-x-1 transition-transform">↗</span>
-                </div>
-              </a>
-            ))}
-          </div>
-        </FadeInSection>
-      </div>
-    </section>
-  );
-};
+    .job-card .folder-tab { top: -24px; height: 25px; padding: 0 16px; font-size: 10px; }
 
-const Careers = () => {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const jobs = [
-    { title: "Senior Research Lead", location: "Hybrid • Jaipur, Kolkata", reqs: "Pursuing Post Grad or PhD in Soft Robotics, Biotech, Mechanics, or related fields.", badge: "Critical Hire" },
-    { title: "Research Intern", location: "On-site • Jaipur, Kolkata", reqs: "Undergrad, at least 3rd Semester in relevant engineering fields.", badge: "Stipend Provided" },
-    { title: "Researcher", location: "On-site • Jaipur, Kolkata", reqs: "Pursuing Post Grad or PhD in Biomimicry, Hardware Design, Mechanical Systems, Soft Robotics, Actuations, etc.", badge: "Full-time / Fellowship" }
-  ];
+    .job-arrow {
+        font-size: 24px;
+        color: var(--ink-light);
+        transition: all 0.3s ease;
+        align-self: flex-end;
+    }
 
-  const handleApply = (jobTitle) => {
-    const subject = encodeURIComponent(`Application for ${jobTitle}`);
-    const body = encodeURIComponent(`Hi Neuaurelius Team,\n\nI am writing to express my interest in the ${jobTitle} position. Please find my profile and resume attached/linked below.\n\n[Attach your resume here]\n\nBest regards,`);
-    window.location.href = `mailto:post@neuaurelius.com?subject=${subject}&body=${body}`;
-  };
+    .folder-card:hover .job-arrow {
+        color: var(--brand-red);
+        transform: translate(4px, -4px);
+    }
 
-  return (
-    <section id="careers" className="py-24 sm:py-32 bg-[#fafafa] px-5 sm:px-8 border-t border-[#f5f5f7]">
-      <div className="max-w-[1200px] mx-auto">
-        <FadeInSection>
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div>
-              <p className="text-xs sm:text-sm font-semibold tracking-widest text-[#86868b] mb-4 uppercase">OPPORTUNITIES</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-[#1d1d1f] tracking-tight">OPEN POSITIONS</h2>
-            </div>
-            <p className="text-[#86868b] text-base max-w-md">
-              Join us in building the next generation of intelligent humanoid robotics. Submit your profile for our open roles.
-            </p>
-          </div>
-          
-          <div className="relative max-w-4xl mx-auto flex flex-col -space-y-4 sm:-space-y-6">
-            {jobs.map((job, index) => {
-              const isHovered = hoveredIndex === index;
-              return (
-                <button
-                  type="button"
-                  key={index}
-                  onClick={() => handleApply(job.title)}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  className={`group relative w-full text-left cursor-pointer bg-white p-8 sm:p-10 rounded-3xl border border-[#e5e5ea] hover:border-transparent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_24px_60px_rgba(0,0,0,0.12)] hover:-translate-y-2 ${isHovered ? 'z-50 scale-[1.02]' : ''}`}
-                  style={{ zIndex: isHovered ? 50 : jobs.length - index }}
-                >
-                  <div>
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="px-3 py-1 rounded-full bg-[#f5f5f7] text-[#1d1d1f] text-xs font-semibold">{job.badge}</span>
-                      <span className="text-xs font-medium text-[#86868b]">{job.location}</span>
-                    </div>
-                    <h3 className="text-2xl font-semibold text-[#1d1d1f] tracking-tight mb-2 group-hover:text-[#0066cc] transition-colors">{job.title}</h3>
-                    <p className="text-[#86868b] text-sm max-w-xl leading-relaxed">{job.reqs}</p>
-                  </div>
-                  
-                  <div className="shrink-0 w-full md:w-auto text-right">
-                    <span className="inline-flex items-center justify-center w-full md:w-auto bg-[#1d1d1f] text-white group-hover:bg-[#0066cc] px-7 py-3.5 rounded-full text-sm font-semibold transition-colors duration-300 shadow-sm">
-                      Apply Now →
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </FadeInSection>
-      </div>
-    </section>
-  );
-};
+    footer {
+        background: var(--ink-main);
+        color: var(--surface);
+    }
 
-const Footer = () => {
-  return (
-    <footer id="footer" className="bg-[#f5f5f7] pt-24 pb-12 px-5 sm:px-8 border-t border-[#d2d2d7]">
-      <div className="max-w-[1200px] mx-auto">
-        <FadeInSection>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
-            
-            <div className="lg:col-span-8">
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#1d1d1f] leading-tight tracking-tight mb-8 max-w-2xl">
-                We welcome conversations with investors, researchers, and enterprise partners.
-              </h3>
-              <p className="text-[#86868b] text-lg sm:text-xl mb-12 max-w-xl">
-                Whether you are interested in research, manufacturing, partnerships, or investment, we would like to hear from you.
-              </p>
-              
-              <div className="mt-8">
-                <a href="mailto:post@neuaurelius.com" className="text-3xl sm:text-4xl font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors tracking-tight inline-block mb-4">
-                  post@neuaurelius.com
-                </a>
-                <p className="text-xs font-semibold tracking-widest text-[#86868b]">
-                  GENERAL INQUIRIES / INVESTOR RELATIONS / PARTNERSHIPS
-                </p>
-              </div>
-            </div>
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8vw;
+        margin-bottom: 10vh;
+    }
 
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-10 lg:gap-12 lg:pl-12 lg:border-l border-[#d2d2d7]">
-              <div>
-                <h4 className="text-xs font-semibold tracking-widest uppercase mb-3 text-[#86868b]">Corporate Office</h4>
-                <p className="text-[#1d1d1f] font-medium text-lg">Jaipur</p>
-                <p className="text-[#86868b] font-normal">Rajasthan, India</p>
-              </div>
-              <div>
-                <h4 className="text-xs font-semibold tracking-widest uppercase mb-3 text-[#86868b]">Head Office</h4>
-                <p className="text-[#1d1d1f] font-medium text-lg">Kolkata</p>
-                <p className="text-[#86868b] font-normal">West Bengal, India</p>
-              </div>
-            </div>
+    .footer-cta h2 {
+        color: var(--surface);
+        margin-bottom: 4vh;
+    }
 
-          </div>
+    .email-link {
+        position: relative;
+        font-size: clamp(24px, 3vw, 40px);
+        font-weight: 500;
+        color: var(--brand-red);
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
 
-          <div className="border-t border-[#d2d2d7] pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-             <a
-                href="#"
-                aria-label="Back to top"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="h-6 w-[108px] sm:w-[120px] cursor-pointer shrink-0 overflow-hidden flex items-center"
-                dangerouslySetInnerHTML={{ __html: textSvg }}
-              />
-            <span className="text-xs sm:text-sm font-medium text-[#86868b] text-center md:text-right tracking-wide">
-              © 2024 Neuaurelius. All Rights Reserved.
-            </span>
-          </div>
-        </FadeInSection>
-      </div>
-    </footer>
-  );
-};
+    .email-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -8px;
+        height: 2px;
+        background: currentColor;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.6s var(--ease-out);
+    }
+
+    .email-link:hover::after {
+        transform: scaleX(1);
+    }
+
+    .email-link:hover { opacity: 0.8; }
+
+    .footer-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 6vh;
+    }
+
+    .meta-block h4 {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-light);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+
+    .meta-block p {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #CCCCCC;
+    }
+
+    .footer-bottom {
+        padding-top: 4vh;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        font-size: 13px;
+        color: var(--ink-light);
+    }
+    
+    .policy-text {
+        font-size: 12px;
+        line-height: 1.6;
+        color: #999999;
+        margin-top: 2vh;
+        max-width: 800px;
+    }
+
+    #careers {
+        position: relative;
+        background-color: #F4F4F3;
+        overflow: hidden;
+    }
+
+    #careers::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 60%;
+        height: 100%;
+        background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1000&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center right;
+        opacity: 0.5;
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 80%);
+        mask-image: linear-gradient(to right, transparent 0%, black 80%);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    #careers > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s var(--ease-out);
+    }
+    
+    .reveal.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (min-width: 768px) {
+        .grid-half { grid-template-columns: 1fr 1fr; }
+        .grid-cards { grid-template-columns: repeat(2, 1fr); }
+        .footer-grid { grid-template-columns: 1.5fr 1fr; }
+        .footer-bottom { flex-direction: row; justify-content: space-between; align-items: flex-start;}
+        
+        .systems-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    @media (min-width: 1200px) {
+        .team-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; animation: none !important; }
+        .reveal { opacity: 1; transform: none; }
+    }
+`;
 
 export default function App() {
-  return (
-    <div 
-      className="min-h-screen bg-white text-[#1d1d1f] antialiased selection:bg-[#1d1d1f] selection:text-white overflow-x-hidden"
-      style={{ fontFamily: "'Gilmer', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}
-    >
-      <style>{`
-        @media (prefers-reduced-motion: reduce) {
-          *, *::before, *::after {
-            scroll-behavior: auto !important;
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-          }
-        }
-      `}</style>
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isBooting, setIsBooting] = useState(true);
 
-      <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Problems />
-        <Research />
-        <Team />
-        <Careers />
-      </main>
-      <Footer />
-    </div>
-  );
+    // Initialize Scroll Reveal hook
+    useScrollReveal();
+
+    useEffect(() => {
+        // Stop booting preloader after animation sequence completes
+        const timer = setTimeout(() => {
+            setIsBooting(false);
+        }, 2200);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Cleanup overflow hidden if component unmounts
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, []);
+
+    const toggleMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+        document.body.style.overflow = isMobileMenuOpen ? '' : 'hidden';
+    };
+
+    return (
+        <>
+            <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
+            
+            {/* BOOT PRELOADER */}
+            <div className={`preloader ${!isBooting ? 'hidden' : ''}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 75" preserveAspectRatio="xMidYMid meet" className="text-logo-svg">
+                    <path pathLength="100" d="M 23.464844 26.515625 C 18.527344 26.515625 14.585938 28.503906 11.640625 32.523438 L 11.640625 27.605469 L 2.050781 27.605469 L 2.050781 67.667969 L 11.640625 67.667969 L 11.640625 47.277344 C 11.640625 43.863281 12.457031 41.121094 14.089844 39.054688 C 15.722656 36.992188 17.855469 35.976562 20.519531 35.976562 C 23.109375 35.976562 25.0625 36.839844 26.375 38.566406 C 27.691406 40.296875 28.367188 42.660156 28.367188 45.703125 L 28.367188 67.667969 L 37.988281 67.667969 L 37.988281 43.789062 C 37.988281 38.457031 36.746094 34.25 34.261719 31.171875 C 31.773438 28.09375 28.1875 26.554688 23.464844 26.554688 Z M 23.464844 26.515625 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 61.128906 67.59375 C 65.566406 67.59375 69.332031 66.464844 72.421875 64.25 C 75.511719 62.035156 77.640625 59.445312 78.847656 56.515625 L 70.183594 53.8125 C 68.480469 57.230469 65.496094 58.957031 61.234375 58.957031 C 58.039062 58.957031 55.554688 58.167969 53.742188 56.554688 C 51.929688 54.9375 50.867188 52.796875 50.546875 50.132812 L 79.132812 50.132812 C 79.273438 49.308594 79.34375 48.105469 79.34375 46.527344 C 79.34375 40.785156 77.640625 36.015625 74.230469 32.222656 C 70.824219 28.429688 66.171875 26.554688 60.3125 26.554688 C 54.59375 26.554688 49.941406 28.503906 46.390625 32.410156 C 42.839844 36.316406 41.0625 41.234375 41.0625 47.128906 C 41.0625 53.285156 42.910156 58.242188 46.605469 61.996094 C 50.296875 65.753906 55.089844 67.628906 61.019531 67.628906 Z M 50.476562 43.789062 C 50.757812 41.421875 51.789062 39.394531 53.5625 37.703125 C 55.339844 36.015625 57.542969 35.152344 60.203125 35.152344 C 62.972656 35.152344 65.210938 35.976562 66.953125 37.628906 C 68.691406 39.28125 69.6875 41.347656 69.933594 43.789062 L 50.472656 43.789062 Z M 50.476562 43.789062 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 108.945312 27.605469 L 108.945312 46.753906 C 108.945312 50.246094 108.128906 53.023438 106.53125 55.089844 C 104.933594 57.152344 102.769531 58.167969 100.035156 58.167969 C 97.476562 58.167969 95.523438 57.304688 94.175781 55.578125 C 92.824219 53.851562 92.148438 51.484375 92.148438 48.441406 L 92.148438 27.679688 L 82.5625 27.679688 L 82.5625 50.359375 C 82.5625 55.726562 83.804688 59.96875 86.253906 63.046875 C 88.707031 66.128906 92.328125 67.667969 97.085938 67.667969 C 102.09375 67.667969 106.035156 65.675781 108.910156 61.660156 L 108.910156 67.628906 L 118.535156 67.667969 L 118.535156 27.679688 Z M 108.945312 27.605469 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 140.289062 67.59375 C 145.332031 67.59375 149.273438 65.640625 152.113281 61.734375 L 152.367188 67.667969 L 161.808594 67.667969 L 161.808594 27.605469 L 152.113281 27.605469 L 152.113281 32.296875 C 149.273438 28.429688 145.332031 26.515625 140.289062 26.515625 C 135.140625 26.515625 130.808594 28.46875 127.328125 32.375 C 123.847656 36.277344 122.105469 41.195312 122.105469 47.089844 C 122.105469 52.910156 123.847656 57.792969 127.328125 61.734375 C 130.808594 65.675781 135.105469 67.628906 140.253906 67.628906 Z M 141.921875 58.542969 C 138.902344 58.542969 136.417969 57.453125 134.464844 55.3125 C 132.511719 53.175781 131.554688 50.394531 131.554688 47.015625 C 131.554688 43.675781 132.511719 40.933594 134.464844 38.792969 C 136.417969 36.652344 138.902344 35.601562 141.921875 35.601562 C 144.871094 35.601562 147.355469 36.691406 149.378906 38.832031 C 151.402344 40.972656 152.398438 43.675781 152.398438 46.941406 C 152.398438 50.28125 151.402344 53.023438 149.378906 55.203125 C 147.355469 57.378906 144.871094 58.46875 141.921875 58.46875 Z M 141.921875 58.542969 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 193.542969 27.605469 L 193.542969 46.753906 C 193.542969 50.246094 192.722656 53.023438 191.125 55.089844 C 189.527344 57.152344 187.363281 58.167969 184.628906 58.167969 C 182.070312 58.167969 180.117188 57.304688 178.769531 55.578125 C 177.417969 53.851562 176.746094 51.484375 176.746094 48.441406 L 176.746094 27.679688 L 167.15625 27.679688 L 167.15625 50.359375 C 167.15625 55.726562 168.398438 59.96875 170.851562 63.046875 C 173.300781 66.128906 176.921875 67.667969 181.679688 67.667969 C 186.6875 67.667969 190.628906 65.675781 193.503906 61.660156 L 193.503906 67.667969 L 203.128906 67.628906 L 203.128906 27.679688 Z M 193.542969 27.605469 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 218.527344 33.347656 L 218.527344 27.605469 L 208.9375 27.605469 L 208.9375 67.628906 L 218.527344 67.628906 L 218.527344 49.570312 C 218.527344 44.464844 219.554688 40.859375 221.582031 38.757812 C 223.605469 36.652344 226.621094 35.941406 230.636719 36.617188 L 230.636719 27.078125 C 224.953125 26.253906 220.90625 28.355469 218.492188 33.386719 Z M 218.527344 33.347656 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 249.0625 67.59375 C 253.5 67.59375 257.265625 66.464844 260.355469 64.25 C 263.445312 62.035156 265.574219 59.445312 266.78125 56.515625 L 258.117188 53.8125 C 256.414062 57.230469 253.429688 58.957031 249.167969 58.957031 C 245.972656 58.957031 243.488281 58.167969 241.675781 56.554688 C 239.867188 54.9375 238.800781 52.796875 238.480469 50.132812 L 267.066406 50.132812 C 267.210938 49.308594 267.28125 48.105469 267.28125 46.527344 C 267.28125 40.785156 265.574219 36.015625 262.167969 32.222656 C 258.757812 28.429688 254.105469 26.554688 248.246094 26.554688 C 242.527344 26.554688 237.878906 28.503906 234.324219 32.410156 C 230.773438 36.316406 229 41.234375 229 47.128906 C 229 53.285156 230.847656 58.242188 234.539062 61.996094 C 238.230469 65.753906 243.027344 67.628906 248.957031 67.628906 Z M 238.410156 43.789062 C 238.695312 41.421875 239.722656 39.394531 241.5 37.703125 C 243.273438 36.015625 245.476562 35.152344 248.140625 35.152344 C 250.910156 35.152344 253.148438 35.976562 254.886719 37.628906 C 256.625 39.28125 257.621094 41.347656 257.871094 43.789062 Z M 238.410156 43.789062 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 270.921875 67.667969 L 280.511719 67.628906 L 280.511719 7.023438 L 270.921875 7.023438 Z M 270.921875 67.667969 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 286.214844 67.628906 L 286.214844 27.226562 L 295.875 27.226562 L 295.875 67.667969 Z M 286.214844 67.628906 " fillOpacity="1" fillRule="evenodd"/>
+                    <path pathLength="100" d="M 327.820312 27.605469 L 327.820312 46.753906 C 327.820312 50.246094 327.003906 53.023438 325.40625 55.089844 C 323.804688 57.152344 321.640625 58.167969 318.90625 58.167969 C 316.347656 58.167969 314.394531 57.304688 313.046875 55.578125 C 311.695312 53.851562 311.023438 51.484375 311.023438 48.441406 L 311.023438 27.679688 L 301.433594 27.679688 L 301.433594 50.359375 C 301.433594 55.726562 302.675781 59.96875 305.128906 63.046875 C 307.578125 66.128906 311.199219 67.667969 315.957031 67.667969 C 320.964844 67.667969 324.90625 65.675781 327.785156 61.660156 L 327.785156 67.628906 L 337.40625 67.667969 L 337.40625 27.679688 Z M 327.820312 27.605469 " fillOpacity="1" fillRule="nonzero"/>
+                    <path pathLength="100" d="M 357.707031 67.59375 C 362.355469 67.59375 366.15625 66.390625 369.140625 63.988281 C 372.121094 61.585938 373.613281 58.542969 373.613281 54.863281 C 373.613281 51.671875 372.726562 49.308594 370.914062 47.730469 C 369.105469 46.152344 366.546875 44.839844 363.246094 43.824219 L 354.082031 41.046875 C 352.058594 40.40625 351.027344 39.394531 351.027344 37.96875 C 351.027344 37.027344 351.527344 36.203125 352.554688 35.488281 C 353.585938 34.777344 354.828125 34.4375 356.285156 34.4375 C 359.90625 34.4375 362.535156 35.941406 364.132812 38.980469 L 372.65625 36.351562 C 371.484375 33.386719 369.425781 31.019531 366.511719 29.21875 C 363.601562 27.417969 360.191406 26.515625 356.320312 26.515625 C 352.238281 26.515625 348.757812 27.640625 345.878906 29.933594 C 343.003906 32.222656 341.546875 34.964844 341.546875 38.191406 C 341.546875 43.261719 344.566406 46.714844 350.640625 48.554688 L 360.011719 51.484375 C 362.746094 52.347656 364.097656 53.625 364.097656 55.3125 C 364.097656 56.441406 363.527344 57.378906 362.394531 58.167969 C 361.257812 58.957031 359.800781 59.332031 357.988281 59.332031 C 355.609375 59.332031 353.585938 58.730469 351.882812 57.527344 C 350.175781 56.328125 349.003906 54.789062 348.367188 52.875 L 339.703125 55.539062 C 340.660156 58.804688 342.789062 61.621094 346.09375 63.988281 C 349.394531 66.351562 353.230469 67.554688 357.597656 67.554688 L 357.707031 67.589844 Z M 357.707031 67.59375 " fillOpacity="1" fillRule="nonzero"/>
+                </svg>
+            </div>
+            
+            {/* NAVIGATION */}
+            <nav>
+                <a href="#" className="logo" aria-label="Neuaurelius Home">
+                    <svg width="100%" height="100%" viewBox="0 0 3600 2700" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M867.653,1398.775c0,-95.009 14.242,-186.718 40.705,-273.106c116.865,-381.499 472.074,-659.241 891.642,-659.241c514.576,0 932.347,417.771 932.347,932.347c0,154.189 -37.51,299.686 -103.894,427.857c-43.229,83.463 -98.702,159.579 -164.035,225.962l-1596.76,-650.702l-0.005,-3.117Zm1513.317,327.004c54.551,-96.637 85.688,-208.213 85.688,-327.004c0,-367.939 -298.72,-666.658 -666.658,-666.658c-308.384,0 -568.143,209.844 -644.153,494.407l1225.124,499.255Zm-469.759,507.794l-777.869,-316.993l0,-292.809l1044.631,425.702l-105.906,184.1l-160.855,0Zm-777.869,-210.8l517.283,210.8l-517.283,0l0,-210.8Z" fill="currentColor"></path>
+                    </svg>
+                </a>
+
+                <button className="menu-toggle" aria-label="Open Menu" onClick={toggleMenu}>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+
+            {/* MOBILE MENU */}
+            <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+                <button className="menu-close" aria-label="Close Menu" onClick={toggleMenu}>
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <a href="#systems" onClick={toggleMenu}>About Us</a>
+                <a href="#research" onClick={toggleMenu}>Research</a>
+                <a href="#team" onClick={toggleMenu}>Team</a>
+                <a href="#careers" onClick={toggleMenu}>Careers</a>
+                <a href="#contact" onClick={toggleMenu} style={{ color: 'var(--brand-red)' }}>Contact</a>
+            </div>
+
+            <main>
+                {/* HERO SECTION */}
+                <section className="hero">
+                    <div className="grid-half">
+                        <div className="reveal">
+                            <div className="section-label">Neuaurelius</div>
+                            <h1>Robotics research.<br/>Built from fundamentals.</h1>
+                            <p className="lead-text">We research core problems in robotics, with a focus on physical systems, sensing, actuation, energy, and intelligent machines. Our work is at an early research and development stage.</p>
+                            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                                <a href="#research" className="btn-primary">View Research</a>
+                                <a href="#contact" className="btn-secondary">Contact</a>
+                            </div>
+                        </div>
+                        
+                        <div className="doc-stack reveal" style={{ transitionDelay: '200ms' }}>
+                            <div className="doc-layer bottom"></div>
+                            <div className="doc-layer middle"></div>
+                            <div className="doc-layer top">
+                                <div className="doc-content-title">Research Directory</div>
+                                <div className="doc-content-line"></div>
+                                <p style={{ fontSize: '14px', color: 'var(--ink-main)', fontWeight: 500, marginBottom: '12px' }}>01. Actuation</p>
+                                <p style={{ fontSize: '14px', color: 'var(--ink-main)', fontWeight: 500, marginBottom: '12px' }}>02. Sensing</p>
+                                <p style={{ fontSize: '14px', color: 'var(--ink-main)', fontWeight: 500, marginBottom: '12px' }}>03. Energy</p>
+                                <p style={{ fontSize: '14px', color: 'var(--ink-main)', fontWeight: 500 }}>04. Computation</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* SYSTEMS SECTION */}
+                <section id="systems">
+                    <div className="reveal">
+                        <div className="section-label">About Us</div>
+                        <h2>Core problems.<br/>Under research.</h2>
+                        <p className="lead-text">Our work focuses on foundational areas of robotic systems. We study individual components and how they can work together within a larger robotic architecture.</p>
+                    </div>
+                    
+                    <div className="grid-cards systems-grid">
+                        <article className="folder-card reveal" style={{ transitionDelay: '100ms' }}>
+                            <div className="folder-tab">Focus 01</div>
+                            <h3>Actuation</h3>
+                            <p>Research into actuation methods for controlled robotic movement, including mechanisms that may improve controllability and mechanical response.</p>
+                        </article>
+                        
+                        <article className="folder-card reveal" style={{ transitionDelay: '200ms' }}>
+                            <div className="folder-tab">Focus 02</div>
+                            <h3>Sensing</h3>
+                            <p>Research into sensing for body-state awareness, motion estimation, and control.</p>
+                        </article>
+                        
+                        <article className="folder-card reveal" style={{ transitionDelay: '300ms' }}>
+                            <div className="folder-tab">Focus 03</div>
+                            <h3>Energy</h3>
+                            <p>Research into energy and power systems suitable for robotic platforms and their supporting electronics.</p>
+                        </article>
+
+                        <article className="folder-card reveal" style={{ transitionDelay: '400ms' }}>
+                            <div className="folder-tab">Focus 04</div>
+                            <h3>Computation</h3>
+                            <p>Research into computational methods for perception, control, and decision making in robotic systems.</p>
+                        </article>
+                    </div>
+                </section>
+
+                {/* RESEARCH SECTION */}
+                <section id="research" style={{ background: '#F4F4F3' }}>
+                    <div className="reveal">
+                        <div className="section-label">Research</div>
+                        <h2>Research in progress.</h2>
+                        <p className="lead-text">
+                            Research is ongoing. We are developing prototypes, testing individual systems, and evaluating approaches before publishing detailed technical information.
+                        </p>
+                    </div>
+                </section>
+
+                {/* TEAM SECTION */}
+             <section id="team">
+                    <div className="reveal">
+                        <div className="section-label">Team</div>
+                        <h2>Research and engineering.</h2>
+                        <p className="lead-text">A small team working across robotics research, engineering, and execution. Specific technical work is shared selectively.</p>
+                    </div>
+
+                    <div className="grid-cards team-grid">
+                        <div className="folder-card reveal" style={{ transitionDelay: '100ms' }}>
+                            <div className="folder-tab">CEO</div>
+                            <h3>Arkadeep Nag</h3>
+                            <p style={{ color: 'var(--ink-main)', fontWeight: 500 }}>Co-founder</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', paddingTop: '24px' }}>
+                                <a href="mailto:arkadeep@neuaurelius.com" style={{ fontSize: '14px', color: 'var(--ink-muted)', textDecoration: 'none', transition: 'color 0.3s ease' }} onMouseOver={(e) => e.target.style.color = 'var(--brand-red)'} onMouseOut={(e) => e.target.style.color = 'var(--ink-muted)'}>arkadeep@neuaurelius.com</a>
+                                <a href="https://linkedin.com/in/arkadeepnag" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', textDecoration: 'none' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--ink-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>View Profile</span>
+                                    <div className="job-arrow" style={{ alignSelf: 'auto' }}>↗</div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div className="folder-card reveal" style={{ transitionDelay: '200ms' }}>
+                            <div className="folder-tab">CTO</div>
+                            <h3>Rahul Konar</h3>
+                            <p style={{ color: 'var(--ink-main)', fontWeight: 500 }}>Co-founder</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', paddingTop: '24px' }}>
+                                <a href="mailto:rahul@neuaurelius.com" style={{ fontSize: '14px', color: 'var(--ink-muted)', textDecoration: 'none', transition: 'color 0.3s ease' }} onMouseOver={(e) => e.target.style.color = 'var(--brand-red)'} onMouseOut={(e) => e.target.style.color = 'var(--ink-muted)'}>rahul@neuaurelius.com</a>
+                                <a href="https://www.linkedin.com/in/konar-rahul/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', textDecoration: 'none' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--ink-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>View Profile</span>
+                                    <div className="job-arrow" style={{ alignSelf: 'auto' }}>↗</div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div className="folder-card reveal" style={{ transitionDelay: '300ms' }}>
+                            <div className="folder-tab">COO</div>
+                            <h3>Shreyas Raj</h3>
+                            <p style={{ color: 'var(--ink-main)', fontWeight: 500 }}>Co-founder</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', paddingTop: '24px' }}>
+                                <a href="mailto:shreyas@neuaurelius.com" style={{ fontSize: '14px', color: 'var(--ink-muted)', textDecoration: 'none', transition: 'color 0.3s ease' }} onMouseOver={(e) => e.target.style.color = 'var(--brand-red)'} onMouseOut={(e) => e.target.style.color = 'var(--ink-muted)'}>shreyas@neuaurelius.com</a>
+                                <a href="https://www.linkedin.com/in/bshreeshreyasraj/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', textDecoration: 'none' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--ink-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>View Profile</span>
+                                    <div className="job-arrow" style={{ alignSelf: 'auto' }}>↗</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* CAREERS SECTION */}
+                <section id="careers">
+                    <div className="reveal">
+                        <div className="section-label">Careers</div>
+                        <h2>Open positions.</h2>
+                        <p className="lead-text">We are looking for researchers and engineers who can contribute to ongoing work in robotics, mechanics, electronics, software, and related areas.</p>
+                    </div>
+
+                    <div style={{ maxWidth: '900px' }}>
+                        <a href="mailto:post@neuaurelius.com?subject=Senior%20Research%20Lead" className="folder-card job-card reveal" style={{ transitionDelay: '100ms' }}>
+                            <div className="folder-tab">Hybrid</div>
+                            <div>
+                                <h3 style={{ marginBottom: '8px' }}>Research Lead</h3>
+                                <p>Robotics · Mechanics</p>
+                            </div>
+                            <div className="job-arrow">↗</div>
+                        </a>
+                        
+                        <a href="https://forms.google.com/" target="_blank" rel="noopener noreferrer" className="folder-card job-card reveal" style={{ transitionDelay: '200ms' }}>
+                            <div className="folder-tab">On-site</div>
+                            <div>
+                                <h3 style={{ marginBottom: '8px' }}>Research Intern</h3>
+                                <p>Engineering research · Kolkata / Jaipur</p>
+                            </div>
+                            <div className="job-arrow">↗</div>
+                        </a>
+                    </div>
+                </section>
+            </main>
+
+            {/* FOOTER SECTION */}
+            <footer id="contact">
+                <div className="footer-grid">
+                    <div className="footer-cta reveal">
+                        <h2>Get in touch.</h2>
+                        <a href="mailto:post@neuaurelius.com" className="email-link">post@neuaurelius.com</a>
+                        <p style={{ marginTop: '4vh', color: 'var(--ink-light)', maxWidth: '400px', lineHeight: 1.6 }}>
+                            For research, engineering, collaboration, or other enquiries, contact us. Please do not send confidential or proprietary material without prior agreement.
+                        </p>
+                    </div>
+                    
+                    <div className="footer-meta reveal" style={{ transitionDelay: '200ms' }}>
+                        <div className="meta-block">
+                            <h4>Registered Office</h4>
+                            <p>
+                                <strong>Neuaurelius Pvt Ltd</strong><br/>
+                                Mathurapur, Shyamnagar P.O.,<br/>
+                                Shyamnagar (North 24 Parganas),<br/>
+                                Greater Kolkata Metropolitan Area, Barrackpur - I,<br/>
+                                North 24 Parganas - 743127, West Bengal, India
+                            </p>
+                        </div>
+                        
+                        <div className="meta-block">
+                            <h4>Corporate & Branch Office</h4>
+                            <p>
+                                Atal Incubation Center,<br/>
+                                Manipal University Jaipur, Dahmi Kalan,<br/>
+                                Near Jaipur-Ajmer Rd, Bagru,<br/>
+                                Jaipur, Rajasthan - 303007, India
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="footer-bottom reveal">
+                    <div>
+                        <div style={{ marginBottom: '8px' }}>
+                            &copy; 2026 Neuaurelius Pvt Ltd. All Rights Reserved.
+                        </div>
+                        <div className="policy-text">
+                            <strong>Site and Brand Usage:</strong> Neuaurelius name, marks, written content, visual material, research material, and other site assets must not be copied, reproduced, modified, redistributed, presented as third-party work, or used commercially without prior written permission. Public information on this site does not grant any licence or right to use confidential, proprietary, or unpublished material. Please contact us before using the Neuaurelius name or brand in any external material.
+                        </div>
+                    </div>
+                    <div style={{ flexShrink: 0, marginTop: '8px' }}>
+                        <div style={{ marginBottom: '24px', color: 'var(--ink-light)' }}>
+                            Corporate Identity Number (CIN): U72100WR2026PTC296270
+                        </div>
+                        <div>
+                            <h4 style={{ fontSize: '11px', fontWeight: 600, color: 'var(--ink-light)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '12px' }}>Grievance Officer</h4>
+                            <p style={{ fontSize: '13px', lineHeight: 1.6, color: '#CCCCCC' }}>
+                                Arkadeep Nag<br/>
+                                Phone: +91-90469-01047<br/>
+                                Email: <a href="mailto:arkadeep@neuaurelius.com" style={{ color: 'var(--brand-red)', textDecoration: 'none' }}>arkadeep@neuaurelius.com</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </>
+    );
 }
