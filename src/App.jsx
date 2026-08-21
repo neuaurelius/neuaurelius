@@ -31,7 +31,7 @@ const globalStyles = `
 
     :root {
         /* Brand Colors */
-        --brand-red: #EE3A24;
+        --brand-red: #4a0185;
         
         /* UI Colors */
         --bg-paper: #FAFAF9;
