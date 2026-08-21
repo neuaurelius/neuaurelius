@@ -862,7 +862,7 @@ export default function App() {
                     </div>
 
                     <div style={{ maxWidth: '900px' }}>
-                        <a href="mailto:post@neuaurelius.com?subject=Senior%20Research%20Lead" className="folder-card job-card reveal" style={{ transitionDelay: '100ms' }}>
+                        <a href="https://forms.gle/QT2tMZkQdS24uSsm7" className="folder-card job-card reveal" style={{ transitionDelay: '100ms' }}>
                             <div className="folder-tab">Hybrid</div>
                             <div>
                                 <h3 style={{ marginBottom: '8px' }}>Research Lead</h3>
@@ -871,7 +871,7 @@ export default function App() {
                             <div className="job-arrow">↗</div>
                         </a>
                         
-                        <a href="https://forms.google.com/" target="_blank" rel="noopener noreferrer" className="folder-card job-card reveal" style={{ transitionDelay: '200ms' }}>
+                        <a href="https://forms.gle/QT2tMZkQdS24uSsm7" target="_blank" rel="noopener noreferrer" className="folder-card job-card reveal" style={{ transitionDelay: '200ms' }}>
                             <div className="folder-tab">On-site</div>
                             <div>
                                 <h3 style={{ marginBottom: '8px' }}>Research Intern</h3>
