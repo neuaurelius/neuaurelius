@@ -899,10 +899,9 @@ export default function App() {
                             <h4>Registered Office</h4>
                             <p>
                                 <strong>Neuaurelius Pvt Ltd</strong><br/>
-                                Mathurapur, Shyamnagar P.O.,<br/>
-                                Shyamnagar (North 24 Parganas),<br/>
-                                Greater Kolkata Metropolitan Area, Barrackpur - I,<br/>
-                                North 24 Parganas - 743127, West Bengal, India
+                                Mathurapur,<br/>
+                                Greater Kolkata Metropolitan Area,<br/>
+                                North 24 Parganas - 700127, West Bengal, India
                             </p>
                         </div>
                         
