@@ -141,7 +141,6 @@
   font-size: clamp(1.25rem, 1.6vw, 1.85rem);
   font-weight: 400;
   line-height: 1.05;
-  letter-spacing: -0.03em;
   text-transform: uppercase;
   color: #000;
   transition: opacity 0.3s ease;
@@ -212,7 +211,7 @@
 .publication-card-description {
   margin: 0;
   font-family: var(--font-dm-sans), sans-serif;
-  font-size: clamp(0.9rem, 1.35vw, 1.55rem);
+  font-size: 1.2rem;
   line-height: 1.1;
   color: #525252;
 }
