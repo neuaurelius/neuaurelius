@@ -403,10 +403,7 @@
 
     .hero-word {
 
-        font-size:
-            clamp(7rem,
-                8.5vw,
-                10rem);
+        font-size: clamp(2rem, 9.5vw, 42px);
     }
 }
 
@@ -438,10 +435,7 @@
 
     .hero-word {
 
-        font-size:
-            clamp(3.5rem,
-                10vw,
-                6rem);
+        font-size: clamp(2rem, 9.5vw, 42px);
 
         line-height: 0.88;
     }
@@ -502,10 +496,7 @@
 
         max-width: none;
 
-        font-size:
-            clamp(2rem,
-                11.8vw,
-                4.5rem);
+        font-size: clamp(2rem, 9.5vw, 42px);
 
         line-height: 0.9;
 
