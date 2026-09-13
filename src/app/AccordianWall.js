@@ -42,7 +42,7 @@ const systems = [
 
 function AccordionSkeleton() {
     return (
-        <section className="systems-section systems-loading">
+        <section className="systems-section systems-loading" id="aboutus">
             <div className="systems-intro systems-intro-skeleton">
                 <div className="skeleton-line skeleton-intro-line skeleton-intro-large" />
                 <div className="skeleton-line skeleton-intro-line skeleton-intro-medium" />
