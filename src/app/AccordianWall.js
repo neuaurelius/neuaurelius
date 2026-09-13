@@ -42,7 +42,7 @@ const systems = [
 
 function AccordionSkeleton() {
     return (
-        <section className="systems-section systems-loading" id="aboutus">
+        <section className="systems-section systems-loading">
             <div className="systems-intro systems-intro-skeleton">
                 <div className="skeleton-line skeleton-intro-line skeleton-intro-large" />
                 <div className="skeleton-line skeleton-intro-line skeleton-intro-medium" />
@@ -120,7 +120,7 @@ export default function AccordionWall() {
     }
 
     return (
-        <section className="systems-section">
+        <section className="systems-section" id="aboutus">
             <div
                 ref={introRef}
                 className={`systems-intro ${introVisible ? "is-visible" : ""
