@@ -70,7 +70,7 @@ export default async function Homepage() {
 
             <Hero />
 
-            <AccordionWall />
+            <AccordionWall id="aboutus" />
 
             <Publications
                 publications={formattedPublications}
