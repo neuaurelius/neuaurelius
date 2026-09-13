@@ -1,0 +1,123 @@
+.join-us {
+    background: #dddddd;
+    color: #000000;
+}
+
+.join-us-inner {
+    width: min(1600px, 100%);
+    margin: 0 auto;
+    padding: 12vh 6vw 13vh;
+}
+
+.join-us-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6vh;
+    color: #000000;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+
+.join-us-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.65fr);
+    gap: 10vw;
+    align-items: end;
+}
+
+.join-us h2 {
+    margin: 0;
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(3.5rem, 7vw, 8rem);
+    font-weight: 900;
+    line-height: 0.82;
+    text-transform: uppercase;
+}
+
+.join-us h2 span {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #000000;
+}
+
+.join-us-action {
+    padding-bottom: 0.5rem;
+}
+
+.join-us-action p {
+    max-width: 320px;
+    margin: 0 0 2rem;
+    color: #000000;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.join-us-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    color: #000000;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.join-us-link span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    font-size: 17px;
+    letter-spacing: 0;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.join-us-link:hover {
+    color: #ffffff;
+    transform: translateX(5px);
+}
+
+.join-us-link:hover span {
+    background: #000000;
+    border-color: #000000;
+    color: #ffffff;
+    transform: rotate(45deg);
+}
+
+@media (max-width: 900px) {
+    .join-us-content {
+        grid-template-columns: 1fr;
+        gap: 6vh;
+    }
+}
+
+@media (max-width: 600px) {
+    .join-us-inner {
+        padding: 9vh 6vw 10vh;
+    }
+
+    .join-us h2 {
+        font-size: 15vw;
+    }
+
+    .join-us-action p {
+        font-size: 13px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .join-us-link,
+    .join-us-link span {
+        transition: none;
+    }
+}

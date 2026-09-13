@@ -555,7 +555,7 @@
 .menu-list li {
     position: relative;
 
-    height: 38px;
+    height: 46px;
 
     margin: 0;
 
@@ -593,11 +593,10 @@
         var(--font-dm-sans),
         sans-serif;
 
-    font-size: 1.5rem;
-
+    font-size: 2rem;
     font-weight: 500;
 
-    line-height: 1.2;
+    line-height: 2;
 
     transform-origin: left center;
 

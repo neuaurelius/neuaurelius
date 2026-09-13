@@ -2,13 +2,46 @@
 
 import "./Nav.css";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Nav() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [navHidden, setNavHidden] = useState(false);
+    const menuRef = useRef(null);
+    const lastScrollY = useRef(0);
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (menuOpen && menuRef.current && !menuRef.current.contains(event.target)) {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleOutsideClick);
+        return () => document.removeEventListener("mousedown", handleOutsideClick);
+    }, [menuOpen]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY <= 0 || currentScrollY < lastScrollY.current) {
+                setNavHidden(false);
+            } else if (currentScrollY > lastScrollY.current) {
+                setNavHidden(true);
+            }
+
+            lastScrollY.current = currentScrollY;
+        };
+
+        lastScrollY.current = window.scrollY;
+        window.addEventListener("scroll", handleScroll, { passive: true });
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     return (
-        <nav className="nav">
+        <nav className={`nav ${navHidden ? "nav-hidden" : ""}`}>
 
             <div className="nav-container">
 
@@ -38,6 +71,7 @@ export default function Nav() {
                    ================================================= */}
 
                 <div
+                    ref={menuRef}
                     className={`menu-morph ${menuOpen ? "is-open" : ""
                         }`}
                 >
@@ -82,7 +116,7 @@ export default function Nav() {
 
                                 <li>
                                     <a
-                                        href="#"
+                                        href="#aboutus"
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
@@ -93,7 +127,7 @@ export default function Nav() {
 
                                 <li>
                                     <a
-                                        href="#about"
+                                        href="#research"
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
@@ -102,31 +136,31 @@ export default function Nav() {
                                     </a>
                                 </li>
 
-                                <li>
+                                {/* <li>
                                     <a
-                                        href="#services"
+                                        href="#collaborations"
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
                                     >
-                                        Team
+                                        Collaborations
+                                    </a>
+                                </li> */}
+
+                                <li>
+                                    <a
+                                        href="#publications"
+                                        onClick={() =>
+                                            setMenuOpen(false)
+                                        }
+                                    >
+                                        Publications
                                     </a>
                                 </li>
 
                                 <li>
                                     <a
                                         href="#contact"
-                                        onClick={() =>
-                                            setMenuOpen(false)
-                                        }
-                                    >
-                                        Careers
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a
-                                        href="/careers"
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
