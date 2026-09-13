@@ -1,198 +1,78 @@
-/* =========================================================
-   HERO
-   ========================================================= */
-
 .hero {
     position: relative;
-
     width: 100%;
     min-height: 100svh;
-
     overflow: hidden;
-
-    color: #000;
-
+    color: #000000;
     isolation: isolate;
 }
 
-
-/* =========================================================
-   DOT GRID
-   ========================================================= */
-
 .hero-ripple {
     position: absolute;
-
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     z-index: 0;
-
     pointer-events: auto;
 }
-
 
 .hero-ripple canvas {
     width: 100% !important;
     height: 100% !important;
 }
 
-
-/* =========================================================
-   HERO CONTENT
-   ========================================================= */
-
 .hero-content {
     position: relative;
-
     z-index: 2;
-
     width: 100%;
     min-height: 100svh;
-
     display: flex;
-
-    /*
-       THIS IS THE IMPORTANT CHANGE.
-
-       The typography block itself is centered
-       inside the viewport.
-    */
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
     box-sizing: border-box;
-
-    padding:
-        7rem 5vw 5rem;
+    padding: 7rem 5vw 5rem;
 }
 
-
-/* =========================================================
-   TYPOGRAPHY
-   ========================================================= */
-
 .hero-typography {
-
-    /*
-       Don't stretch the typography across
-       the entire hero.
-
-       Let the three lines form one block.
-    */
-
     width: max-content;
-    max-width: 90vw;
-
+    max-width: 92vw;
     display: flex;
-
     flex-direction: column;
-
-    /*
-       Keep every line anchored to the
-       SAME LEFT EDGE.
-    */
-
     align-items: flex-start;
-
     justify-content: center;
-
     text-align: left;
-
     user-select: none;
 }
 
-
-/* =========================================================
-   WORD
-   ========================================================= */
-
 .hero-word {
-
     position: relative;
-
     display: flex;
-
     align-items: baseline;
-
     justify-content: flex-start;
-
-    /*
-       Important:
-       each word maintains its natural width.
-    */
-
     width: max-content;
-
     white-space: nowrap;
-
-    font-family:
-        var(--font-gcepicpro),
-        sans-serif;
-
-    font-size:
-        clamp(3.5rem,
-            8.2vw,
-            8.2rem);
-
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(4.5rem, 8.2vw, 8.5rem);
     font-weight: 800;
-
     line-height: 0.82;
-
-    color: #000;
-
+    letter-spacing: -0.045em;
+    color: #000000;
     transform-origin: left center;
-
-    transition:
-        transform 0.7s cubic-bezier(0.16,
-            1,
-            0.3,
-            1);
+    perspective: 800px;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-
-/* =========================================================
-   INDIVIDUAL CHARACTERS
-   ========================================================= */
 
 .hero-char {
-
     position: relative;
-
     display: inline-block;
-
-    transform-origin:
-        50% 80%;
-
-    will-change:
-        transform,
-        letter-spacing;
-
+    transform-origin: 50% 80%;
+    will-change: transform, letter-spacing;
     transition:
-        transform 0.65s cubic-bezier(0.16,
-            1,
-            0.3,
-            1),
-
+        transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
         opacity 0.45s ease,
-
         filter 0.5s ease;
 }
-
-
-/* =========================================================
-   WORD ALIGNMENT
-   ========================================================= */
-
-/*
-   All three are explicitly anchored to zero.
-
-   Do NOT give individual lines different
-   margin-left values.
-*/
 
 .hero-line-one,
 .hero-line-two,
@@ -200,58 +80,39 @@
     margin-left: 0;
 }
 
+.hero-line-one {
+    margin-bottom: 0.02em;
+}
 
-/* =========================================================
-   GENERALIZED HOVER
-   ========================================================= */
+.hero-line-two {
+    margin-bottom: 0.02em;
+}
 
 .hero-line-one:hover {
-    transform:
-        translateX(5px) scaleX(1.008);
+    transform: translateX(5px) scaleX(1.008);
 }
-
 
 .hero-line-one:hover .hero-char {
-    transform:
-        translateY(-3px);
+    transform: translateY(-3px);
 }
-
-
-/* =========================================================
-   EMBODIED HOVER
-   ========================================================= */
 
 .hero-line-two:hover {
-    transform:
-        translateX(8px) scaleX(1.012);
+    transform: translateX(8px) scaleX(1.012);
 }
-
 
 .hero-line-two:hover .hero-char {
     transform:
         translateY(-4px) rotate(calc((var(--char-index) - 3) * 0.45deg));
 }
 
-
-/* =========================================================
-   INTELLIGENCE HOVER
-   ========================================================= */
-
 .hero-line-three:hover {
-    transform:
-        translateX(4px) scaleX(1.006);
+    transform: translateX(4px) scaleX(1.006);
 }
-
 
 .hero-line-three:hover .hero-char {
     transform:
         translateY(-3px) rotate(calc((var(--char-index) - 5) * -0.25deg));
 }
-
-
-/* =========================================================
-   CHARACTER PROXIMITY FEEL
-   ========================================================= */
 
 .hero-word:hover .hero-char:nth-child(1) {
     transition-delay: 0s;
@@ -297,191 +158,72 @@
     transition-delay: 0.15s;
 }
 
-
-/* =========================================================
-   CHARACTER REST STATE
-   ========================================================= */
-
 .hero-word:not(:hover) .hero-char {
-
-    transform:
-        translateY(0) rotate(0deg);
-
+    transform: translateY(0) rotate(0deg);
     transition-delay: 0s;
 }
 
-
-/* =========================================================
-   WORD SPACING
-   ========================================================= */
-
-.hero-line-one {
-    margin-bottom: 0.02em;
-}
-
-.hero-line-two {
-    margin-bottom: 0.02em;
-}
-
-
-/* =========================================================
-   HERO META
-   ========================================================= */
-
 .hero-meta {
-
     position: absolute;
-
     left: 5vw;
     right: 5vw;
-
     bottom: 2rem;
-
     z-index: 3;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
-    font-family:
-        var(--font-dm-sans),
-        sans-serif;
-
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 0.65rem;
-
     letter-spacing: 0.12em;
-
     text-transform: uppercase;
-
-    color:
-        rgba(0,
-            0,
-            0,
-            0.55);
-
+    color: rgba(0, 0, 0, 0.55);
     pointer-events: none;
 }
 
-
-/* =========================================================
-   PERSPECTIVE
-   ========================================================= */
-
-.hero-word {
-    perspective: 800px;
-}
-
-
-/* =========================================================
-   DESKTOP
-   ========================================================= */
-
-@media (min-width: 1200px) {
+@media (max-width: 1200px) {
+    .hero-word {
+        font-size: clamp(4rem, 9vw, 7rem);
+    }
 
     .hero-content {
-
-        /*
-           No max-width here.
-
-           The viewport is the reference frame
-           used to center the typography.
-        */
-
-        width: 100%;
-
-        padding:
-            7rem 4vw 5rem;
-    }
-
-
-    .hero-typography {
-        width: max-content;
-    }
-
-
-    .hero-word {
-
-        font-size: clamp(2rem, 9.5vw, 42px);
+        padding: 7rem 4vw 5rem;
     }
 }
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
 
 @media (max-width: 900px) {
-
     .hero-content {
-
         width: 100%;
-
-        padding:
-            7rem 2rem 5rem;
-
-        justify-content: center;
+        padding: 7rem 2rem 5rem;
     }
 
-
     .hero-typography {
-
         width: max-content;
-
         max-width: 94vw;
     }
 
-
     .hero-word {
-
-        font-size: clamp(2rem, 9.5vw, 42px);
-
-        line-height: 0.88;
+        font-size: clamp(3rem, 9.5vw, 5.5rem);
+        line-height: 0.86;
     }
 
-
     .hero-meta {
-
         left: 2rem;
         right: 2rem;
     }
 }
 
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
 @media (max-width: 600px) {
-
     .hero {
-
         min-height: 100svh;
-
-        background:
-            radial-gradient(circle at 70% 30%,
-                rgba(215,
-                    240,
-                    244,
-                    0.8),
-                transparent 45%),
-            #fff;
+        background: #ffffff;
     }
 
-
     .hero-content {
-
         width: 100%;
-
         min-height: 100svh;
-
         align-items: center;
-
         justify-content: center;
-
-        padding:
-            6rem 1rem 5rem;
+        padding: 6rem 1rem 5rem;
     }
 
     .hero-typography {
@@ -491,69 +233,44 @@
         text-align: left;
     }
 
-
     .hero-word {
-
         max-width: none;
-
-        font-size: clamp(2rem, 9.5vw, 42px);
-
+        font-size: clamp(2.15rem, 9.5vw, 4rem);
         line-height: 0.9;
-
-        letter-spacing: 1;
+        letter-spacing: -0.035em;
     }
-
 
     .hero-line-one,
     .hero-line-two,
     .hero-line-three {
-
         margin-left: 0;
     }
 
-
     .hero-meta {
-
         left: 1rem;
         right: 1rem;
-
         bottom: 1.25rem;
-
         font-size: 0.55rem;
     }
-
 
     .hero-meta span:last-child {
         display: none;
     }
 
-
     .hero-word:hover {
-
-        transform:
-            translateX(2px) scaleX(1.003);
+        transform: translateX(2px) scaleX(1.003);
     }
-
 
     .hero-word:hover .hero-char {
-
-        transform:
-            translateY(-2px);
+        transform: translateY(-2px);
     }
 }
-
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
     .hero-word,
     .hero-char {
-
         transition: none !important;
-
         animation: none !important;
     }
 }
