@@ -24,37 +24,67 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const publication = await getPublicationBySlug(slug);
 
-  if (!publication) return {};
+  if (!publication) {
+    return {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
 
-  const title = `${publication.title} — Neuaurelius`;
+  const title = `${publication.title} | Neuaurelius`;
   const description =
     publication.excerpt ||
     "Research and engineering from Neuaurelius.";
 
-  const imageUrl = `/blogs/${slug}/opengraph-image`;
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://www.neuaurelius.com";
+
+  const pageUrl = `${siteUrl}/blogs/${slug}`;
+
+  const imageUrl = publication.coverImage
+    ? publication.coverImage.startsWith("http")
+      ? publication.coverImage
+      : `${siteUrl}${publication.coverImage}`
+    : `${siteUrl}/og-image.png`;
 
   return {
     title,
     description,
 
+    metadataBase: new URL(siteUrl),
+
     alternates: {
-      canonical: `/blogs/${slug}`,
+      canonical: pageUrl,
     },
 
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
 
     openGraph: {
+      type: "article",
       title,
       description,
-      type: "article",
-      url: `/blogs/${slug}`,
+      url: pageUrl,
+      siteName: "Neuaurelius",
+
       publishedTime: publication.publishedAt,
+
       authors: publication.author
         ? [publication.author]
-        : undefined,
+        : ["Neuaurelius"],
+
       images: [
         {
           url: imageUrl,
@@ -95,11 +125,6 @@ export default async function BlogPostPage({ params }) {
         <Nav />
 
         <header className="publication-header">
-          <div className="publication-kicker">
-            <span />
-            <span>{publication.category || "PUBLICATION"}</span>
-          </div>
-
           <h1>{publication.title}</h1>
 
           <div className="publication-meta">
