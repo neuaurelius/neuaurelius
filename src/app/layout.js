@@ -5,16 +5,11 @@ import "./globals.css";
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
-  display: "swap",
-  preload: true,
 });
 
 const gcepicpro = localFont({
-  src: "./fonts/GCEPICPRO.ttf",
+  src: "../../public/assets/fonts/GCEPICPRO.ttf",
   variable: "--font-gcepicpro",
-  display: "block",
-  preload: true,
-  fallback: "Arial",
 });
 
 export const metadata = {
@@ -54,6 +49,7 @@ export const metadata = {
 
   creator: "Neuaurelius",
   publisher: "Neuaurelius",
+
   applicationName: "Neuaurelius",
 
   alternates: {
@@ -107,9 +103,9 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${gcepicpro.variable}`}
+      className={`${dmSans.variable} ${gcepicpro.variable} h-full antialiased`}
     >
-      <body>{children}</body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
