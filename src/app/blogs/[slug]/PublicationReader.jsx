@@ -325,26 +325,13 @@ export default function PublicationReader({
 
             <section
                 className={`reading-tools reading-tools-${position} ${footerVisible
-                        ? "reading-tools-footer-visible"
-                        : ""
+                    ? "reading-tools-footer-visible"
+                    : ""
                     }`}
                 aria-label="Reading controls"
             >
                 <div className="reading-tools-inner">
 
-                    <div className="reading-tools-info">
-
-
-                        <div>
-                            <span className="reading-tools-label">
-                                READ THIS PUBLICATION
-                            </span>
-
-                            <span className="reading-tools-time">
-                                {readTime}
-                            </span>
-                        </div>
-                    </div>
 
                     <div className="reading-tools-actions">
 
@@ -418,8 +405,8 @@ export default function PublicationReader({
                             <button
                                 type="button"
                                 className={`position-button ${position === "left"
-                                        ? "active"
-                                        : ""
+                                    ? "active"
+                                    : ""
                                     }`}
                                 onClick={() => setPosition("left")}
                                 aria-label="Move reader to bottom left"
@@ -430,8 +417,8 @@ export default function PublicationReader({
                             <button
                                 type="button"
                                 className={`position-button ${position === "center"
-                                        ? "active"
-                                        : ""
+                                    ? "active"
+                                    : ""
                                     }`}
                                 onClick={() =>
                                     setPosition("center")
@@ -444,8 +431,8 @@ export default function PublicationReader({
                             <button
                                 type="button"
                                 className={`position-button ${position === "right"
-                                        ? "active"
-                                        : ""
+                                    ? "active"
+                                    : ""
                                     }`}
                                 onClick={() => setPosition("right")}
                                 aria-label="Move reader to bottom right"
