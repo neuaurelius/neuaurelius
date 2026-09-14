@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import Nav from "../../Nav";
 import Footer from "../../Footer";
+import PublicationReader from "./PublicationReader";
 import {
   getAllPublications,
   getPublicationBySlug,
@@ -9,6 +10,22 @@ import {
 import "./publication.css";
 
 export const dynamicParams = true;
+
+// Calculate actual reading time from PortableText blocks
+function calculateReadTime(blocks = []) {
+  const text = blocks
+    .map((block) =>
+      block._type === "block" && block.children
+        ? block.children.map((child) => child.text).join(" ")
+        : ""
+    )
+    .join(" ");
+
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.ceil(words / 136);
+
+  return `${minutes < 1 ? 1 : minutes} min read`;
+}
 
 export async function generateStaticParams() {
   const publications = await getAllPublications();
@@ -53,7 +70,6 @@ export async function generateMetadata({ params }) {
   return {
     title,
     description,
-
     metadataBase: new URL(siteUrl),
 
     alternates: {
@@ -78,13 +94,10 @@ export async function generateMetadata({ params }) {
       description,
       url: pageUrl,
       siteName: "Neuaurelius",
-
       publishedTime: publication.publishedAt,
-
       authors: publication.author
         ? [publication.author]
         : ["Neuaurelius"],
-
       images: [
         {
           url: imageUrl,
@@ -117,19 +130,28 @@ export default async function BlogPostPage({ params }) {
     notFound();
   }
 
-  const readTime = publication.readTime || "8 min read";
+  const readTime = calculateReadTime(publication.body);
 
   return (
     <>
-      <main className="publication-page">
-        <Nav />
+      <Nav />
 
+
+
+      <main id="main-content" className="publication-page">
         <header className="publication-header">
+
+
+
           <h1>{publication.title}</h1>
 
           <div className="publication-meta">
+
             <div className="publication-author">
-              <span className="publication-author-avatar">
+              <span
+                className="publication-author-avatar"
+                aria-hidden="true"
+              >
                 {(publication.author || "N")
                   .trim()
                   .slice(0, 1)
@@ -142,11 +164,18 @@ export default async function BlogPostPage({ params }) {
             </div>
 
             <div className="publication-meta-right">
+
               {publication.publishedAt && (
                 <>
-                  <span>PUBLISHED</span>
+                  <span className="meta-label">
+                    PUBLISHED
+                  </span>
 
-                  <time dateTime={publication.publishedAt}>
+                  <time
+                    dateTime={new Date(
+                      publication.publishedAt
+                    ).toISOString()}
+                  >
                     {new Date(
                       publication.publishedAt
                     ).toLocaleDateString("en-US", {
@@ -156,16 +185,19 @@ export default async function BlogPostPage({ params }) {
                     })}
                   </time>
 
-                  <span>·</span>
+                  <span aria-hidden="true">·</span>
                 </>
               )}
 
               <span>{readTime}</span>
+
             </div>
           </div>
+
         </header>
 
         <article className="publication-body">
+
           {publication.excerpt && (
             <p className="publication-lead">
               {publication.excerpt}
@@ -173,20 +205,25 @@ export default async function BlogPostPage({ params }) {
           )}
 
           {publication.coverImage && (
-            <div className="publication-cover">
+            <figure className="publication-cover">
               <img
                 src={publication.coverImage}
                 alt={publication.title}
+                loading="eager"
               />
-            </div>
+            </figure>
           )}
 
           <div className="publication-content">
             <PortableText value={publication.body || []} />
           </div>
+
         </article>
       </main>
-
+      <PublicationReader
+        title={publication.title}
+        readTime={readTime}
+      />
       <Footer />
     </>
   );
