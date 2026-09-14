@@ -25,7 +25,7 @@
 
 
 /* =========================================================
-   CONTENT
+   CONTENT LAYOUT & SPACING
    ========================================================= */
 
 .hero-content {
@@ -40,8 +40,7 @@
     justify-content: center;
 
     box-sizing: border-box;
-
-    padding: 7rem 5vw 5rem;
+    padding: 8rem 5vw 5rem;
 }
 
 .hero-main {
@@ -49,8 +48,8 @@
 
     display: flex;
     flex-direction: column;
-
     align-items: flex-start;
+    gap: clamp(2.5rem, 4.5vw, 4rem);
 }
 
 
@@ -64,12 +63,11 @@
 
     display: flex;
     flex-direction: column;
-
     align-items: flex-start;
     justify-content: center;
+    gap: clamp(0.2rem, 0.6vw, 0.5rem);
 
     text-align: left;
-
     user-select: none;
 }
 
@@ -81,33 +79,25 @@
     justify-content: flex-start;
 
     width: max-content;
-
     white-space: nowrap;
 
     font-family: var(--font-gcepicpro), sans-serif;
-    font-size: clamp(4.5rem, 8.2vw, 8.5rem);
+    font-size: clamp(4rem, 8vw, 8.5rem);
     font-weight: 800;
-
-    line-height: 0.82;
-
+    line-height: 0.88;
 
     color: #000000;
 
     transform-origin: left center;
-
     perspective: 800px;
 
-    transition:
-        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-char {
     position: relative;
-
     display: inline-block;
-
     transform-origin: 50% 80%;
-
     will-change: transform, letter-spacing;
 
     transition:
@@ -116,23 +106,9 @@
         filter 0.5s ease;
 }
 
-.hero-line-one,
-.hero-line-two,
-.hero-line-three {
-    margin-left: 0;
-}
-
-.hero-line-one {
-    margin-bottom: 0.02em;
-}
-
-.hero-line-two {
-    margin-bottom: 0.02em;
-}
-
 
 /* =========================================================
-   EXISTING HOVER EFFECTS
+   HOVER EFFECTS
    ========================================================= */
 
 .hero-line-one:hover {
@@ -148,8 +124,7 @@
 }
 
 .hero-line-two:hover .hero-char {
-    transform:
-        translateY(-4px) rotate(calc((var(--char-index) - 3) * 0.45deg));
+    transform: translateY(-4px) rotate(calc((var(--char-index) - 3) * 0.45deg));
 }
 
 .hero-line-three:hover {
@@ -157,8 +132,7 @@
 }
 
 .hero-line-three:hover .hero-char {
-    transform:
-        translateY(-3px) rotate(calc((var(--char-index) - 5) * -0.25deg));
+    transform: translateY(-3px) rotate(calc((var(--char-index) - 5) * -0.25deg));
 }
 
 .hero-word:hover .hero-char:nth-child(1) {
@@ -212,272 +186,32 @@
 
 
 /* =========================================================
-   INTRODUCTION
+   INTRODUCTION & MAIN CTA
    ========================================================= */
 
 .hero-introduction {
     width: min(100%, 540px);
 
-    margin-top: clamp(2rem, 4vw, 3.5rem);
-    margin-left: 0.15rem;
-
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    gap: clamp(1.25rem, 2vw, 1.75rem);
 }
 
 .hero-introduction p {
     margin: 0;
-
     max-width: 510px;
 
     font-family: var(--font-dm-sans), sans-serif;
-
-    font-size: clamp(1.5rem, 1.45vw, 1.6rem);
-
-    line-height: 1.5;
-
+    font-size: clamp(1.1rem, 1.35vw, 1.35rem);
+    line-height: 1.55;
     letter-spacing: -0.015em;
 
-    color: rgba(0, 0, 0, 0.62);
-
+    color: rgba(0, 0, 0, 0.65);
     text-wrap: pretty;
 }
 
-
-/* =========================================================
-   CTA
-   ========================================================= */
-
-.hero-cta {
-    margin-top: 1.6rem;
-
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 0.8rem;
-
-    min-height: 48px;
-
-    padding: 0.7rem 1.15rem;
-
-    box-sizing: border-box;
-
-    border: 1px solid rgba(0, 0, 0, 0.14);
-    border-radius: 999px;
-
-    background: rgba(255, 255, 255, 0.8);
-
-    color: #000;
-
-    text-decoration: none;
-
-    font-family: var(--font-dm-sans), sans-serif;
-
-    font-size: 0.85rem;
-    font-weight: 500;
-
-    letter-spacing: -0.01em;
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    transition:
-        background 0.3s ease,
-        color 0.3s ease,
-        border-color 0.3s ease,
-        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.hero-cta-arrow {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 1rem;
-
-    transition:
-        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.hero-cta:hover {
-    background: #000;
-    color: #fff;
-    border-color: #000;
-
-    transform: translateY(-2px);
-}
-
-.hero-cta:hover .hero-cta-arrow {
-    transform: translate(2px, -2px);
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (max-width: 1200px) {
-    .hero-word {
-        font-size: clamp(4rem, 9vw, 7rem);
-    }
-
-    .hero-content {
-        padding: 7rem 4vw 5rem;
-    }
-}
-
-
-@media (max-width: 900px) {
-    .hero-content {
-        width: 100%;
-        padding: 7rem 2rem 5rem;
-    }
-
-    .hero-typography {
-        width: max-content;
-        max-width: 94vw;
-    }
-
-    .hero-word {
-        font-size: clamp(3rem, 9.5vw, 5.5rem);
-        line-height: 0.86;
-    }
-
-    .hero-introduction {
-        max-width: 480px;
-        margin-top: 2.5rem;
-    }
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-@media (max-width: 600px) {
-    .hero {
-        min-height: 100svh;
-        background: #ffffff;
-    }
-
-    .hero-content {
-        width: 100%;
-        min-height: 100svh;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        box-sizing: border-box;
-
-        padding: 6rem 1rem 5rem;
-    }
-
-    .hero-main {
-        width: min(100%, 390px);
-
-        display: flex;
-        flex-direction: column;
-
-        align-items: flex-start;
-
-        /*
-         * This centers the entire left-aligned content block.
-         */
-        margin: 0 auto;
-
-        text-align: left;
-    }
-
-    .hero-typography {
-        width: max-content;
-        max-width: 100%;
-
-        display: flex;
-        flex-direction: column;
-
-        align-items: flex-start;
-
-        text-align: left;
-    }
-
-    .hero-word {
-        max-width: 100%;
-
-        font-size: clamp(2.15rem, 9.5vw, 4rem);
-
-        line-height: 0.9;
-
-        letter-spacing: -0.035em;
-    }
-
-    .hero-line-one,
-    .hero-line-two,
-    .hero-line-three {
-        margin-left: 0;
-    }
-
-    .hero-introduction {
-        width: 100%;
-        max-width: 390px;
-
-        margin-top: 2rem;
-        margin-left: 0;
-
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-
-        text-align: left;
-    }
-
-    .hero-introduction p {
-        width: 100%;
-        max-width: 360px;
-
-        margin: 0;
-
-        font-size: 1.2rem;
-        line-height: 1.5;
-
-        text-align: left;
-    }
-
-    .hero-cta {
-        margin-top: 1.35rem;
-    }
-
-    .hero-word:hover {
-        transform: translateX(2px) scaleX(1.003);
-    }
-
-    .hero-word:hover .hero-char {
-        transform: translateY(-2px);
-    }
-}
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .hero-word,
-    .hero-char,
-    .hero-cta,
-    .hero-cta-arrow {
-        transition: none !important;
-        animation: none !important;
-    }
-}
-
-/* =========================================================
-   NEWSLETTER MODAL
-   ========================================================= */
-
+/* Consolidated & Proportioned Hero CTA */
 .hero-cta {
     appearance: none;
     -webkit-appearance: none;
@@ -486,12 +220,8 @@
     align-items: center;
     justify-content: center;
 
-    width: fit-content;
-    min-width: 186px;
-    height: 46px;
-
-    margin-top: 22px;
-    padding: 0 22px;
+    padding: clamp(0.85rem, 1.2vw, 1rem) clamp(1.6rem, 2.2vw, 2.25rem);
+    min-height: 52px;
 
     border: 1px solid #111111;
     border-radius: 999px;
@@ -500,40 +230,34 @@
     color: #ffffff;
 
     font-family: var(--font-dm-sans), Arial, sans-serif;
-    font-size: 12px;
+    font-size: clamp(0.9rem, 1.05vw, 1rem);
     font-weight: 500;
     line-height: 1;
-
-    text-align: center;
-    text-decoration: none;
+    letter-spacing: -0.01em;
 
     cursor: pointer;
-
     box-sizing: border-box;
 
     transition:
         background 0.25s ease,
         color 0.25s ease,
+        border-color 0.25s ease,
         transform 0.25s ease;
 }
 
 .hero-cta span {
     display: block;
-
     color: inherit;
-
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
-
-    text-decoration: none;
 }
 
 .hero-cta:hover {
     background: transparent;
     color: #111111;
-
+    border-color: #111111;
     transform: translateY(-2px);
 }
 
@@ -545,6 +269,11 @@
     outline: 2px solid #111111;
     outline-offset: 4px;
 }
+
+
+/* =========================================================
+   NEWSLETTER MODAL
+   ========================================================= */
 
 .newsletter-overlay {
     position: fixed;
@@ -568,23 +297,19 @@
     position: relative;
 
     width: min(100%, 470px);
-
     padding: 42px;
 
     background: #ffffff;
     color: #111111;
 
     border-radius: 24px;
-
-    box-shadow:
-        0 30px 100px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.22);
 
     animation: newsletterModalIn 0.3s ease forwards;
 }
 
 .newsletter-close {
     position: absolute;
-
     top: 18px;
     right: 18px;
 
@@ -620,25 +345,12 @@
     padding-right: 30px;
 }
 
-.newsletter-eyebrow {
-    display: block;
-
-    margin-bottom: 14px;
-
-    font-family: var(--font-dm-sans), sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-
-    letter-spacing: 0.14em;
-}
-
 .newsletter-heading h2 {
     margin: 0;
 
     font-family: var(--font-gcepicpro), sans-serif;
-
-    font-size: clamp(36px, 6vw, 52px);
-    line-height: 0.95;
+    font-size: clamp(32px, 5vw, 44px);
+    line-height: 0.98;
     font-weight: 400;
 
     letter-spacing: -0.03em;
@@ -646,11 +358,9 @@
 
 .newsletter-heading p {
     max-width: 360px;
-
-    margin: 18px 0 0;
+    margin: 14px 0 0;
 
     font-family: var(--font-dm-sans), sans-serif;
-
     font-size: 15px;
     line-height: 1.55;
 
@@ -658,16 +368,14 @@
 }
 
 .newsletter-form {
-    margin-top: 32px;
+    margin-top: 28px;
 }
 
 .newsletter-form label {
     display: block;
-
     margin-bottom: 8px;
 
     font-family: var(--font-dm-sans), sans-serif;
-
     font-size: 12px;
     font-weight: 600;
 }
@@ -682,7 +390,6 @@
     border-radius: 12px;
 
     outline: none;
-
     background: #fafafa;
     color: #111111;
 
@@ -707,7 +414,7 @@
     width: 100%;
     height: 52px;
 
-    margin-top: 10px;
+    margin-top: 12px;
 
     border: 0;
     border-radius: 12px;
@@ -716,7 +423,7 @@
     color: #ffffff;
 
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
 
     cursor: pointer;
@@ -739,7 +446,6 @@
     margin: 14px 0 0;
 
     font-family: var(--font-dm-sans), sans-serif;
-
     font-size: 11px;
     line-height: 1.5;
 
@@ -750,7 +456,6 @@
     margin: 12px 0 0;
 
     font-family: var(--font-dm-sans), sans-serif;
-
     font-size: 12px;
     line-height: 1.4;
 
@@ -759,32 +464,24 @@
 
 .newsletter-honeypot {
     position: absolute !important;
-
     width: 1px !important;
     height: 1px !important;
-
     padding: 0 !important;
     margin: -1px !important;
-
     overflow: hidden !important;
-
     clip: rect(0, 0, 0, 0) !important;
-
     white-space: nowrap !important;
-
     border: 0 !important;
 }
 
 .newsletter-success {
     text-align: center;
-
     padding: 25px 0 10px;
 }
 
 .newsletter-success-mark {
     width: 58px;
     height: 58px;
-
     margin: 0 auto 22px;
 
     display: flex;
@@ -792,7 +489,6 @@
     justify-content: center;
 
     border-radius: 50%;
-
     background: #111111;
     color: #ffffff;
 
@@ -803,19 +499,16 @@
     margin: 0;
 
     font-family: var(--font-gcepicpro), sans-serif;
-
-    font-size: 48px;
+    font-size: 42px;
     line-height: 1;
     font-weight: 400;
 }
 
 .newsletter-success p {
     max-width: 300px;
-
     margin: 15px auto 0;
 
     font-family: var(--font-dm-sans), sans-serif;
-
     font-size: 14px;
     line-height: 1.5;
 
@@ -835,6 +528,8 @@
     color: #ffffff;
 
     font-family: var(--font-dm-sans), sans-serif;
+    font-size: 14px;
+    font-weight: 500;
 
     cursor: pointer;
 }
@@ -863,22 +558,97 @@
 
 
 /* =========================================================
-   MOBILE
+   TABLET RESPONSIVENESS
+   ========================================================= */
+
+@media (max-width: 1200px) {
+    .hero-content {
+        padding: 7rem 4vw 5rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .hero-content {
+        padding: 7rem 2rem 5rem;
+    }
+
+    .hero-typography {
+        max-width: 94vw;
+    }
+
+    .hero-word {
+        font-size: clamp(3rem, 9.5vw, 5.5rem);
+        line-height: 0.9;
+    }
+
+    .hero-main {
+        gap: 2.5rem;
+    }
+}
+
+
+/* =========================================================
+   MOBILE RESPONSIVENESS
    ========================================================= */
 
 @media (max-width: 600px) {
+    .hero {
+        min-height: 100svh;
+        background: #ffffff;
+    }
+
+    .hero-content {
+        padding: 5rem 1.25rem 4rem;
+    }
+
+    .hero-main {
+        width: 100%;
+        margin: 0 auto;
+        gap: 2rem;
+    }
+
+    .hero-typography {
+        width: 100%;
+        max-width: 100%;
+        gap: 0;
+    }
+
+    .hero-word {
+        max-width: 100%;
+        font-size: clamp(2.2rem, 9vw, 3.8rem);
+        line-height: 0.92;
+        letter-spacing: -0.025em;
+    }
+
+    .hero-introduction {
+        width: 100%;
+        max-width: 100%;
+        gap: 1.25rem;
+    }
+
+    .hero-introduction p {
+        width: 100%;
+        font-size: 1.1rem;
+        line-height: 1.5;
+    }
+
+    .hero-cta {
+        width: 100%;
+        min-height: 50px;
+        font-size: 0.95rem;
+    }
+
     .newsletter-overlay {
         padding: 16px;
     }
 
     .newsletter-modal {
-        padding: 34px 24px 28px;
-
+        padding: 34px 22px 28px;
         border-radius: 20px;
     }
 
     .newsletter-heading h2 {
-        font-size: 40px;
+        font-size: 34px;
     }
 
     .newsletter-heading p {
@@ -886,24 +656,25 @@
     }
 
     .newsletter-form {
-        margin-top: 26px;
+        margin-top: 22px;
     }
 }
 
 
 /* =========================================================
-   REDUCED MOTION
+   ACCESSIBILITY: REDUCED MOTION
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
+    .hero-word,
+    .hero-char,
+    .hero-cta,
     .newsletter-overlay,
-    .newsletter-modal {
-        animation: none;
-    }
-
+    .newsletter-modal,
     .newsletter-close,
     .newsletter-form>button {
-        transition: none;
+        transition: none !important;
+        animation: none !important;
     }
 }
