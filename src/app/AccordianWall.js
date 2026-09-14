@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import "./AccordianWall.css";
-import SpecularButton from "@/components/SpecularButton";
-import CurvedLoop from "@/components/CurvedLoop";
 
 const systems = [
     {
@@ -12,7 +10,7 @@ const systems = [
         description:
             "Proprioceptive and powerful actuation systems engineered for precise, repeatable and responsive physical control.",
         image:
-            "https://images.unsplash.com/photo-1629449502706-828cdde1c0b6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "https://images.unsplash.com/photo-1629449502706-828cdde1c0b6?q=80&w=1600&auto=format&fit=crop",
     },
     {
         id: "02",
@@ -20,7 +18,7 @@ const systems = [
         description:
             "Energy architectures designed to maximize power density, efficiency and endurance across intelligent machines.",
         image:
-            "https://images.unsplash.com/photo-1777649162085-4d68cd451c39?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaGdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "https://images.unsplash.com/photo-1777649162085-4d68cd451c39?q=80&w=1600&auto=format&fit=crop",
     },
     {
         id: "03",
@@ -28,7 +26,7 @@ const systems = [
         description:
             "Computational systems that dynamically adapt perception, planning and control to changing environments.",
         image:
-            "https://images.unsplash.com/photo-1583525957866-ea1cdcb4f46a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaGdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "https://images.unsplash.com/photo-1583525957866-ea1cdcb4f46a?q=80&w=1600&auto=format&fit=crop",
     },
     {
         id: "04",
@@ -36,7 +34,7 @@ const systems = [
         description:
             "Secure communication architectures enabling intelligent machines to exchange information with resilience and trust.",
         image:
-            "https://images.unsplash.com/photo-1517928260182-5688aead3066?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaGdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "https://images.unsplash.com/photo-1517928260182-5688aead3066?q=80&w=1600&auto=format&fit=crop",
     },
 ];
 
@@ -58,12 +56,7 @@ function AccordionSkeleton() {
                             }`}
                     >
                         <div className="system-skeleton-image" />
-
                         <div className="system-skeleton-shade" />
-
-                        <div className="system-skeleton-number">
-                            <span className="skeleton-line skeleton-number-line" />
-                        </div>
 
                         <div className="system-skeleton-title">
                             <span className="skeleton-line skeleton-title-line" />
@@ -88,16 +81,74 @@ export default function AccordionWall() {
     const [active, setActive] = useState(0);
     const [introVisible, setIntroVisible] = useState(false);
     const [loaded, setLoaded] = useState(false);
+
     const introRef = useRef(null);
+    const imageRefs = useRef([]);
 
+    /*
+     * Preload all accordion images.
+     *
+     * This prevents the first accordion interaction from fighting
+     * against image decoding/network work.
+     */
     useEffect(() => {
-        const timer = window.setTimeout(() => {
-            setLoaded(true);
-        }, 250);
+        let cancelled = false;
 
-        return () => window.clearTimeout(timer);
+        const preloadImages = async () => {
+            const images = systems.map((system, index) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+
+                    img.decoding = "async";
+
+                    if (index === 0) {
+                        img.fetchPriority = "high";
+                    } else {
+                        img.fetchPriority = "low";
+                    }
+
+                    img.onload = async () => {
+                        try {
+                            await img.decode();
+                        } catch {
+                            // Image can still be used if decode() fails.
+                        }
+
+                        resolve();
+                    };
+
+                    img.onerror = () => resolve();
+
+                    img.src = system.image;
+
+                    imageRefs.current[index] = img;
+                });
+            });
+
+            /*
+             * Don't make the entire page wait indefinitely for Unsplash.
+             * We only use the preload to warm the browser cache.
+             */
+            await Promise.race([
+                Promise.all(images),
+                new Promise((resolve) => setTimeout(resolve, 900)),
+            ]);
+
+            if (!cancelled) {
+                setLoaded(true);
+            }
+        };
+
+        preloadImages();
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
+    /*
+     * Intro intersection observer.
+     */
     useEffect(() => {
         const intro = introRef.current;
 
@@ -107,7 +158,10 @@ export default function AccordionWall() {
             ([entry]) => {
                 setIntroVisible(entry.isIntersecting);
             },
-            { threshold: 0.2 }
+            {
+                threshold: 0.15,
+                rootMargin: "0px 0px -5% 0px",
+            }
         );
 
         observer.observe(intro);
@@ -158,17 +212,29 @@ export default function AccordionWall() {
                                 }`}
                             onMouseEnter={() => setActive(index)}
                             onClick={() => setActive(index)}
+                            aria-expanded={expanded}
                         >
-                            <div
+                            <img
                                 className="system-image"
-                                style={{
-                                    backgroundImage: `url(${system.image})`,
+                                src={system.image}
+                                alt=""
+                                aria-hidden="true"
+                                draggable="false"
+                                loading={index === 0 ? "eager" : "lazy"}
+                                decoding="async"
+                                fetchPriority={
+                                    index === 0 ? "high" : "low"
+                                }
+                                onError={(event) => {
+                                    event.currentTarget.classList.add(
+                                        "image-failed"
+                                    );
                                 }}
                             />
 
                             <div className="system-shade" />
 
-                            <div className="system-top" />
+
 
                             <div className="system-collapsed">
                                 <span>{system.title}</span>

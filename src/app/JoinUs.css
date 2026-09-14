@@ -30,7 +30,7 @@
 
 .join-us h2 {
     margin: 0;
-    font-family: var(--font-gcepicpro), sans-serif;
+    font-family: var(--font-gcepicpro);
     font-size: clamp(3.5rem, 7vw, 8rem);
     font-weight: 900;
     line-height: 0.82;

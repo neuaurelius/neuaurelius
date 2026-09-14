@@ -4,18 +4,13 @@
 
 .systems-section {
     position: relative;
-
     width: 100%;
-
     margin-top: -96px;
-
     padding: 150px 3vw 130px;
-
     background: #fff;
-
     color: #000;
-
     overflow: hidden;
+    isolation: isolate;
 }
 
 
@@ -25,71 +20,55 @@
 
 .systems-intro {
     position: relative;
-
     z-index: 1;
-
     width: min(100%, 1450px);
-
     margin: 0 auto 28px;
-
-    font-family: var(--font-gcepicpro), sans-serif;
-
+    font-family: var(--font-gcepicpro);
     overflow: hidden;
 }
 
-
 .systems-intro h1 {
     max-width: 1000px;
-
     margin: 0;
-
     font: inherit;
-    font-size: clamp(1.8rem, 4vw, 18px);
+    font-size: clamp(18px, 2vw, 28px);
     font-weight: 500;
     line-height: 1.18;
     letter-spacing: 0;
 }
 
-
 .intro-line {
     display: block;
-
     opacity: 0;
-
-    transform: translateY(110%);
+    transform: translate3d(0, 110%, 0);
 
     transition:
         opacity 0.55s ease,
         transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
 
+    will-change: transform, opacity;
+}
 
 .systems-intro.is-visible .intro-line {
     opacity: 1;
-
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
 }
-
 
 .systems-intro h1+h1 {
     margin-top: 4px;
 }
 
-
 .systems-intro h1:first-child .intro-line {
     transition-delay: 0.05s;
 }
-
 
 .systems-intro h1+h1 .intro-line:nth-child(1) {
     transition-delay: 0.16s;
 }
 
-
 .systems-intro h1+h1 .intro-line:nth-child(2) {
     transition-delay: 0.25s;
 }
-
 
 .systems-intro h1+h1 .intro-line:nth-child(3) {
     transition-delay: 0.34s;
@@ -97,29 +76,30 @@
 
 
 /* =========================================================
-   SUBTLE DOT FIELD
-   Matches the hero aesthetic
+   DOT FIELD
    ========================================================= */
 
 .systems-section::before {
     content: "";
-
     position: absolute;
     inset: 0;
-
     pointer-events: none;
 
-    background-image: radial-gradient(rgba(0, 0, 0, 0.09) 1px,
+    background-image:
+        radial-gradient(rgba(0, 0, 0, 0.09) 1px,
             transparent 1px);
 
     background-size: 24px 24px;
 
-    mask-image: linear-gradient(to bottom,
+    mask-image:
+        linear-gradient(to bottom,
             transparent 0%,
             black 24%,
             black 88%,
             transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom,
+
+    -webkit-mask-image:
+        linear-gradient(to bottom,
             transparent 0%,
             black 24%,
             black 88%,
@@ -135,6 +115,7 @@
 
 .systems-wall {
     position: relative;
+    z-index: 2;
 
     width: 100%;
     max-width: 1450px;
@@ -144,7 +125,6 @@
     margin: 0 auto;
 
     display: flex;
-
     gap: 8px;
 
     isolation: isolate;
@@ -165,8 +145,7 @@
 
     overflow: hidden;
 
-    border: none;
-
+    border: 0;
     border-radius: 36px;
 
     background: #111;
@@ -176,29 +155,27 @@
     isolation: isolate;
 
     /*
-        This is the important part.
-
-        The very slow cubic-bezier gives the card
-        the liquid movement instead of a mechanical
-        accordion animation.
-    */
-
+     * Shorter animation.
+     *
+     * The old 1.25s flex animation caused too many layout
+     * calculations on weaker mobile CPUs.
+     */
     transition:
-        flex 1.25s cubic-bezier(0.16, 1, 0.3, 1),
-        border-radius 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        flex 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.55s ease;
 
-    will-change: flex;
+    /*
+     * Do NOT use will-change: flex.
+     *
+     * flex is a layout property and cannot be GPU-accelerated
+     * in the same useful way as transform/opacity.
+     */
+
+    contain: layout paint;
 }
-
-
-/* =========================================================
-   EXPANDED
-   ========================================================= */
 
 .system-card.expanded {
     flex: 4.2;
-
-    border-color: rgba(0, 0, 0, 0.2);
 }
 
 
@@ -209,30 +186,71 @@
 .system-image {
     position: absolute;
 
-    inset: -5%;
-
     z-index: -3;
 
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    width: 104%;
+    height: 104%;
 
+    display: block;
+
+    object-fit: cover;
+    object-position: center;
+
+    user-select: none;
+    pointer-events: none;
+
+    background: #151515;
+
+    /*
+     * Keep the initial image treatment cheap.
+     */
     filter:
         grayscale(100%) brightness(0.58) contrast(0.95);
 
-    transform: scale(1.08);
+    transform: translate3d(0, 0, 0) scale(1.045);
+
+    transform-origin: center center;
+
+    /*
+     * Only the image needs GPU promotion.
+     */
+    will-change: transform, filter;
 
     transition:
-        transform 1.8s cubic-bezier(0.16, 1, 0.3, 1),
-        filter 1.25s cubic-bezier(0.16, 1, 0.3, 1);
+        transform 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.6s ease;
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    /*
+     * Prevent the browser from painting the image
+     * unnecessarily outside the card.
+     */
+    contain: paint;
+}
+
+.system-card.expanded .system-image {
+    transform: translate3d(0, 0, 0) scale(1);
+
+    filter:
+        grayscale(15%) brightness(0.70) contrast(0.98);
 }
 
 
-.system-card.expanded .system-image {
-    transform: scale(1);
+/*
+ * Graceful image failure.
+ *
+ * The card still looks intentional if Unsplash is unavailable.
+ */
+.system-image.image-failed {
+    opacity: 0;
 
-    filter:
-        grayscale(15%) brightness(0.7) contrast(0.98);
+    background:
+        radial-gradient(circle at 50% 30%,
+            #333 0%,
+            #171717 45%,
+            #080808 100%);
 }
 
 
@@ -242,19 +260,25 @@
 
 .system-shade {
     position: absolute;
-
     inset: 0;
 
     z-index: -2;
+
+    pointer-events: none;
 
     background:
         linear-gradient(180deg,
             rgba(0, 0, 0, 0.12) 0%,
             rgba(0, 0, 0, 0.02) 35%,
-            rgba(0, 0, 0, 0.82) 100%);
+            rgba(0, 0, 0, 0.84) 100%);
 
-    transition:
-        opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
+
+    transform: translateZ(0);
+
+    will-change: opacity;
+
+    transition: opacity 0.5s ease;
 }
 
 
@@ -269,40 +293,51 @@
     left: 22px;
     right: 22px;
 
-    display: flex;
+    z-index: 3;
 
+    display: flex;
     align-items: center;
     justify-content: space-between;
 
     color: rgba(255, 255, 255, 0.85);
 
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 10px;
 
     letter-spacing: 0.08em;
+
+    pointer-events: none;
 }
 
+.system-number {
+    opacity: 0.7;
+}
+
+
+/* =========================================================
+   DOT
+   ========================================================= */
 
 .system-dot {
     width: 5px;
     height: 5px;
+
+    flex: 0 0 5px;
 
     border-radius: 50%;
 
     background: rgba(255, 255, 255, 0.75);
 
     opacity: 0;
-
     transform: scale(0);
 
     transition:
-        opacity 0.5s ease,
-        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity 0.35s ease,
+        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 
 .system-card.expanded .system-dot {
     opacity: 1;
-
     transform: scale(1);
 }
 
@@ -311,34 +346,46 @@
    COLLAPSED TITLE
    ========================================================= */
 
-/* =========================================================
-   COLLAPSED TITLE
-   ========================================================= */
-
 .system-collapsed {
-    transform-origin: center;
-    color: #ffffffeb;
-    white-space: nowrap;
-    font-family: var(--font-gcepicpro);
-    font-size: clamp(1rem, 2.5vw, 28px);
-    letter-spacing: 1.2;
-    font-weight: 500;
-    transition: opacity .45s, transform 1s cubic-bezier(.16, 1, .3, 1);
     position: absolute;
-    bottom: 100px;
+
     left: 50%;
-    transform: translate(-50%) rotate(-90deg);
+    bottom: 100px;
+
     width: 90%;
+
+    transform:
+        translate3d(-50%, 0, 0) rotate(-90deg);
+
+    transform-origin: center;
+
+    color: rgba(255, 255, 255, 0.92);
+
+    white-space: nowrap;
+
+    font-family: var(--font-gcepicpro);
+
+    font-size: clamp(16px, 2.5vw, 28px);
+
+    letter-spacing: 1.2px;
+    font-weight: 500;
+
+    opacity: 1;
+
+    pointer-events: none;
+
+    will-change: transform, opacity;
+
+    transition:
+        opacity 0.32s ease,
+        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-
-/* Expanded card hides its collapsed title */
 
 .system-card.expanded .system-collapsed {
     opacity: 0;
 
     transform:
-        translateX(-30%) rotate(-90deg);
+        translate3d(-30%, 0, 0) rotate(-90deg);
 }
 
 
@@ -353,48 +400,36 @@
     right: 0;
     bottom: 0;
 
-    padding: 38px;
+    z-index: 4;
+
+    padding: clamp(24px, 3vw, 38px);
 
     color: #fff;
 
     opacity: 0;
 
-    transform: translateY(30px);
+    transform: translate3d(0, 24px, 0);
 
     pointer-events: none;
 
-    transition:
-        opacity 0.5s ease,
-        transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-}
+    will-change: opacity, transform;
 
+    transition:
+        opacity 0.28s ease,
+        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 .system-card.expanded .system-info {
     opacity: 1;
 
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
 
-    transition-delay: 0.2s;
+    transition-delay: 0.16s;
 }
-
 
 .system-info-inner {
+    width: 100%;
     max-width: 680px;
-}
-
-
-/* =========================================================
-   META
-   ========================================================= */
-
-.system-meta {
-    margin-bottom: 13px;
-
-    font-size: 9px;
-
-    letter-spacing: 0.15em;
-
-    color: rgba(255, 255, 255, 0.58);
 }
 
 
@@ -405,17 +440,30 @@
 .system-info h2 {
     margin: 0;
 
-    font-family: var(--font-gcepicpro), sans-serif;
+    max-width: 100%;
 
-    font-size: clamp(34px, 4.5vw, 68px);
+    font-family: var(--font-gcepicpro);
+
+    /*
+     * Fluid but capped.
+     *
+     * This prevents the 38px fixed size from becoming
+     * disproportionately large on narrow phones.
+     */
+    font-size: clamp(28px, 4.2vw, 68px);
 
     font-weight: 600;
 
-    line-height: 0.92;
+    line-height: 0.94;
 
-    letter-spacing: 1.2;
+    letter-spacing: 1px;
 
     color: #fff;
+
+    /*
+     * Lets the browser choose better line breaks.
+     */
+    text-wrap: balance;
 }
 
 
@@ -424,71 +472,21 @@
    ========================================================= */
 
 .system-info p {
-    max-width: 510px;
+    width: min(100%, 510px);
 
-    margin: 21px 0 0;
+    margin: 20px 0 0;
 
-    font-family: var(--font-dm-sans);
+    font-family: var(--font-dm-sans), sans-serif;
 
-    font-size: 1.3rem;
+    font-size: clamp(16px, 1.6vw, 21px);
 
-    line-height: 1.5;
+    line-height: 1.48;
 
     letter-spacing: -0.01em;
 
-    color: rgba(255, 255, 255, 0.72);
-}
+    color: rgba(255, 255, 255, 0.76);
 
-
-/* =========================================================
-   ACTION
-   ========================================================= */
-
-.system-action {
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 11px;
-
-    margin-top: 27px;
-
-    font-size: 11px;
-
-    color: #fff;
-}
-
-
-.system-info .explore-btn {
-    margin-top: 20px;
-
-    font-family: var(--font-dm-sans), sans-serif;
-}
-
-
-.system-arrow {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    width: 27px;
-    height: 27px;
-
-    border: 1px solid rgba(255, 255, 255, 0.45);
-
-    border-radius: 50%;
-
-    transition:
-        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        background 0.4s ease;
-}
-
-
-.system-card:hover .system-arrow {
-    transform: rotate(45deg);
-
-    background: rgba(255, 255, 255, 0.1);
+    text-wrap: pretty;
 }
 
 
@@ -496,10 +494,9 @@
    DESKTOP HOVER
    ========================================================= */
 
-@media (hover: hover) {
-
+@media (hover: hover) and (pointer: fine) {
     .system-card:not(.expanded):hover .system-image {
-        transform: scale(1.12);
+        transform: translate3d(0, 0, 0) scale(1.065);
 
         filter:
             grayscale(65%) brightness(0.65) contrast(0.95);
@@ -512,10 +509,8 @@
    ========================================================= */
 
 @media (max-width: 1000px) {
-
     .systems-section {
         margin-top: -64px;
-
         padding: 100px 20px;
     }
 
@@ -527,15 +522,26 @@
         height: 540px;
     }
 
+    .system-card {
+        border-radius: 28px;
+
+        transition:
+            flex 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+            border-radius 0.45s ease;
+    }
+
     .system-info {
         padding: 28px;
     }
 
     .system-info h2 {
-        font-size: clamp(32px, 5vw, 52px);
+        font-size: clamp(30px, 5vw, 52px);
+    }
+
+    .system-info p {
+        font-size: clamp(16px, 2vw, 20px);
     }
 }
-
 
 
 /* =========================================================
@@ -543,29 +549,34 @@
    ========================================================= */
 
 @media (max-width: 700px) {
-
     .systems-section {
         margin-top: -36px;
+
         min-height: 100vh;
-        padding: 80px 14px;
-        padding-top: 10%;
+
+        padding:
+            10% 14px 80px;
     }
 
     .systems-intro {
         margin-bottom: 18px;
     }
 
+    .systems-intro h1 {
+        font-size: clamp(16px, 4.2vw, 22px);
+    }
 
+    /*
+     * Mobile cards are vertical.
+     */
     .systems-wall {
         height: auto;
 
         display: flex;
-
         flex-direction: column;
 
         gap: 7px;
     }
-
 
     .system-card,
     .system-card.expanded {
@@ -577,62 +588,122 @@
 
         border-radius: 18px;
 
+        /*
+         * Much shorter animation on mobile.
+         *
+         * 1 second is unnecessarily expensive on phones.
+         */
         transition:
-            height 1s cubic-bezier(0.16, 1, 0.3, 1),
-            border-radius 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            height 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+            border-radius 0.35s ease;
     }
-
 
     .system-card.expanded {
-        height: 390px;
+        /*
+         * Use viewport-based sizing rather than a fixed
+         * 390px so phones of different heights behave better.
+         */
+        height: clamp(360px, 68vh, 620px);
     }
 
+    /*
+     * Mobile image doesn't need aggressive animation.
+     */
+    .system-image {
+        transform: translate3d(0, 0, 0) scale(1.02);
 
-    /* horizontal mobile title */
+        /*
+         * Filter animation is expensive on mobile.
+         * Keep the image treatment almost constant.
+         */
+        filter:
+            grayscale(35%) brightness(0.64) contrast(0.96);
+
+        transition:
+            transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .system-card.expanded .system-image {
+        transform: translate3d(0, 0, 0) scale(1);
+
+        filter:
+            grayscale(15%) brightness(0.70) contrast(0.98);
+    }
+
+    /*
+     * Horizontal mobile title.
+     */
     .system-collapsed {
         left: 22px;
-        bottom: 40%;
+        bottom: 50%;
 
-        transform:
-            translateY(50%) rotate(0);
+        width: calc(100% - 44px);
 
-        font-size: clamp(1rem, 2.5vw, 28px);
+        transform: translate3d(0, 50%, 0);
+
+        font-size: clamp(16px, 4.8vw, 26px);
+
+        letter-spacing: 0.8px;
     }
 
     .system-card.expanded .system-collapsed {
-        transform:
-            translateY(50%) rotate(0);
+        transform: translate3d(0, 35%, 0);
     }
-
 
     .system-top {
-        top: 21px;
-        left: 22px;
-        right: 22px;
+        top: 18px;
+        left: 20px;
+        right: 20px;
     }
-
 
     .system-info {
-        padding: 25px;
+        padding: clamp(22px, 6vw, 30px);
 
-        transform: translateY(25px);
+        transform: translate3d(0, 18px, 0);
+
+        /*
+         * Reserve space from the bottom so the text doesn't
+         * sit against the rounded edge.
+         */
+        padding-bottom: clamp(24px, 7vw, 38px);
     }
 
+    .system-card.expanded .system-info {
+        transform: translate3d(0, 0, 0);
+    }
+
+    .system-info-inner {
+        max-width: 100%;
+    }
 
     .system-info h2 {
-        font-size: 38px;
-    }
+        /*
+         * This is deliberately smaller than your old fixed 38px.
+         * It gives narrower phones more consistent wrapping.
+         */
+        font-size: clamp(28px, 7.2vw, 40px);
 
+        line-height: 0.94;
+
+        letter-spacing: 0.7px;
+    }
 
     .system-info p {
-        font-size: 1.2rem;
+        width: 100%;
+        max-width: 100%;
 
-        max-width: 440px;
+        margin-top: 18px;
+
+        font-size: clamp(16px, 4.6vw, 20px);
+
+        line-height: 1.48;
     }
 
-
-    .system-action {
-        margin-top: 22px;
+    /*
+     * No hover behavior on touch devices.
+     */
+    .system-card:hover .system-image {
+        transform: translate3d(0, 0, 0) scale(1.02);
     }
 }
 
@@ -642,17 +713,64 @@
    ========================================================= */
 
 @media (max-width: 400px) {
+    .systems-section {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .systems-wall {
+        gap: 6px;
+    }
+
+    .system-card,
+    .system-card.expanded {
+        border-radius: 16px;
+    }
+
+    .system-card {
+        height: 100px;
+    }
 
     .system-card.expanded {
-        height: 360px;
+        height: clamp(340px, 70vh, 520px);
+    }
+
+    .system-collapsed {
+        left: 18px;
+        width: calc(100% - 36px);
+
+        font-size: clamp(15px, 4.5vw, 21px);
+    }
+
+    .system-top {
+        top: 16px;
+        left: 18px;
+        right: 18px;
     }
 
     .system-info {
-        padding: 22px;
+        padding: 20px;
     }
 
     .system-info h2 {
-        font-size: 26px;
+        font-size: clamp(26px, 7vw, 32px);
+    }
+
+    .system-info p {
+        margin-top: 16px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+}
+
+
+/* =========================================================
+   VERY SHORT PHONES
+   ========================================================= */
+
+@media (max-width: 700px) and (max-height: 700px) {
+    .system-card.expanded {
+        height: min(500px, 74vh);
     }
 }
 
@@ -667,19 +785,22 @@
     .system-image,
     .system-info,
     .system-collapsed,
-    .system-arrow {
+    .system-dot,
+    .intro-line {
         transition: none !important;
+        animation: none !important;
     }
-}
 
-
-@media (prefers-reduced-motion: reduce) {
-    .systems-intro {
+    .intro-line {
         opacity: 1;
         transform: none;
-        transition: none;
     }
 }
+
+
+/* =========================================================
+   LOADING / SKELETON
+   ========================================================= */
 
 .systems-loading {
     min-height: 100vh;
@@ -692,21 +813,31 @@
 
 .skeleton-line {
     position: relative;
+
     display: block;
+
     overflow: hidden;
+
     background: #eeeeee;
 }
 
 .skeleton-line::after {
     position: absolute;
+
     inset: 0;
+
     content: "";
-    background: linear-gradient(90deg,
+
+    background:
+        linear-gradient(90deg,
             transparent 0%,
             rgba(255, 255, 255, 0.75) 50%,
             transparent 100%);
-    transform: translateX(-100%);
-    animation: accordion-skeleton-shimmer 1.5s ease-in-out infinite;
+
+    transform: translate3d(-100%, 0, 0);
+
+    animation:
+        accordion-skeleton-shimmer 1.5s ease-in-out infinite;
 }
 
 .skeleton-intro-line {
@@ -727,6 +858,11 @@
     width: min(480px, 48vw);
 }
 
+
+/* =========================================================
+   SKELETON WALL
+   ========================================================= */
+
 .systems-wall-skeleton {
     opacity: 1 !important;
 }
@@ -739,75 +875,81 @@
 .system-skeleton-image {
     position: absolute;
     inset: 0;
+
     background: #eeeeee;
 }
 
 .system-skeleton-image::after {
     position: absolute;
+
     inset: 0;
+
     content: "";
-    background: linear-gradient(90deg,
+
+    background:
+        linear-gradient(90deg,
             transparent 0%,
             rgba(255, 255, 255, 0.65) 50%,
             transparent 100%);
-    transform: translateX(-100%);
-    animation: accordion-skeleton-shimmer 1.7s ease-in-out infinite;
+
+    transform: translate3d(-100%, 0, 0);
+
+    animation:
+        accordion-skeleton-shimmer 1.7s ease-in-out infinite;
 }
 
 .system-skeleton-shade {
     position: absolute;
     inset: 0;
+
     background: rgba(0, 0, 0, 0.04);
-}
-
-.system-skeleton-number {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    z-index: 2;
-}
-
-.skeleton-number-line {
-    width: 24px;
-    height: 10px;
-    border-radius: 3px;
 }
 
 .system-skeleton-title {
     position: absolute;
+
     right: 1.5rem;
     bottom: 1.5rem;
     left: 1.5rem;
+
     z-index: 2;
 }
 
 .skeleton-title-line {
     width: 70%;
     height: 18px;
+
     border-radius: 4px;
 }
 
 .system-skeleton-info {
     position: absolute;
+
     right: 1.5rem;
     bottom: 1.5rem;
     left: 1.5rem;
+
     z-index: 3;
+
     display: flex;
     flex-direction: column;
+
     gap: 9px;
 }
 
 .skeleton-info-title {
     width: 60%;
     height: 28px;
+
     margin-bottom: 8px;
+
     border-radius: 4px;
 }
 
 .skeleton-info-text {
     width: 90%;
     height: 12px;
+
     border-radius: 3px;
 }
 
@@ -819,11 +961,25 @@
     width: 65%;
 }
 
+
+/* =========================================================
+   SKELETON ANIMATION
+   ========================================================= */
+
 @keyframes accordion-skeleton-shimmer {
-    100% {
-        transform: translateX(100%);
+    from {
+        transform: translate3d(-100%, 0, 0);
+    }
+
+    to {
+        transform: translate3d(100%, 0, 0);
     }
 }
+
+
+/* =========================================================
+   MOBILE SKELETON
+   ========================================================= */
 
 @media (max-width: 700px) {
     .skeleton-intro-line {
@@ -841,11 +997,6 @@
 
     .skeleton-intro-small {
         width: 65%;
-    }
-
-    .system-skeleton-number {
-        top: 1rem;
-        left: 1rem;
     }
 
     .system-skeleton-title {
@@ -870,6 +1021,7 @@
         height: 22px;
     }
 }
+
 
 @media (prefers-reduced-motion: reduce) {
 
