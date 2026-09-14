@@ -4,6 +4,27 @@ import DotGrid from "@/components/DotGrid";
 import "./Hero.css";
 import { useState, useEffect } from "react";
 
+// Zero-registration invisible PoW CAPTCHA generator
+async function generateProofOfWork(nonce = 0) {
+    const timestamp = Date.now();
+    const challenge = `pow_${timestamp}_${Math.random().toString(36).substring(2)}`;
+
+    // Find a hash starting with "000" (lightweight CPU puzzle for bots, instant for real users)
+    let solvedNonce = 0;
+    while (true) {
+        const msg = `${challenge}:${solvedNonce}`;
+        const msgBuffer = new TextEncoder().encode(msg);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+
+        if (hashHex.startsWith("000")) {
+            return { challenge, nonce: solvedNonce, hash: hashHex };
+        }
+        solvedNonce++;
+    }
+}
+
 function AnimatedWord({ text, className = "" }) {
     return (
         <div className={`hero-word ${className}`}>
@@ -27,7 +48,7 @@ export default function Hero() {
     const [newsletterOpen, setNewsletterOpen] = useState(false);
     const [email, setEmail] = useState("");
     const [website, setWebsite] = useState("");
-    const [status, setStatus] = useState("idle");
+    const [status, setStatus] = useState("idle"); // idle | loading | success | already_subscribed | error
     const [message, setMessage] = useState("");
 
     useEffect(() => {
@@ -69,6 +90,9 @@ export default function Hero() {
         setMessage("");
 
         try {
+            // Invisible Zero-Key CAPTCHA puzzle execution
+            const powToken = await generateProofOfWork();
+
             const response = await fetch("/api/subscribe", {
                 method: "POST",
                 headers: {
@@ -76,16 +100,23 @@ export default function Hero() {
                 },
                 body: JSON.stringify({
                     email,
-                    website,
+                    website, // Honeypot field
+                    captchaToken: powToken, // Nonce + Challenge payload
                 }),
             });
 
             const data = await response.json();
 
+            // Handle "Already Subscribed" case explicitly
+            if (response.status === 409 || data.code === "ALREADY_EXISTS" || data.alreadySubscribed) {
+                setStatus("already_subscribed");
+                setMessage(data.message || "This email is already subscribed to our newsletter.");
+                return;
+            }
+
             if (!response.ok || !data.success) {
                 throw new Error(
-                    data.message ||
-                    "Unable to subscribe right now."
+                    data.message || "Unable to subscribe right now."
                 );
             }
 
@@ -95,8 +126,7 @@ export default function Hero() {
         } catch (error) {
             setStatus("error");
             setMessage(
-                error.message ||
-                "Something went wrong. Please try again."
+                error.message || "Something went wrong. Please try again."
             );
         }
     };
@@ -160,6 +190,7 @@ export default function Hero() {
                     </div>
                 </div>
             </section>
+
             {newsletterOpen && (
                 <div
                     className="newsletter-overlay"
@@ -172,7 +203,6 @@ export default function Hero() {
                     }}
                 >
                     <div className="newsletter-modal">
-
                         <button
                             type="button"
                             className="newsletter-close"
@@ -184,19 +214,27 @@ export default function Hero() {
 
                         {status === "success" ? (
                             <div className="newsletter-success">
-                                <div className="newsletter-success-mark">
-                                    ✓
-                                </div>
 
-                                <h2>
-                                    You're in.
-                                </h2>
-
+                                <h2>Thank you for Subscribing</h2>
                                 <p>
                                     We'll let you know when
                                     something important happens.
                                 </p>
-
+                                <button
+                                    type="button"
+                                    className="newsletter-done"
+                                    onClick={closeNewsletter}
+                                >
+                                    Done
+                                </button>
+                            </div>
+                        ) : status === "already_subscribed" ? (
+                            <div className="newsletter-success">
+                                <div className="newsletter-success-mark" style={{ borderColor: "#666", color: "#666" }}>
+                                    ℹ
+                                </div>
+                                <h2>Already Subscribed</h2>
+                                <p>{message}</p>
                                 <button
                                     type="button"
                                     className="newsletter-done"
@@ -208,11 +246,7 @@ export default function Hero() {
                         ) : (
                             <>
                                 <div className="newsletter-heading">
-
-                                    <h2>
-                                        Stay in the loop.
-                                    </h2>
-
+                                    <h2>Stay in the loop.</h2>
                                     <p>
                                         Follow the development
                                         of our first machine
@@ -224,7 +258,7 @@ export default function Hero() {
                                     className="newsletter-form"
                                     onSubmit={handleSubmit}
                                 >
-                                    {/* Honeypot */}
+                                    {/* Honeypot field */}
                                     <input
                                         type="text"
                                         name="website"
@@ -271,7 +305,7 @@ export default function Hero() {
                                         }
                                     >
                                         {status === "loading"
-                                            ? "Subscribing..."
+                                            ? "Verifying & Subscribing..."
                                             : "Subscribe"}
                                     </button>
 
