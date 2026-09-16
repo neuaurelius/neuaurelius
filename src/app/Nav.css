@@ -1,3 +1,7 @@
+/* ========================================================
+   NAV
+======================================================== */
+
 .nav {
     background: transparent;
     color: var(--foreground);
@@ -12,8 +16,14 @@
 
     z-index: 100;
 
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+
+/* ========================================================
+   NAV CONTAINER
+======================================================== */
 
 .nav-container {
     position: relative;
@@ -34,6 +44,11 @@
     z-index: 110;
 }
 
+
+/* ========================================================
+   BRAND
+======================================================== */
+
 .nav-brand {
     position: relative;
 
@@ -47,8 +62,11 @@
     padding: 0 10px;
 
     box-sizing: border-box;
+
     background: var(--background);
+
     border: 0.5px solid var(--light-border);
+
     border-radius: 999px;
 
     overflow: hidden;
@@ -72,15 +90,16 @@
 
     transform: translateX(0) scale(1);
 
-    transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav-brand .textLogo {
     display: block;
+
     position: absolute;
 
     top: 50%;
-
     left: 58px;
 
     width: 100px;
@@ -92,7 +111,9 @@
 
     opacity: 0;
 
-    transform: translateY(-50%) translateX(-20px) scaleX(0.92);
+    transform:
+        translateY(-50%) translateX(-20px) scaleX(0.92);
+
     transform-origin: left center;
 
     filter: blur(2px);
@@ -109,9 +130,7 @@
     opacity: 1;
 
     transform:
-        translateY(-50%)
-        translateX(0)
-        scaleX(1);
+        translateY(-50%) translateX(0) scaleX(1);
 
     filter: blur(0);
 
@@ -126,12 +145,14 @@
 }
 
 .nav-brand:hover>img:first-child {
-    transform: translateX(0) scale(0.96);
+    transform:
+        translateX(0) scale(0.96);
 }
 
 
 /* ========================================================
-   MENU MORPH - CLOSED STATE
+   MENU MORPH
+   CLOSED
 ======================================================== */
 
 .menu-morph {
@@ -148,6 +169,7 @@
     background: #fff;
 
     border: 1px solid #dedede;
+
     border-radius: 999px;
 
     overflow: hidden;
@@ -160,15 +182,16 @@
         0 0 0 rgba(0, 0, 0, 0);
 
     transition:
-        width 0.4s cubic-bezier(0.7, 0, 0.3, 1),
-        height 0.4s cubic-bezier(0.7, 0, 0.3, 1) 0.1s,
-        border-radius 0.35s ease 0.05s,
-        box-shadow 0.3s ease;
+        width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.4s ease;
 }
 
 
 /* ========================================================
-   MENU MORPH - OPEN STATE
+   MENU MORPH
+   OPEN
 ======================================================== */
 
 .menu-morph.is-open {
@@ -181,33 +204,51 @@
         0 22px 50px rgba(0, 0, 0, 0.09);
 
     transition:
-        height 0.45s cubic-bezier(0.5, 0, 0.1, 1),
-        width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s,
-        border-radius 0.45s ease 0.05s,
-        box-shadow 0.45s ease 0.05s;
+        width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s ease;
 }
 
 
 /* ========================================================
    MENU TOGGLE
-   IMPORTANT:
-   The toggle no longer uses 100% height.
-   This prevents it from expanding to 300px while
-   the outer menu is opening.
+   IMPORTANT
+
+   The toggle follows the WIDTH of the menu.
+
+   It does NOT follow the HEIGHT.
+
+   Therefore:
+
+   CLOSED
+   112 × 50
+
+   OPEN
+   ~279 × 50
+
+   It always stays inside the outer menu.
 ======================================================== */
 
 .menu-toggle {
     position: absolute;
 
+    /*
+       Keep the top control attached to the
+       top edge of the morphing container.
+    */
     top: 0;
     left: 0;
 
     /*
-       FIX:
-       Keep the closed button at the same dimensions
-       as the closed menu container.
+       Relative to the parent width.
     */
-    width: 112px;
+    width: 100%;
+
+    /*
+       NEVER use height: 100%.
+       The parent becomes 300px tall when open.
+    */
     height: 50px;
 
     padding: 0;
@@ -215,6 +256,7 @@
     box-sizing: border-box;
 
     border: 1px solid transparent;
+
     border-radius: 999px;
 
     background: #fff;
@@ -222,6 +264,7 @@
     color: #111;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -234,56 +277,59 @@
         sans-serif;
 
     font-size: 0.95rem;
+
     font-weight: 500;
 
     z-index: 10;
 
     /*
-       Height is intentionally NOT animated.
-       It remains 50px throughout the morph.
+       Width follows the parent as it grows.
+       Height remains controlled.
     */
     transition:
-        top 0.4s cubic-bezier(0.7, 0, 0.3, 1) 0.1s,
-        left 0.4s cubic-bezier(0.7, 0, 0.3, 1),
-        width 0.4s cubic-bezier(0.7, 0, 0.3, 1),
+        width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        top 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.4s ease,
         border-color 0.25s ease;
 }
 
 
 /* ========================================================
    OPEN TOGGLE
-   Always stays inside the outer border.
+
+   8px border clearance.
+
+   Width is always calculated from the
+   current size of the menu.
 ======================================================== */
 
 .menu-morph.is-open .menu-toggle {
     top: 8px;
     left: 8px;
 
-    /*
-       8px inset on both sides.
-       This means the close button always respects
-       the outer menu border.
-    */
     width: calc(100% - 16px);
 
-    /*
-       FIX:
-       Never allow the button to become 300px tall.
-    */
     height: 50px;
 
     border-color: #dedede;
 
+    border-radius: 999px;
+
+    /*
+       DO NOT introduce a height transition.
+       This prevents the button from stretching.
+    */
     transition:
-        top 0.45s cubic-bezier(0.5, 0, 0.1, 1),
-        left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s,
-        width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s,
+        width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        top 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
         border-color 0.25s ease 0.1s;
 }
 
 
 /* ========================================================
-   MENU ICON
+   ICON
 ======================================================== */
 
 .menu-icon {
@@ -315,15 +361,19 @@
 }
 
 .menu-icon span:first-child {
-    transform: translateY(-3px);
+    transform:
+        translateY(-3px);
 }
 
 .menu-icon span:last-child {
-    transform: translateY(3px);
+    transform:
+        translateY(3px);
 }
 
 
-/* X / CLOSE ICON */
+/* ========================================================
+   ICON -> X
+======================================================== */
 
 .menu-morph.is-open .menu-icon span:first-child {
     transform: rotate(45deg);
@@ -366,28 +416,29 @@
 .menu-text {
     opacity: 1;
 
-    transform: translateX(0);
+    transform:
+        translateX(0);
 }
 
 .close-text {
     opacity: 0;
 
-    transform: translateX(12px);
+    transform:
+        translateX(12px);
 }
-
-
-/* MENU -> CLOSE */
 
 .menu-morph.is-open .menu-text {
     opacity: 0;
 
-    transform: translateX(12px);
+    transform:
+        translateX(12px);
 }
 
 .menu-morph.is-open .close-text {
     opacity: 1;
 
-    transform: translateX(0);
+    transform:
+        translateX(0);
 
     transition-delay: 0.2s;
 }
@@ -401,18 +452,22 @@
     position: absolute;
 
     top: 80px;
+
     left: 24px;
     right: 24px;
+
     bottom: 24px;
 
     box-sizing: border-box;
 
     display: flex;
+
     flex-direction: column;
 
     opacity: 0;
 
-    transform: translateY(10px);
+    transform:
+        translateY(10px);
 
     pointer-events: none;
 
@@ -424,7 +479,8 @@
 .menu-morph.is-open .menu-content {
     opacity: 1;
 
-    transform: translateY(0);
+    transform:
+        translateY(0);
 
     pointer-events: auto;
 
@@ -432,6 +488,11 @@
         opacity 0.45s ease 0.25s,
         transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s;
 }
+
+
+/* ========================================================
+   MENU SECTION
+======================================================== */
 
 .menu-section {
     margin: 0;
@@ -476,6 +537,7 @@
     padding: 0;
 
     display: flex;
+
     align-items: center;
 
     transform-origin: left center;
@@ -518,13 +580,14 @@
 
 
 /* ========================================================
-   MENU HOVER EFFECTS
+   MENU HOVER
 ======================================================== */
 
 .menu-list li:hover {
     z-index: 5;
 
-    transform: scale(1.08);
+    transform:
+        scale(1.08);
 }
 
 .menu-list li:hover a {
@@ -535,8 +598,7 @@
 
 .menu-list li:has(~ li:hover) {
     transform:
-        translateY(-5px)
-        scale(0.97);
+        translateY(-5px) scale(0.97);
 
     opacity: 0.62;
 }
@@ -547,8 +609,7 @@
 
 .menu-list li:hover~li {
     transform:
-        translateY(5px)
-        scale(0.97);
+        translateY(5px) scale(0.97);
 
     opacity: 0.62;
 }
@@ -562,7 +623,8 @@
 }
 
 .menu-list li:hover a {
-    transform: scale(1.03);
+    transform:
+        scale(1.03);
 
     opacity: 1;
 }
@@ -571,13 +633,12 @@
     color: #000;
 
     transform:
-        translateY(-1px)
-        scale(1.04);
+        translateY(-1px) scale(1.04);
 }
 
 
 /* ========================================================
-   TABLET / MOBILE
+   MOBILE
 ======================================================== */
 
 @media (max-width: 768px) {
@@ -603,28 +664,28 @@
     }
 
     .menu-morph.is-open {
-        width: min(
-            295px,
-            calc(100vw - 32px)
-        );
+        width:
+            min(295px,
+                calc(100vw - 32px));
 
-        height: min(
-            300px,
-            calc(100vh - 32px)
-        );
+        height:
+            min(300px,
+                calc(100vh - 32px));
     }
 
     /*
-       Explicitly preserve the 50px toggle height
-       on mobile as well.
+       The toggle always derives its width
+       from the current menu width.
     */
     .menu-toggle {
-        width: 112px;
+        width: 100%;
         height: 50px;
     }
 
     .menu-morph.is-open .menu-toggle {
-        width: calc(100% - 16px);
+        width:
+            calc(100% - 16px);
+
         height: 50px;
     }
 
@@ -645,21 +706,23 @@
 @media (max-width: 340px) {
 
     .menu-morph.is-open {
-        width: calc(100vw - 32px);
+        width:
+            calc(100vw - 32px);
 
-        height: min(
-            300px,
-            calc(100vh - 32px)
-        );
+        height:
+            min(300px,
+                calc(100vh - 32px));
     }
 
     .menu-toggle {
-        width: 112px;
+        width: 100%;
         height: 50px;
     }
 
     .menu-morph.is-open .menu-toggle {
-        width: calc(100% - 16px);
+        width:
+            calc(100% - 16px);
+
         height: 50px;
     }
 
@@ -675,7 +738,8 @@
 ======================================================== */
 
 .nav-hidden {
-    transform: translateY(-100%);
+    transform:
+        translateY(-100%);
 
     pointer-events: none;
 }
