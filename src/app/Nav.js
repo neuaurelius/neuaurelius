@@ -12,7 +12,13 @@ export default function Nav() {
 
     const menuRef = useRef(null);
     const lastScrollY = useRef(0);
+
     const pathname = usePathname();
+
+
+    /* ====================================================
+       CLOSE MENU WHEN CLICKING OUTSIDE
+    ==================================================== */
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
@@ -30,12 +36,18 @@ export default function Nav() {
             handleOutsideClick
         );
 
-        return () =>
+        return () => {
             document.removeEventListener(
                 "mousedown",
                 handleOutsideClick
             );
+        };
     }, [menuOpen]);
+
+
+    /* ====================================================
+       HIDE NAVIGATION WHEN SCROLLING DOWN
+    ==================================================== */
 
     useEffect(() => {
         const handleScroll = () => {
@@ -65,12 +77,18 @@ export default function Nav() {
             }
         );
 
-        return () =>
+        return () => {
             window.removeEventListener(
                 "scroll",
                 handleScroll
             );
+        };
     }, []);
+
+
+    /* ====================================================
+       SECTION LINKS
+    ==================================================== */
 
     const sectionLink = (section) => {
         return pathname === "/"
@@ -78,17 +96,21 @@ export default function Nav() {
             : `/#${section}`;
     };
 
+
+    /* ====================================================
+       RENDER
+    ==================================================== */
+
     return (
         <nav
-            className={`nav ${
-                navHidden ? "nav-hidden" : ""
-            }`}
+            className={`nav ${navHidden ? "nav-hidden" : ""
+                }`}
         >
             <div className="nav-container">
 
-                {/* ==================================================
+                {/* =========================================
                     LOGO
-                ================================================== */}
+                ========================================= */}
 
                 <div className="nav-brand">
 
@@ -116,22 +138,22 @@ export default function Nav() {
                 </div>
 
 
-                {/* ==================================================
-                    MENU
-                ================================================== */}
+                {/* =========================================
+                    MENU MORPH CONTAINER
+                ========================================= */}
 
                 <div
                     ref={menuRef}
-                    className={`menu-morph ${
-                        menuOpen ? "is-open" : ""
-                    }`}
+                    className={`menu-morph ${menuOpen ? "is-open" : ""
+                        }`}
                 >
 
-                    {/* ==================================================
+                    {/* =====================================
                         TOP CONTROL
-                    ================================================== */}
+                    ===================================== */}
 
                     <button
+                        type="button"
                         className="menu-toggle"
                         onClick={() =>
                             setMenuOpen(!menuOpen)
@@ -141,6 +163,7 @@ export default function Nav() {
                                 ? "Close menu"
                                 : "Open menu"
                         }
+                        aria-expanded={menuOpen}
                     >
 
                         <div className="menu-icon">
@@ -164,15 +187,17 @@ export default function Nav() {
                     </button>
 
 
-                    {/* ==================================================
+                    {/* =====================================
                         MENU CONTENT
-                    ================================================== */}
+                    ===================================== */}
 
                     <div className="menu-content">
 
                         <div className="menu-section">
 
                             <ul className="menu-list">
+
+                                {/* ABOUT */}
 
                                 <li>
                                     <Link
@@ -188,6 +213,8 @@ export default function Nav() {
                                 </li>
 
 
+                                {/* CAREER */}
+
                                 <li>
                                     <Link
                                         href={sectionLink(
@@ -202,6 +229,8 @@ export default function Nav() {
                                 </li>
 
 
+                                {/* PUBLICATIONS */}
+
                                 <li>
                                     <Link
                                         href={sectionLink(
@@ -215,6 +244,8 @@ export default function Nav() {
                                     </Link>
                                 </li>
 
+
+                                {/* CONTACT */}
 
                                 <li>
                                     <Link

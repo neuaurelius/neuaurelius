@@ -1,5 +1,5 @@
 /* ========================================================
-   NAV
+   NAVIGATION
 ======================================================== */
 
 .nav {
@@ -46,7 +46,7 @@
 
 
 /* ========================================================
-   BRAND
+   BRAND / LOGO
 ======================================================== */
 
 .nav-brand {
@@ -64,9 +64,7 @@
     box-sizing: border-box;
 
     background: var(--background);
-
     border: 0.5px solid var(--light-border);
-
     border-radius: 999px;
 
     overflow: hidden;
@@ -77,6 +75,7 @@
         width 0.8s cubic-bezier(0.22, 1, 0.36, 1),
         padding 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
 
 .nav-brand>img:first-child {
     position: relative;
@@ -94,12 +93,13 @@
         transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+
 .nav-brand .textLogo {
     display: block;
-
     position: absolute;
 
     top: 50%;
+
     left: 58px;
 
     width: 100px;
@@ -126,6 +126,7 @@
         filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+
 .nav-brand:hover .textLogo {
     opacity: 1;
 
@@ -140,19 +141,20 @@
         0.04s;
 }
 
+
 .nav-brand:hover {
     width: 180px;
 }
 
+
 .nav-brand:hover>img:first-child {
-    transform:
-        translateX(0) scale(0.96);
+    transform: translateX(0) scale(0.96);
 }
 
 
 /* ========================================================
    MENU MORPH
-   CLOSED
+   CLOSED STATE
 ======================================================== */
 
 .menu-morph {
@@ -172,6 +174,11 @@
 
     border-radius: 999px;
 
+    /*
+     * Clips the inner toggle during the morph.
+     * This is important because the close button
+     * should NEVER visually escape the outer menu.
+     */
     overflow: hidden;
 
     z-index: 120;
@@ -181,17 +188,20 @@
     box-shadow:
         0 0 0 rgba(0, 0, 0, 0);
 
+    /*
+     * Slightly longer and synchronized animation.
+     */
     transition:
-        width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-        border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 0.4s ease;
+        width 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.5s ease;
 }
 
 
 /* ========================================================
    MENU MORPH
-   OPEN
+   OPEN STATE
 ======================================================== */
 
 .menu-morph.is-open {
@@ -204,52 +214,26 @@
         0 22px 50px rgba(0, 0, 0, 0.09);
 
     transition:
-        width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-        border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 0.45s ease;
+        width 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.5s ease;
 }
 
 
 /* ========================================================
    MENU TOGGLE
-   IMPORTANT
-
-   The toggle follows the WIDTH of the menu.
-
-   It does NOT follow the HEIGHT.
-
-   Therefore:
-
-   CLOSED
-   112 × 50
-
-   OPEN
-   ~279 × 50
-
-   It always stays inside the outer menu.
+   CLOSED STATE
 ======================================================== */
 
 .menu-toggle {
     position: absolute;
 
-    /*
-       Keep the top control attached to the
-       top edge of the morphing container.
-    */
     top: 0;
     left: 0;
 
-    /*
-       Relative to the parent width.
-    */
     width: 100%;
-
-    /*
-       NEVER use height: 100%.
-       The parent becomes 300px tall when open.
-    */
-    height: 50px;
+    height: 100%;
 
     padding: 0;
 
@@ -264,7 +248,6 @@
     color: #111;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -282,26 +265,30 @@
 
     z-index: 10;
 
+    overflow: hidden;
+
+    transform-origin: top center;
+
     /*
-       Width follows the parent as it grows.
-       Height remains controlled.
-    */
+     * The toggle itself morphs at the same speed as
+     * the outer container.
+     */
     transition:
-        width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-        top 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        border-radius 0.4s ease,
+        top 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        left 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        width 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         border-color 0.25s ease;
 }
 
 
 /* ========================================================
-   OPEN TOGGLE
+   MENU TOGGLE
+   OPEN STATE
 
-   8px border clearance.
-
-   Width is always calculated from the
-   current size of the menu.
+   The close button does NOT instantly become a large
+   rectangle. It grows together with the menu.
 ======================================================== */
 
 .menu-morph.is-open .menu-toggle {
@@ -312,24 +299,26 @@
 
     height: 50px;
 
+    border-radius: 22px;
+
     border-color: #dedede;
 
-    border-radius: 999px;
-
     /*
-       DO NOT introduce a height transition.
-       This prevents the button from stretching.
-    */
+     * Tiny delay allows the outer menu to visibly begin
+     * expanding before the inner close control follows it.
+     */
     transition:
-        width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-        top 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        border-color 0.25s ease 0.1s;
+        top 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
+        left 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
+        width 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
+        height 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
+        border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
+        border-color 0.25s ease 0.18s;
 }
 
 
 /* ========================================================
-   ICON
+   MENU ICON
 ======================================================== */
 
 .menu-icon {
@@ -339,7 +328,10 @@
     height: 18px;
 
     flex-shrink: 0;
+
+    overflow: hidden;
 }
+
 
 .menu-icon span {
     position: absolute;
@@ -360,32 +352,37 @@
         transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
+
 .menu-icon span:first-child {
-    transform:
-        translateY(-3px);
+    transform: translateY(-3px);
 }
 
+
 .menu-icon span:last-child {
-    transform:
-        translateY(3px);
+    transform: translateY(3px);
 }
 
 
 /* ========================================================
-   ICON -> X
+   OPEN → CLOSE ICON
 ======================================================== */
 
 .menu-morph.is-open .menu-icon span:first-child {
     transform: rotate(45deg);
+
+    transition-delay: 0.18s;
 }
+
 
 .menu-morph.is-open .menu-icon span:last-child {
     transform: rotate(-45deg);
+
+    transition-delay: 0.18s;
 }
 
 
 /* ========================================================
-   MENU / CLOSE TEXT
+   MENU / CLOSE TEXT WRAPPER
 ======================================================== */
 
 .menu-toggle-text {
@@ -397,7 +394,14 @@
     height: 20px;
 
     overflow: hidden;
+
+    flex-shrink: 0;
 }
+
+
+/* ========================================================
+   MENU TEXT + CLOSE TEXT
+======================================================== */
 
 .menu-text,
 .close-text {
@@ -413,12 +417,22 @@
         transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
+/* ========================================================
+   MENU TEXT
+======================================================== */
+
 .menu-text {
     opacity: 1;
 
     transform:
         translateX(0);
 }
+
+
+/* ========================================================
+   CLOSE TEXT
+======================================================== */
 
 .close-text {
     opacity: 0;
@@ -427,12 +441,20 @@
         translateX(12px);
 }
 
+
+/* ========================================================
+   OPEN TEXT MORPH
+======================================================== */
+
 .menu-morph.is-open .menu-text {
     opacity: 0;
 
     transform:
         translateX(12px);
+
+    transition-delay: 0s;
 }
+
 
 .menu-morph.is-open .close-text {
     opacity: 1;
@@ -440,7 +462,10 @@
     transform:
         translateX(0);
 
-    transition-delay: 0.2s;
+    /*
+     * Appears after the menu has started expanding.
+     */
+    transition-delay: 0.25s;
 }
 
 
@@ -452,16 +477,13 @@
     position: absolute;
 
     top: 80px;
-
     left: 24px;
     right: 24px;
-
     bottom: 24px;
 
     box-sizing: border-box;
 
     display: flex;
-
     flex-direction: column;
 
     opacity: 0;
@@ -476,6 +498,7 @@
         transform 0.15s ease;
 }
 
+
 .menu-morph.is-open .menu-content {
     opacity: 1;
 
@@ -485,8 +508,8 @@
     pointer-events: auto;
 
     transition:
-        opacity 0.45s ease 0.25s,
-        transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s;
+        opacity 0.45s ease 0.3s,
+        transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s;
 }
 
 
@@ -497,6 +520,11 @@
 .menu-section {
     margin: 0;
 }
+
+
+/* ========================================================
+   MENU LABEL
+======================================================== */
 
 .menu-label {
     margin: 0 0 15px 0;
@@ -528,6 +556,11 @@
     padding: 0;
 }
 
+
+/* ========================================================
+   MENU ITEMS
+======================================================== */
+
 .menu-list li {
     position: relative;
 
@@ -537,7 +570,6 @@
     padding: 0;
 
     display: flex;
-
     align-items: center;
 
     transform-origin: left center;
@@ -547,6 +579,11 @@
         opacity 0.45s ease,
         filter 0.45s ease;
 }
+
+
+/* ========================================================
+   MENU LINKS
+======================================================== */
 
 .menu-list a {
     display: block;
@@ -590,11 +627,17 @@
         scale(1.08);
 }
 
+
 .menu-list li:hover a {
     opacity: 1;
 
     color: #000;
 }
+
+
+/* ========================================================
+   ITEMS ABOVE HOVERED ITEM
+======================================================== */
 
 .menu-list li:has(~ li:hover) {
     transform:
@@ -603,9 +646,15 @@
     opacity: 0.62;
 }
 
+
 .menu-list li:has(~ li:hover) a {
     opacity: 0.62;
 }
+
+
+/* ========================================================
+   ITEMS BELOW HOVERED ITEM
+======================================================== */
 
 .menu-list li:hover~li {
     transform:
@@ -614,13 +663,24 @@
     opacity: 0.62;
 }
 
+
 .menu-list li:hover~li a {
     opacity: 0.62;
 }
 
+
+/* ========================================================
+   ADDITIONAL DISTANCE FADE
+======================================================== */
+
 .menu-list li:has(~ li:hover)~li:has(~ li:hover) {
     opacity: 0.45;
 }
+
+
+/* ========================================================
+   HOVERED LINK
+======================================================== */
 
 .menu-list li:hover a {
     transform:
@@ -628,6 +688,7 @@
 
     opacity: 1;
 }
+
 
 .menu-list a:hover {
     color: #000;
@@ -638,7 +699,7 @@
 
 
 /* ========================================================
-   MOBILE
+   TABLET / MOBILE
 ======================================================== */
 
 @media (max-width: 768px) {
@@ -646,6 +707,7 @@
     .nav {
         padding: 1rem 0;
     }
+
 
     .nav-container {
         width: 100%;
@@ -656,12 +718,22 @@
         box-sizing: border-box;
     }
 
+
+    /* -----------------------------------------------
+       CLOSED MENU
+    ----------------------------------------------- */
+
     .menu-morph {
         right: 1rem;
 
         width: 112px;
         height: 50px;
     }
+
+
+    /* -----------------------------------------------
+       OPEN MENU
+    ----------------------------------------------- */
 
     .menu-morph.is-open {
         width:
@@ -671,23 +743,31 @@
         height:
             min(300px,
                 calc(100vh - 32px));
+
+        border-radius: 28px;
     }
 
-    /*
-       The toggle always derives its width
-       from the current menu width.
-    */
-    .menu-toggle {
-        width: 100%;
-        height: 50px;
-    }
+
+    /* -----------------------------------------------
+       INNER TOGGLE
+    ----------------------------------------------- */
 
     .menu-morph.is-open .menu-toggle {
+        top: 8px;
+        left: 8px;
+
         width:
             calc(100% - 16px);
 
         height: 50px;
+
+        border-radius: 22px;
     }
+
+
+    /* -----------------------------------------------
+       CONTENT
+    ----------------------------------------------- */
 
     .menu-content {
         left: 24px;
@@ -700,7 +780,7 @@
 
 
 /* ========================================================
-   VERY SMALL SCREENS
+   VERY SMALL DEVICES
 ======================================================== */
 
 @media (max-width: 340px) {
@@ -712,19 +792,23 @@
         height:
             min(300px,
                 calc(100vh - 32px));
+
+        border-radius: 26px;
     }
 
-    .menu-toggle {
-        width: 100%;
-        height: 50px;
-    }
 
     .menu-morph.is-open .menu-toggle {
-        width:
-            calc(100% - 16px);
+        top: 7px;
+        left: 7px;
 
-        height: 50px;
+        width:
+            calc(100% - 14px);
+
+        height: 48px;
+
+        border-radius: 21px;
     }
+
 
     .menu-content {
         left: 20px;
@@ -734,7 +818,7 @@
 
 
 /* ========================================================
-   HIDDEN NAV
+   NAV HIDDEN ON SCROLL
 ======================================================== */
 
 .nav-hidden {
