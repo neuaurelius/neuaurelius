@@ -2,7 +2,7 @@ import Nav from "./Nav";
 import Hero from "./Hero";
 import AccordionWall from "./AccordianWall";
 import Publications from "./Publications";
-import "./JoinUs.css";
+import Collaboration from "./Collaboration"
 
 import { sanityClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -76,7 +76,7 @@ export default async function Homepage() {
             <Publications
                 publications={formattedPublications}
             />
-
+            <Collaboration />
             <JoinUs />
 
             <Footer />
