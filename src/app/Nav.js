@@ -25,10 +25,16 @@ export default function Nav() {
             }
         };
 
-        document.addEventListener("mousedown", handleOutsideClick);
+        document.addEventListener(
+            "mousedown",
+            handleOutsideClick
+        );
 
         return () =>
-            document.removeEventListener("mousedown", handleOutsideClick);
+            document.removeEventListener(
+                "mousedown",
+                handleOutsideClick
+            );
     }, [menuOpen]);
 
     useEffect(() => {
@@ -40,7 +46,9 @@ export default function Nav() {
                 currentScrollY < lastScrollY.current
             ) {
                 setNavHidden(false);
-            } else if (currentScrollY > lastScrollY.current) {
+            } else if (
+                currentScrollY > lastScrollY.current
+            ) {
                 setNavHidden(true);
             }
 
@@ -49,24 +57,41 @@ export default function Nav() {
 
         lastScrollY.current = window.scrollY;
 
-        window.addEventListener("scroll", handleScroll, {
-            passive: true,
-        });
+        window.addEventListener(
+            "scroll",
+            handleScroll,
+            {
+                passive: true,
+            }
+        );
 
         return () =>
-            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener(
+                "scroll",
+                handleScroll
+            );
     }, []);
 
     const sectionLink = (section) => {
-        return pathname === "/" ? `#${section}` : `/#${section}`;
+        return pathname === "/"
+            ? `#${section}`
+            : `/#${section}`;
     };
 
     return (
-        <nav className={`nav ${navHidden ? "nav-hidden" : ""}`}>
+        <nav
+            className={`nav ${
+                navHidden ? "nav-hidden" : ""
+            }`}
+        >
             <div className="nav-container">
 
-                {/* LOGO */}
+                {/* ==================================================
+                    LOGO
+                ================================================== */}
+
                 <div className="nav-brand">
+
                     <Link href="/">
                         <Image
                             src="/assets/logo/neuaureliusLogo_1.svg"
@@ -87,31 +112,45 @@ export default function Nav() {
                             className="textLogo"
                         />
                     </Link>
+
                 </div>
 
-                {/* MENU */}
+
+                {/* ==================================================
+                    MENU
+                ================================================== */}
+
                 <div
                     ref={menuRef}
-                    className={`menu-morph ${menuOpen ? "is-open" : ""
-                        }`}
+                    className={`menu-morph ${
+                        menuOpen ? "is-open" : ""
+                    }`}
                 >
 
-                    {/* TOP CONTROL */}
+                    {/* ==================================================
+                        TOP CONTROL
+                    ================================================== */}
+
                     <button
                         className="menu-toggle"
-                        onClick={() => setMenuOpen(!menuOpen)}
+                        onClick={() =>
+                            setMenuOpen(!menuOpen)
+                        }
                         aria-label={
                             menuOpen
                                 ? "Close menu"
                                 : "Open menu"
                         }
                     >
+
                         <div className="menu-icon">
                             <span />
                             <span />
                         </div>
 
+
                         <span className="menu-toggle-text">
+
                             <span className="menu-text">
                                 Menu
                             </span>
@@ -119,16 +158,27 @@ export default function Nav() {
                             <span className="close-text">
                                 Close
                             </span>
+
                         </span>
+
                     </button>
 
-                    {/* MENU CONTENT */}
+
+                    {/* ==================================================
+                        MENU CONTENT
+                    ================================================== */}
+
                     <div className="menu-content">
+
                         <div className="menu-section">
+
                             <ul className="menu-list">
+
                                 <li>
                                     <Link
-                                        href={sectionLink("aboutus")}
+                                        href={sectionLink(
+                                            "aboutus"
+                                        )}
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
@@ -137,9 +187,12 @@ export default function Nav() {
                                     </Link>
                                 </li>
 
+
                                 <li>
                                     <Link
-                                        href={sectionLink("career")}
+                                        href={sectionLink(
+                                            "career"
+                                        )}
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
@@ -148,9 +201,12 @@ export default function Nav() {
                                     </Link>
                                 </li>
 
+
                                 <li>
                                     <Link
-                                        href={sectionLink("publications")}
+                                        href={sectionLink(
+                                            "publications"
+                                        )}
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
@@ -159,9 +215,12 @@ export default function Nav() {
                                     </Link>
                                 </li>
 
+
                                 <li>
                                     <Link
-                                        href={sectionLink("contact")}
+                                        href={sectionLink(
+                                            "contact"
+                                        )}
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
@@ -169,10 +228,15 @@ export default function Nav() {
                                         Contact
                                     </Link>
                                 </li>
+
                             </ul>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
         </nav>
     );
