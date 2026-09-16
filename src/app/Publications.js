@@ -153,19 +153,24 @@ function PublicationCard({ publication, index }) {
     </article>
   );
 }
-
 export default function Publications({ publications = [] }, homepage) {
+  // Determine the grid layout class based on item count
+  const gridClass =
+    publications.length === 1
+      ? "publication-grid single-item"
+      : publications.length === 2
+        ? "publication-grid two-items"
+        : "publication-grid";
+
   return (
     <section className="publications-section" id="publications">
       <div className="publications-container">
         <div className="publications-header">
           <h1>PUBLICATIONS</h1>
-
-
         </div>
 
         {publications.length > 0 ? (
-          <div className="publication-grid">
+          <div className={gridClass}>
             {publications.map((publication, index) => (
               <PublicationCard
                 key={publication._id || index}

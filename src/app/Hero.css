@@ -1,14 +1,19 @@
 /* =========================================================
    HERO CONTAINER & BACKGROUND
    ========================================================= */
-
 .hero {
     position: relative;
     width: 100%;
-    min-height: 100svh;
+
+    /* Fallback for older browsers */
+    min-height: 100vh;
+    /* Modern viewport height (fixes mobile address bar jumping) */
+    min-height: 100dvh;
+
     overflow: hidden;
     color: #000000;
     isolation: isolate;
+    background: #ffffff;
 }
 
 .hero-ripple {
@@ -27,73 +32,64 @@
     opacity: 0.6;
 }
 
-
 /* =========================================================
    CONTENT LAYOUT & SPACING
    ========================================================= */
-
 .hero-content {
     position: relative;
     z-index: 2;
-
     width: 100%;
-    min-height: 100svh;
-
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
-
     box-sizing: border-box;
     padding: 7rem 5vw 5rem;
 }
 
 .hero-main {
-    width: min(100%, 1400px);
-
+    width: 100%;
+    max-width: 1400px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.5rem;
+    gap: 2rem;
 }
-
 
 /* =========================================================
    TYPOGRAPHY
    ========================================================= */
-
 .hero-typography {
-    width: max-content;
-    max-width: 92vw;
-
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-
     text-align: left;
     user-select: none;
 }
 
 .hero-word {
     position: relative;
-
     display: flex;
     align-items: baseline;
     justify-content: flex-start;
-
     width: max-content;
+    max-width: 100%;
     white-space: nowrap;
 
     font-family: var(--font-gcepicpro), sans-serif;
-    font-size: clamp(4rem, 8vw, 8.5rem);
+
+    /* Fluid typography that scales perfectly across all devices */
+    font-size: clamp(2.5rem, 8vw, 7.5rem);
     font-weight: 800;
     line-height: 0.92;
+    letter-spacing: -0.01em;
 
     color: #000000;
-
     transform-origin: left center;
     perspective: 800px;
-
     transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -101,8 +97,7 @@
     position: relative;
     display: inline-block;
     transform-origin: 50% 80%;
-    will-change: transform, letter-spacing;
-
+    will-change: transform;
     transition:
         transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
         opacity 0.45s ease,
@@ -112,81 +107,80 @@
 .hero-line-one,
 .hero-line-two,
 .hero-line-three {
-    margin-left: 0;
-    margin-bottom: 0;
+    margin: 0;
 }
-
 
 /* =========================================================
-   HOVER EFFECTS
+   HOVER EFFECTS (Desktop Only)
    ========================================================= */
+@media (hover: hover) and (pointer: fine) {
+    .hero-line-one:hover {
+        transform: translateX(5px) scaleX(1.008);
+    }
 
-.hero-line-one:hover {
-    transform: translateX(5px) scaleX(1.008);
-}
+    .hero-line-one:hover .hero-char {
+        transform: translateY(-3px);
+    }
 
-.hero-line-one:hover .hero-char {
-    transform: translateY(-3px);
-}
+    .hero-line-two:hover {
+        transform: translateX(8px) scaleX(1.012);
+    }
 
-.hero-line-two:hover {
-    transform: translateX(8px) scaleX(1.012);
-}
+    .hero-line-two:hover .hero-char {
+        transform: translateY(-4px) rotate(calc((var(--char-index) - 3) * 0.45deg));
+    }
 
-.hero-line-two:hover .hero-char {
-    transform: translateY(-4px) rotate(calc((var(--char-index) - 3) * 0.45deg));
-}
+    .hero-line-three:hover {
+        transform: translateX(4px) scaleX(1.006);
+    }
 
-.hero-line-three:hover {
-    transform: translateX(4px) scaleX(1.006);
-}
+    .hero-line-three:hover .hero-char {
+        transform: translateY(-3px) rotate(calc((var(--char-index) - 5) * -0.25deg));
+    }
 
-.hero-line-three:hover .hero-char {
-    transform: translateY(-3px) rotate(calc((var(--char-index) - 5) * -0.25deg));
-}
+    .hero-word:hover .hero-char:nth-child(1) {
+        transition-delay: 0s;
+    }
 
-.hero-word:hover .hero-char:nth-child(1) {
-    transition-delay: 0s;
-}
+    .hero-word:hover .hero-char:nth-child(2) {
+        transition-delay: 0.015s;
+    }
 
-.hero-word:hover .hero-char:nth-child(2) {
-    transition-delay: 0.015s;
-}
+    .hero-word:hover .hero-char:nth-child(3) {
+        transition-delay: 0.03s;
+    }
 
-.hero-word:hover .hero-char:nth-child(3) {
-    transition-delay: 0.03s;
-}
+    .hero-word:hover .hero-char:nth-child(4) {
+        transition-delay: 0.045s;
+    }
 
-.hero-word:hover .hero-char:nth-child(4) {
-    transition-delay: 0.045s;
-}
+    .hero-word:hover .hero-char:nth-child(5) {
+        transition-delay: 0.06s;
+    }
 
-.hero-word:hover .hero-char:nth-child(5) {
-    transition-delay: 0.06s;
-}
+    .hero-word:hover .hero-char:nth-child(6) {
+        transition-delay: 0.075s;
+    }
 
-.hero-word:hover .hero-char:nth-child(6) {
-    transition-delay: 0.075s;
-}
+    .hero-word:hover .hero-char:nth-child(7) {
+        transition-delay: 0.09s;
+    }
 
-.hero-word:hover .hero-char:nth-child(7) {
-    transition-delay: 0.09s;
-}
+    .hero-word:hover .hero-char:nth-child(8) {
+        transition-delay: 0.105s;
+    }
 
-.hero-word:hover .hero-char:nth-child(8) {
-    transition-delay: 0.105s;
-}
+    .hero-word:hover .hero-char:nth-child(9) {
+        transition-delay: 0.12s;
+    }
 
-.hero-word:hover .hero-char:nth-child(9) {
-    transition-delay: 0.12s;
-}
+    .hero-word:hover .hero-char:nth-child(10) {
+        transition-delay: 0.135s;
+    }
 
-.hero-word:hover .hero-char:nth-child(10) {
-    transition-delay: 0.135s;
-}
-
-.hero-word:hover .hero-char:nth-child(11) {
-    transition-delay: 0.15s;
+    .hero-word:hover .hero-char:nth-child(11) {
+        transition-delay: 0.15s;
+    }
 }
 
 .hero-word:not(:hover) .hero-char {
@@ -194,160 +188,117 @@
     transition-delay: 0s;
 }
 
-
 /* =========================================================
    INTRODUCTION & MAIN CTA
    ========================================================= */
-
 .hero-introduction {
-    width: min(100%, 540px);
-
-    margin-top: 0;
-    margin-left: 0.15rem;
-
+    width: 100%;
+    max-width: 540px;
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.25rem;
+    gap: 1.5rem;
 }
 
 .hero-introduction p {
     margin: 0;
-    max-width: 510px;
-
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: clamp(1.15rem, 1.4vw, 1.35rem);
-    line-height: 1.55;
-    letter-spacing: -0.015em;
-
-    color: rgba(0, 0, 0, 0.65);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.7);
     text-wrap: pretty;
+    /* Prevents awkward orphans on the last line */
 }
 
 .hero-cta {
     appearance: none;
     -webkit-appearance: none;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    padding: 0.9rem 1.8rem;
-    min-height: 50px;
-    margin-top: 0;
-
+    padding: 1rem 2rem;
+    min-height: 52px;
     border: 1px solid #111111;
     border-radius: 999px;
-
     background: #111111;
     color: #ffffff;
-
     font-family: var(--font-dm-sans), Arial, sans-serif;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 500;
     line-height: 1;
-    letter-spacing: -0.01em;
-
     cursor: pointer;
     box-sizing: border-box;
-
-    transition:
-        background 0.25s ease,
-        color 0.25s ease,
-        border-color 0.25s ease,
-        transform 0.25s ease;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .hero-cta span {
     display: block;
     color: inherit;
     font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
 }
 
 .hero-cta:hover {
     background: transparent;
     color: #111111;
-    border-color: #111111;
-
     transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
 
 .hero-cta:active {
     transform: translateY(0);
 }
 
-.hero-cta:focus-visible {
-    outline: 2px solid #111111;
-    outline-offset: 4px;
-}
-
-
 /* =========================================================
-   NEWSLETTER MODAL
+   NEWSLETTER MODAL (Fully Responsive)
    ========================================================= */
-
 .newsletter-overlay {
     position: fixed;
     inset: 0;
     z-index: 9999;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    padding: 24px;
-
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
-    animation: newsletterOverlayIn 0.25s ease forwards;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: newsletterOverlayIn 0.3s ease forwards;
 }
 
 .newsletter-modal {
     position: relative;
-
-    width: min(100%, 470px);
-    padding: 42px;
-
+    width: 100%;
+    max-width: 480px;
+    padding: 2.5rem;
     background: #ffffff;
     color: #111111;
-
     border-radius: 24px;
     box-shadow: 0 30px 100px rgba(0, 0, 0, 0.22);
 
-    animation: newsletterModalIn 0.3s ease forwards;
+    /* Ensures modal is scrollable if screen height is too small (e.g. Landscape mobile) */
+    max-height: 90dvh;
+    overflow-y: auto;
+
+    animation: newsletterModalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .newsletter-close {
     position: absolute;
-    top: 18px;
-    right: 18px;
-
+    top: 1.25rem;
+    right: 1.25rem;
     width: 36px;
     height: 36px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border: 0;
     border-radius: 50%;
-
     background: #f2f2f2;
     color: #111111;
-
-    font-size: 25px;
-    line-height: 1;
-
+    font-size: 24px;
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .newsletter-close:hover {
@@ -356,124 +307,97 @@
 }
 
 .newsletter-heading {
-    padding-right: 30px;
+    padding-right: 2rem;
 }
 
 .newsletter-heading h2 {
     margin: 0;
-
     font-family: var(--font-gcepicpro), sans-serif;
-    font-size: clamp(32px, 5vw, 44px);
-    line-height: 0.98;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    line-height: 1;
     font-weight: 400;
-
-    letter-spacing: -0.03em;
 }
 
 .newsletter-heading p {
-    max-width: 360px;
-    margin: 14px 0 0;
-
+    margin: 0.75rem 0 0;
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 15px;
-    line-height: 1.55;
-
+    font-size: 0.95rem;
+    line-height: 1.5;
     color: #666666;
 }
 
 .newsletter-form {
-    margin-top: 28px;
+    margin-top: 2rem;
 }
 
 .newsletter-form label {
     display: block;
-    margin-bottom: 8px;
-
+    margin-bottom: 0.5rem;
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 12px;
+    font-size: 0.85rem;
     font-weight: 600;
 }
 
 .newsletter-form input[type="email"] {
     width: 100%;
-    height: 52px;
-
-    padding: 0 16px;
-
-    border: 1px solid #d8d8d8;
+    height: 54px;
+    padding: 0 1rem;
+    border: 1px solid #e0e0e0;
     border-radius: 12px;
-
     outline: none;
     background: #fafafa;
     color: #111111;
-
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 15px;
-
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
 .newsletter-form input[type="email"]:focus {
     border-color: #111111;
     background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
 }
 
-.newsletter-form input[type="email"]::placeholder {
-    color: #999999;
-}
-
-.newsletter-form>button {
+.newsletter-form button {
     width: 100%;
-    height: 52px;
-
-    margin-top: 12px;
-
+    height: 54px;
+    margin-top: 1rem;
     border: 0;
     border-radius: 12px;
-
     background: #111111;
     color: #ffffff;
-
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 15px;
+    font-size: 1rem;
     font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        opacity 0.2s ease;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.newsletter-form>button:hover {
-    transform: translateY(-1px);
+.newsletter-form button:hover {
+    transform: translateY(-2px);
 }
 
-.newsletter-form>button:disabled {
-    opacity: 0.55;
+.newsletter-form button:disabled {
+    opacity: 0.6;
     cursor: wait;
+    transform: none;
 }
 
 .newsletter-note {
-    margin: 14px 0 0;
-
+    margin: 1rem 0 0;
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 11px;
-    line-height: 1.5;
-
+    font-size: 0.75rem;
     color: #999999;
+    text-align: center;
 }
 
 .newsletter-error {
-    margin: 12px 0 0;
-
+    margin: 0.75rem 0 0;
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 12px;
-    line-height: 1.4;
-
-    color: #b3261e;
+    font-size: 0.85rem;
+    color: #d32f2f;
+    text-align: center;
 }
 
 .newsletter-honeypot {
@@ -484,68 +408,62 @@
     margin: -1px !important;
     overflow: hidden !important;
     clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
     border: 0 !important;
 }
 
+/* Modal Success State */
 .newsletter-success {
     text-align: center;
-    padding: 25px 0 10px;
+    padding: 1.5rem 0 0.5rem;
 }
 
 .newsletter-success-mark {
-    width: 58px;
-    height: 58px;
-    margin: 0 auto 22px;
-
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
     background: #111111;
     color: #ffffff;
-
-    font-size: 24px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 2px solid transparent;
 }
 
 .newsletter-success h2 {
     margin: 0;
-
     font-family: var(--font-gcepicpro), sans-serif;
-    font-size: 42px;
-    line-height: 1;
-    font-weight: 400;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    line-height: 1.1;
 }
 
 .newsletter-success p {
-    max-width: 300px;
-    margin: 15px auto 0;
-
+    margin: 1rem auto 0;
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 14px;
+    font-size: 0.95rem;
     line-height: 1.5;
-
     color: #666666;
 }
 
 .newsletter-done {
-    margin-top: 25px;
-
-    min-width: 120px;
-    height: 44px;
-
+    margin-top: 2rem;
+    width: 100%;
+    height: 54px;
     border: 0;
-    border-radius: 10px;
-
+    border-radius: 12px;
     background: #111111;
     color: #ffffff;
-
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.newsletter-done:hover {
+    transform: translateY(-2px);
 }
 
 @keyframes newsletterOverlayIn {
@@ -561,7 +479,7 @@
 @keyframes newsletterModalIn {
     from {
         opacity: 0;
-        transform: translateY(12px) scale(0.98);
+        transform: translateY(20px) scale(0.95);
     }
 
     to {
@@ -570,122 +488,43 @@
     }
 }
 
-
-/* =========================================================
-   TABLET RESPONSIVENESS
-   ========================================================= */
-
-@media (max-width: 1200px) {
-    .hero-content {
-        padding: 7rem 4vw 5rem;
-    }
-}
-
-@media (max-width: 900px) {
-    .hero-content {
-        padding: 7rem 2rem 5rem;
-    }
-
-    .hero-typography {
-        max-width: 94vw;
-    }
-
-    .hero-word {
-        font-size: clamp(3rem, 9.5vw, 5.5rem);
-        line-height: 0.9;
-    }
-
-    .hero-main {
-        gap: 1.5rem;
-    }
-}
-
-
 /* =========================================================
    MOBILE RESPONSIVENESS
    ========================================================= */
-
-@media (max-width: 600px) {
-    .hero {
-        min-height: 100svh;
-        background: #ffffff;
-    }
-
+@media (max-width: 768px) {
     .hero-content {
-        padding: 5rem 1.25rem 4rem;
-    }
-
-    .hero-main {
-        width: 100%;
-        margin: 0 auto;
-        gap: 1.5rem;
-    }
-
-    .hero-typography {
-        width: 100%;
-        max-width: 100%;
+        padding: 6rem 1.5rem 4rem;
     }
 
     .hero-word {
-        max-width: 100%;
-        font-size: clamp(2.2rem, 9vw, 3.8rem);
-        line-height: 0.92;
-        letter-spacing: -0.025em;
+        /* Reduces font scale so long words don't overflow small screens */
+        font-size: clamp(2.2rem, 11vw, 4rem);
+        letter-spacing: -0.02em;
     }
 
     .hero-introduction {
-        width: 100%;
-        max-width: 100%;
         gap: 1.25rem;
-    }
-
-    .hero-introduction p {
-        width: 100%;
-        font-size: 1.1rem;
-        line-height: 1.5;
     }
 
     .hero-cta {
         width: 100%;
-        min-height: 50px;
-        font-size: 0.95rem;
-    }
-
-    .hero-word:hover {
-        transform: translateX(2px) scaleX(1.003);
-    }
-
-    .hero-word:hover .hero-char {
-        transform: translateY(-2px);
-    }
-
-    .newsletter-overlay {
-        padding: 16px;
+        /* Full width button on mobile */
     }
 
     .newsletter-modal {
-        padding: 34px 22px 28px;
+        padding: 2rem 1.5rem;
         border-radius: 20px;
     }
 
-    .newsletter-heading h2 {
-        font-size: 34px;
-    }
-
-    .newsletter-heading p {
-        font-size: 14px;
-    }
-
-    .newsletter-form {
-        margin-top: 22px;
+    .newsletter-close {
+        top: 1rem;
+        right: 1rem;
     }
 }
-
 
 /* =========================================================
    ACCESSIBILITY: REDUCED MOTION
    ========================================================= */
-
 @media (prefers-reduced-motion: reduce) {
 
     .hero-word,
@@ -694,8 +533,10 @@
     .newsletter-overlay,
     .newsletter-modal,
     .newsletter-close,
-    .newsletter-form>button {
+    .newsletter-form button,
+    .newsletter-done {
         transition: none !important;
         animation: none !important;
+        transform: none !important;
     }
 }

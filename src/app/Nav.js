@@ -92,9 +92,8 @@ export default function Nav() {
                 {/* MENU */}
                 <div
                     ref={menuRef}
-                    className={`menu-morph ${
-                        menuOpen ? "is-open" : ""
-                    }`}
+                    className={`menu-morph ${menuOpen ? "is-open" : ""
+                        }`}
                 >
 
                     {/* TOP CONTROL */}
@@ -126,9 +125,7 @@ export default function Nav() {
                     {/* MENU CONTENT */}
                     <div className="menu-content">
                         <div className="menu-section">
-
                             <ul className="menu-list">
-
                                 <li>
                                     <Link
                                         href={sectionLink("aboutus")}
@@ -142,12 +139,12 @@ export default function Nav() {
 
                                 <li>
                                     <Link
-                                        href={sectionLink("research")}
+                                        href={sectionLink("career")}
                                         onClick={() =>
                                             setMenuOpen(false)
                                         }
                                     >
-                                        Research
+                                        Career
                                     </Link>
                                 </li>
 
@@ -172,13 +169,11 @@ export default function Nav() {
                                         Contact
                                     </Link>
                                 </li>
-
                             </ul>
-
                         </div>
                     </div>
                 </div>
             </div>
         </nav>
     );
-                        }
+}

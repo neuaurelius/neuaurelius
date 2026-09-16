@@ -9,7 +9,6 @@ async function generateProofOfWork(nonce = 0) {
     const timestamp = Date.now();
     const challenge = `pow_${timestamp}_${Math.random().toString(36).substring(2)}`;
 
-    // Find a hash starting with "000" (lightweight CPU puzzle for bots, instant for real users)
     let solvedNonce = 0;
     while (true) {
         const msg = `${challenge}:${solvedNonce}`;
@@ -48,7 +47,7 @@ export default function Hero() {
     const [newsletterOpen, setNewsletterOpen] = useState(false);
     const [email, setEmail] = useState("");
     const [website, setWebsite] = useState("");
-    const [status, setStatus] = useState("idle"); // idle | loading | success | already_subscribed | error
+    const [status, setStatus] = useState("idle");
     const [message, setMessage] = useState("");
 
     useEffect(() => {
@@ -90,7 +89,6 @@ export default function Hero() {
         setMessage("");
 
         try {
-            // Invisible Zero-Key CAPTCHA puzzle execution
             const powToken = await generateProofOfWork();
 
             const response = await fetch("/api/subscribe", {
@@ -100,14 +98,13 @@ export default function Hero() {
                 },
                 body: JSON.stringify({
                     email,
-                    website, // Honeypot field
-                    captchaToken: powToken, // Nonce + Challenge payload
+                    website,
+                    captchaToken: powToken,
                 }),
             });
 
             const data = await response.json();
 
-            // Handle "Already Subscribed" case explicitly
             if (response.status === 409 || data.code === "ALREADY_EXISTS" || data.alreadySubscribed) {
                 setStatus("already_subscribed");
                 setMessage(data.message || "This email is already subscribed to our newsletter.");
@@ -157,12 +154,10 @@ export default function Hero() {
                                 text="GENERALIZED"
                                 className="hero-line-one"
                             />
-
                             <AnimatedWord
                                 text="EMBODIED"
                                 className="hero-line-two"
                             />
-
                             <AnimatedWord
                                 text="INTELLIGENCE"
                                 className="hero-line-three"
@@ -182,9 +177,7 @@ export default function Hero() {
                                 className="hero-cta"
                                 onClick={openNewsletter}
                             >
-                                <span>
-                                    Subscribe to Newsletter
-                                </span>
+                                <span>Subscribe to Newsletter</span>
                             </button>
                         </div>
                     </div>
@@ -195,9 +188,7 @@ export default function Hero() {
                 <div
                     className="newsletter-overlay"
                     onMouseDown={(event) => {
-                        if (
-                            event.target === event.currentTarget
-                        ) {
+                        if (event.target === event.currentTarget) {
                             closeNewsletter();
                         }
                     }}
@@ -214,11 +205,9 @@ export default function Hero() {
 
                         {status === "success" ? (
                             <div className="newsletter-success">
-
                                 <h2>Thank you for Subscribing</h2>
                                 <p>
-                                    We'll let you know when
-                                    something important happens.
+                                    We'll let you know when something important happens.
                                 </p>
                                 <button
                                     type="button"
@@ -230,7 +219,7 @@ export default function Hero() {
                             </div>
                         ) : status === "already_subscribed" ? (
                             <div className="newsletter-success">
-                                <div className="newsletter-success-mark" style={{ borderColor: "#666", color: "#666" }}>
+                                <div className="newsletter-success-mark">
                                     ℹ
                                 </div>
                                 <h2>Already Subscribed</h2>
@@ -248,8 +237,7 @@ export default function Hero() {
                                 <div className="newsletter-heading">
                                     <h2>Stay in the loop.</h2>
                                     <p>
-                                        Follow the development
-                                        of our first machine
+                                        Follow the development of our first machine
                                         and what comes next.
                                     </p>
                                 </div>
@@ -258,15 +246,12 @@ export default function Hero() {
                                     className="newsletter-form"
                                     onSubmit={handleSubmit}
                                 >
-                                    {/* Honeypot field */}
                                     <input
                                         type="text"
                                         name="website"
                                         value={website}
                                         onChange={(event) =>
-                                            setWebsite(
-                                                event.target.value
-                                            )
+                                            setWebsite(event.target.value)
                                         }
                                         tabIndex="-1"
                                         autoComplete="off"
@@ -274,9 +259,7 @@ export default function Hero() {
                                         aria-hidden="true"
                                     />
 
-                                    <label
-                                        htmlFor="newsletter-email"
-                                    >
+                                    <label htmlFor="newsletter-email">
                                         Email address
                                     </label>
 
@@ -287,22 +270,16 @@ export default function Hero() {
                                         placeholder="you@example.com"
                                         value={email}
                                         onChange={(event) =>
-                                            setEmail(
-                                                event.target.value
-                                            )
+                                            setEmail(event.target.value)
                                         }
                                         autoComplete="email"
                                         required
-                                        disabled={
-                                            status === "loading"
-                                        }
+                                        disabled={status === "loading"}
                                     />
 
                                     <button
                                         type="submit"
-                                        disabled={
-                                            status === "loading"
-                                        }
+                                        disabled={status === "loading"}
                                     >
                                         {status === "loading"
                                             ? "Verifying & Subscribing..."
@@ -316,8 +293,7 @@ export default function Hero() {
                                     )}
 
                                     <p className="newsletter-note">
-                                        No noise. Only important
-                                        updates from Neuaurelius.
+                                        No noise. Only important updates from Neuaurelius.
                                     </p>
                                 </form>
                             </>
