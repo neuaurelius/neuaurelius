@@ -23,31 +23,45 @@ async function generateProofOfWork(nonce = 0) {
     }
 }
 
-function AnimatedWord({ text, className = "" }) {
+function AnimatedWord({ text, className = "", lineIndex = 0 }) {
     return (
-        <div className={`hero-word ${className}`}>
-            {text.split("").map((char, index) => (
-                <span
-                    key={`${char}-${index}`}
-                    className="hero-char"
-                    style={{
-                        "--char-index": index,
-                        "--char-total": text.length,
-                    }}
-                >
-                    {char}
-                </span>
-            ))}
+        <div className="hero-word-mask">
+            <div
+                className={`hero-word ${className}`}
+                style={{ "--line-index": lineIndex }}
+            >
+                {text.split("").map((char, index) => (
+                    <span
+                        key={`${char}-${index}`}
+                        className="hero-char"
+                        style={{
+                            "--char-index": index,
+                            "--char-total": text.length,
+                        }}
+                    >
+                        {char}
+                    </span>
+                ))}
+            </div>
         </div>
     );
 }
 
 export default function Hero() {
+    const [isLoaded, setIsLoaded] = useState(false);
     const [newsletterOpen, setNewsletterOpen] = useState(false);
     const [email, setEmail] = useState("");
     const [website, setWebsite] = useState("");
     const [status, setStatus] = useState("idle");
     const [message, setMessage] = useState("");
+
+    // Trigger choreographed entrance on first paint
+    useEffect(() => {
+        const frame = requestAnimationFrame(() => {
+            setIsLoaded(true);
+        });
+        return () => cancelAnimationFrame(frame);
+    }, []);
 
     useEffect(() => {
         if (!newsletterOpen) {
@@ -229,7 +243,7 @@ export default function Hero() {
                 </defs>
             </svg>
 
-            <section className="hero">
+            <section className={`hero ${isLoaded ? "hero-loaded" : ""}`}>
                 {/* Atmospheric Background + Refracted Humanoid Render */}
                 <div className="cyber-hero-bg" aria-hidden="true">
                     <div className="cyber-ambient-glow" />
@@ -269,14 +283,17 @@ export default function Hero() {
                             <AnimatedWord
                                 text="GENERALIZED"
                                 className="hero-line-one"
+                                lineIndex={0}
                             />
                             <AnimatedWord
                                 text="EMBODIED"
                                 className="hero-line-two"
+                                lineIndex={1}
                             />
                             <AnimatedWord
                                 text="INTELLIGENCE"
                                 className="hero-line-three"
+                                lineIndex={2}
                             />
                         </div>
 
