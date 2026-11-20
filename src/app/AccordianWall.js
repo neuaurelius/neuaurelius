@@ -297,10 +297,7 @@ export default function AccordionWall() {
             >
                 <div className="beyond-header">
                     <h3 className="beyond-title">
-                        TARGET ENVIRONMENTS FOR
-                        <span className="beyond-title-accent">
-                            {" "}EMBODIED RESEARCH
-                        </span>
+                        ENVIRONMENTS WE ARE DESIGNING OUR BOTS TO WORK IN
                     </h3>
                 </div>
 
