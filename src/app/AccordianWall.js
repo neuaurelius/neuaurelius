@@ -6,35 +6,54 @@ import "./AccordianWall.css";
 const systems = [
     {
         id: "01",
+        tag: "ACTUATION RESEARCH",
         title: "Precision Actuation",
         description:
-            "Proprioceptive and powerful actuation systems engineered for precise, repeatable and responsive physical control.",
+            "Exploring proprioceptive and compliant actuation concepts aimed at smooth, repeatable physical control.",
         image:
-            "https://images.unsplash.com/photo-1629449502706-828cdde1c0b6?q=80&w=1600&auto=format&fit=crop",
+            "./assets/precise.png",
     },
     {
         id: "02",
+        tag: "POWER ARCHITECTURE",
         title: "Efficient Energy",
         description:
-            "Energy architectures designed to maximize power density, efficiency and endurance across intelligent machines.",
+            "Studying energy distribution and thermal layouts designed to support sustained operation in compact humanoid forms.",
         image:
-            "https://images.unsplash.com/photo-1777649162085-4d68cd451c39?q=80&w=1600&auto=format&fit=crop",
+            "./assets/energy.png",
     },
     {
         id: "03",
+        tag: "EMBODIED INTELLIGENCE",
         title: "Adaptive Computation",
         description:
-            "Computational systems that dynamically adapt perception, planning and control to changing environments.",
+            "Formulating onboard computational models that connect perception, spatial planning, and low-level motor control.",
         image:
-            "https://images.unsplash.com/photo-1583525957866-ea1cdcb4f46a?q=80&w=1600&auto=format&fit=crop",
+            "./assets/adaptive.png",
+    }
+];
+
+const domains = [
+    {
+        tone: "amber",
+        icon: "bx bx-buildings",
+        title: "Workplace & Operations",
+        description:
+            "Researching general-purpose manipulation and navigation concepts intended for everyday indoor human environments.",
+  },
+    {
+        tone: "lavender",
+        icon: "bx bx-dna",
+        title: "Clinical & Surgical Assistance",
+        description:
+            "Investigating high-precision motion and controlled-force architectures to support medical teams in structured settings.",
     },
     {
-        id: "04",
-        title: "Encrypted Communication",
+        tone: "sage",
+        icon: "bx bx-compass",
+        title: "Extreme & Scientific Exploration",
         description:
-            "Secure communication architectures enabling intelligent machines to exchange information with resilience and trust.",
-        image:
-            "https://images.unsplash.com/photo-1517928260182-5688aead3066?q=80&w=1600&auto=format&fit=crop",
+            "Exploring autonomous perception and resilient system designs suited for remote or hazardous field environments.",
     },
 ];
 
@@ -42,8 +61,8 @@ function AccordionSkeleton() {
     return (
         <section className="systems-section systems-loading">
             <div className="systems-intro systems-intro-skeleton">
+                <div className="skeleton-line skeleton-intro-pill" />
                 <div className="skeleton-line skeleton-intro-line skeleton-intro-large" />
-                <div className="skeleton-line skeleton-intro-line skeleton-intro-medium" />
                 <div className="skeleton-line skeleton-intro-line skeleton-intro-medium" />
                 <div className="skeleton-line skeleton-intro-line skeleton-intro-small" />
             </div>
@@ -52,8 +71,9 @@ function AccordionSkeleton() {
                 {systems.map((system, index) => (
                     <article
                         key={system.id}
-                        className={`system-card system-card-skeleton ${index === 0 ? "expanded" : ""
-                            }`}
+                        className={`system-card system-card-skeleton ${
+                            index === 0 ? "expanded" : ""
+                        }`}
                     >
                         <div className="system-skeleton-image" />
                         <div className="system-skeleton-shade" />
@@ -67,7 +87,6 @@ function AccordionSkeleton() {
                                 <span className="skeleton-line skeleton-info-title" />
                                 <span className="skeleton-line skeleton-info-text" />
                                 <span className="skeleton-line skeleton-info-text skeleton-info-text-two" />
-                                <span className="skeleton-line skeleton-info-text skeleton-info-text-three" />
                             </div>
                         )}
                     </article>
@@ -80,17 +99,13 @@ function AccordionSkeleton() {
 export default function AccordionWall() {
     const [active, setActive] = useState(0);
     const [introVisible, setIntroVisible] = useState(false);
+    const [domainsVisible, setDomainsVisible] = useState(false);
     const [loaded, setLoaded] = useState(false);
 
     const introRef = useRef(null);
+    const domainsRef = useRef(null);
     const imageRefs = useRef([]);
 
-    /*
-     * Preload all accordion images.
-     *
-     * This prevents the first accordion interaction from fighting
-     * against image decoding/network work.
-     */
     useEffect(() => {
         let cancelled = false;
 
@@ -98,37 +113,24 @@ export default function AccordionWall() {
             const images = systems.map((system, index) => {
                 return new Promise((resolve) => {
                     const img = new Image();
-
                     img.decoding = "async";
-
-                    if (index === 0) {
-                        img.fetchPriority = "high";
-                    } else {
-                        img.fetchPriority = "low";
-                    }
+                    img.fetchPriority = index === 0 ? "high" : "low";
 
                     img.onload = async () => {
                         try {
                             await img.decode();
                         } catch {
-                            // Image can still be used if decode() fails.
+                            // Safe fallback if decode() rejects
                         }
-
                         resolve();
                     };
 
                     img.onerror = () => resolve();
-
                     img.src = system.image;
-
                     imageRefs.current[index] = img;
                 });
             });
 
-            /*
-             * Don't make the entire page wait indefinitely for Unsplash.
-             * We only use the preload to warm the browser cache.
-             */
             await Promise.race([
                 Promise.all(images),
                 new Promise((resolve) => setTimeout(resolve, 900)),
@@ -146,25 +148,29 @@ export default function AccordionWall() {
         };
     }, []);
 
-    /*
-     * Intro intersection observer.
-     */
     useEffect(() => {
         const intro = introRef.current;
-
-        if (!intro) return;
+        const domainsEl = domainsRef.current;
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIntroVisible(entry.isIntersecting);
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.target === intro && entry.isIntersecting) {
+                        setIntroVisible(true);
+                    }
+                    if (entry.target === domainsEl && entry.isIntersecting) {
+                        setDomainsVisible(true);
+                    }
+                });
             },
             {
-                threshold: 0.15,
-                rootMargin: "0px 0px -5% 0px",
+                threshold: 0.12,
+                rootMargin: "0px 0px -4% 0px",
             }
         );
 
-        observer.observe(intro);
+        if (intro) observer.observe(intro);
+        if (domainsEl) observer.observe(domainsEl);
 
         return () => observer.disconnect();
     }, [loaded]);
@@ -175,32 +181,53 @@ export default function AccordionWall() {
 
     return (
         <section className="systems-section" id="aboutus">
+            {/* =====================================================
+                1. CENTERED EDITORIAL STATEMENT WITH BOXICONS CHIPS
+               ===================================================== */}
             <div
                 ref={introRef}
-                className={`systems-intro ${introVisible ? "is-visible" : ""
-                    }`}
+                className={`systems-intro ${introVisible ? "is-visible" : ""}`}
             >
-                <h1>
-                    <span className="intro-line">
-                        WE ARE BUILDING HUMANOID ROBOTS
-                    </span>
-                </h1>
+                <span className="systems-about-pill">ABOUT US</span>
 
-                <h1>
+                <h2 className="systems-statement">
                     <span className="intro-line">
-                        ROBOTS WHICH CAN WORK IN YOUR OFFICE,
+                        At Neuaurelius, we are researching humanoid
                     </span>
-
                     <span className="intro-line">
-                        HELP DOCTORS IN SURGERIES AND
+                        robotics, compliant actuation,{" "}
+                        <span
+                            className="inline-accent-chip chip-amber"
+                            aria-hidden="true"
+                        >
+                            <i className="bx bx-cog" />
+                        </span>
                     </span>
-
                     <span className="intro-line">
-                        SCIENTISTS TO EXPLORE HARSH AREAS.
+                        and embodied{" "}
+                        <span
+                            className="inline-accent-chip chip-lavender"
+                            aria-hidden="true"
+                        >
+                            <i className="bx bx-chip" />
+                        </span>{" "}
+                        intelligence for workplaces,
                     </span>
-                </h1>
+                    <span className="intro-line">
+                        surgeries, and scientific exploration{" "}
+                        <span
+                            className="inline-accent-chip chip-sage"
+                            aria-hidden="true"
+                        >
+                            <i className="bx bx-globe" />
+                        </span>
+                    </span>
+                </h2>
             </div>
 
+            {/* =====================================================
+                2. INTERACTIVE SUBSYSTEMS ACCORDION WALL
+               ===================================================== */}
             <div className="systems-wall">
                 {systems.map((system, index) => {
                     const expanded = active === index;
@@ -208,8 +235,9 @@ export default function AccordionWall() {
                     return (
                         <article
                             key={system.id}
-                            className={`system-card ${expanded ? "expanded" : ""
-                                }`}
+                            className={`system-card ${
+                                expanded ? "expanded" : ""
+                            }`}
                             onMouseEnter={() => setActive(index)}
                             onClick={() => setActive(index)}
                             aria-expanded={expanded}
@@ -222,9 +250,7 @@ export default function AccordionWall() {
                                 draggable="false"
                                 loading={index === 0 ? "eager" : "lazy"}
                                 decoding="async"
-                                fetchPriority={
-                                    index === 0 ? "high" : "low"
-                                }
+                                fetchPriority={index === 0 ? "high" : "low"}
                                 onError={(event) => {
                                     event.currentTarget.classList.add(
                                         "image-failed"
@@ -234,7 +260,11 @@ export default function AccordionWall() {
 
                             <div className="system-shade" />
 
-
+                            <div className="system-top">
+                                <span className="system-number">
+                                    {system.id}
+                                </span>
+                            </div>
 
                             <div className="system-collapsed">
                                 <span>{system.title}</span>
@@ -242,7 +272,11 @@ export default function AccordionWall() {
 
                             <div className="system-info">
                                 <div className="system-info-inner">
-                                    <h2>{system.title}</h2>
+                                    <span className="system-tag">
+                                        {system.tag}
+                                    </span>
+
+                                    <h3>{system.title}</h3>
 
                                     <p>{system.description}</p>
                                 </div>
@@ -250,6 +284,47 @@ export default function AccordionWall() {
                         </article>
                     );
                 })}
+            </div>
+
+            {/* =====================================================
+                3. BEYOND THE WALL: TARGET APPLICATION DOMAINS
+               ===================================================== */}
+            <div
+                ref={domainsRef}
+                className={`systems-beyond ${
+                    domainsVisible ? "is-visible" : ""
+                }`}
+            >
+                <div className="beyond-header">
+                    <h3 className="beyond-title">
+                        TARGET ENVIRONMENTS FOR
+                        <span className="beyond-title-accent">
+                            {" "}EMBODIED RESEARCH
+                        </span>
+                    </h3>
+                </div>
+
+                <div className="domains-grid">
+                    {domains.map((domain, idx) => (
+                        <article
+                            key={domain.title}
+                            className={`domain-card domain-card--${domain.tone}`}
+                            style={{ "--card-delay": `${idx * 0.1}s` }}
+                        >
+                            <div
+                                className="domain-card-icon"
+                                aria-hidden="true"
+                            >
+                                <i className={domain.icon} />
+                            </div>
+
+                            <div className="domain-card-body">
+                                <h4>{domain.title}</h4>
+                                <p>{domain.description}</p>
+                            </div>
+                        </article>
+                    ))}
+                </div>
             </div>
         </section>
     );

@@ -105,6 +105,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${dmSans.variable} ${gcepicpro.variable} h-full antialiased`}
     >
+      <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

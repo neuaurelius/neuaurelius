@@ -1,51 +1,89 @@
 /* =========================================================
-   SYSTEMS
+   SYSTEMS SECTION
    ========================================================= */
-
 .systems-section {
     position: relative;
     width: 100%;
-    margin-top: -96px;
-    padding: 150px 3vw 130px;
-    background: #fff;
-    color: #000;
+    padding: 120px 3.5vw 130px;
+    background: #ffffff;
+    color: #111111;
     overflow: hidden;
     isolation: isolate;
+    box-sizing: border-box;
 }
 
+/* Subtle architectural dot grid */
+.systems-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.085) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 16%,
+        black 90%,
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 16%,
+        black 90%,
+        transparent 100%
+    );
+    opacity: 0.45;
+}
 
 /* =========================================================
-   INTRO
+   1. CENTERED EDITORIAL STATEMENT
    ========================================================= */
-
 .systems-intro {
     position: relative;
-    z-index: 1;
-    width: min(100%, 1450px);
-    margin: 0 auto 28px;
-    font-family: var(--font-gcepicpro);
-    overflow: hidden;
+    z-index: 2;
+    width: min(100%, 960px);
+    margin: 0 auto 76px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-.systems-intro h1 {
-    max-width: 1000px;
+.systems-about-pill {
+    display: inline-block;
+    padding: 6px 14px;
+    margin-bottom: 24px;
+    border-radius: 999px;
+    background: #f4f4f6;
+    border: 1px solid #e6e6ea;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #52525b;
+}
+
+.systems-statement {
     margin: 0;
-    font: inherit;
-    font-size: clamp(18px, 2vw, 28px);
-    font-weight: 500;
-    line-height: 1.18;
-    letter-spacing: 0;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: clamp(23px, 3vw, 41px);
+    font-weight: 400;
+    line-height: 1.32;
+    letter-spacing: -0.025em;
+    color: #161618;
+    overflow: hidden;
 }
 
 .intro-line {
     display: block;
     opacity: 0;
-    transform: translate3d(0, 110%, 0);
-
+    transform: translate3d(0, 100%, 0);
     transition:
         opacity 0.55s ease,
         transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-
     will-change: transform, opacity;
 }
 
@@ -54,123 +92,73 @@
     transform: translate3d(0, 0, 0);
 }
 
-.systems-intro h1+h1 {
-    margin-top: 4px;
+.systems-intro .intro-line:nth-child(1) { transition-delay: 0.05s; }
+.systems-intro .intro-line:nth-child(2) { transition-delay: 0.13s; }
+.systems-intro .intro-line:nth-child(3) { transition-delay: 0.21s; }
+.systems-intro .intro-line:nth-child(4) { transition-delay: 0.29s; }
+
+/* Inline Boxicons pastel accent tiles */
+.inline-accent-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    width: 0.92em;
+    height: 0.92em;
+    margin: -0.12em 0.12em 0;
+    border-radius: 0.26em;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: #1f1f23;
+    line-height: 1;
 }
 
-.systems-intro h1:first-child .intro-line {
-    transition-delay: 0.05s;
+.inline-accent-chip i {
+    font-size: 0.54em;
+    line-height: 1;
 }
 
-.systems-intro h1+h1 .intro-line:nth-child(1) {
-    transition-delay: 0.16s;
+.chip-amber {
+    background: linear-gradient(145deg, #f8d39c 0%, #fbead0 100%);
 }
 
-.systems-intro h1+h1 .intro-line:nth-child(2) {
-    transition-delay: 0.25s;
+.chip-lavender {
+    background: linear-gradient(145deg, #dcd5fb 0%, #efecfe 100%);
 }
 
-.systems-intro h1+h1 .intro-line:nth-child(3) {
-    transition-delay: 0.34s;
+.chip-sage {
+    border-radius: 50%;
+    background: linear-gradient(145deg, #cde2d8 0%, #e7f2ec 100%);
 }
-
 
 /* =========================================================
-   DOT FIELD
+   2. INTERACTIVE ACCORDION WALL
    ========================================================= */
-
-.systems-section::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-
-    background-image:
-        radial-gradient(rgba(0, 0, 0, 0.09) 1px,
-            transparent 1px);
-
-    background-size: 24px 24px;
-
-    mask-image:
-        linear-gradient(to bottom,
-            transparent 0%,
-            black 24%,
-            black 88%,
-            transparent 100%);
-
-    -webkit-mask-image:
-        linear-gradient(to bottom,
-            transparent 0%,
-            black 24%,
-            black 88%,
-            transparent 100%);
-
-    opacity: 0.45;
-}
-
-
-/* =========================================================
-   WALL
-   ========================================================= */
-
 .systems-wall {
     position: relative;
     z-index: 2;
-
     width: 100%;
-    max-width: 1450px;
-
+    max-width: 1440px;
     height: 610px;
-
     margin: 0 auto;
-
     display: flex;
-    gap: 8px;
-
+    gap: 10px;
     isolation: isolate;
 }
 
-
-/* =========================================================
-   CARD
-   ========================================================= */
-
 .system-card {
     position: relative;
-
     min-width: 0;
     height: 100%;
-
     flex: 0.52;
-
     overflow: hidden;
-
     border: 0;
-    border-radius: 36px;
-
-    background: #111;
-
+    border-radius: 32px;
+    background: #111111;
     cursor: pointer;
-
     isolation: isolate;
-
-    /*
-     * Shorter animation.
-     *
-     * The old 1.25s flex animation caused too many layout
-     * calculations on weaker mobile CPUs.
-     */
     transition:
         flex 0.72s cubic-bezier(0.22, 1, 0.36, 1),
         border-radius 0.55s ease;
-
-    /*
-     * Do NOT use will-change: flex.
-     *
-     * flex is a layout property and cannot be GPU-accelerated
-     * in the same useful way as transform/opacity.
-     */
-
     contain: layout paint;
 }
 
@@ -178,242 +166,111 @@
     flex: 4.2;
 }
 
-
-/* =========================================================
-   IMAGE
-   ========================================================= */
-
 .system-image {
     position: absolute;
-
     z-index: -3;
-
     width: 104%;
     height: 104%;
-
     display: block;
-
     object-fit: cover;
     object-position: center;
-
     user-select: none;
     pointer-events: none;
-
     background: #151515;
-
-    /*
-     * Keep the initial image treatment cheap.
-     */
-    filter:
-        grayscale(100%) brightness(0.58) contrast(0.95);
-
+    filter: grayscale(100%) brightness(0.55) contrast(0.96);
     transform: translate3d(0, 0, 0) scale(1.045);
-
     transform-origin: center center;
-
-    /*
-     * Only the image needs GPU promotion.
-     */
     will-change: transform, filter;
-
     transition:
         transform 0.72s cubic-bezier(0.22, 1, 0.36, 1),
         filter 0.6s ease;
-
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-
-    /*
-     * Prevent the browser from painting the image
-     * unnecessarily outside the card.
-     */
     contain: paint;
 }
 
 .system-card.expanded .system-image {
     transform: translate3d(0, 0, 0) scale(1);
-
-    filter:
-        grayscale(15%) brightness(0.70) contrast(0.98);
+    filter: grayscale(15%) brightness(0.68) contrast(1);
 }
 
-
-/*
- * Graceful image failure.
- *
- * The card still looks intentional if Unsplash is unavailable.
- */
 .system-image.image-failed {
     opacity: 0;
-
-    background:
-        radial-gradient(circle at 50% 30%,
-            #333 0%,
-            #171717 45%,
-            #080808 100%);
+    background: radial-gradient(circle at 50% 30%, #333 0%, #171717 45%, #080808 100%);
 }
-
-
-/* =========================================================
-   IMAGE SHADE
-   ========================================================= */
 
 .system-shade {
     position: absolute;
     inset: 0;
-
     z-index: -2;
-
     pointer-events: none;
-
-    background:
-        linear-gradient(180deg,
-            rgba(0, 0, 0, 0.12) 0%,
-            rgba(0, 0, 0, 0.02) 35%,
-            rgba(0, 0, 0, 0.84) 100%);
-
-    opacity: 1;
-
-    transform: translateZ(0);
-
-    will-change: opacity;
-
-    transition: opacity 0.5s ease;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.25) 0%,
+        rgba(0, 0, 0, 0.05) 38%,
+        rgba(0, 0, 0, 0.88) 100%
+    );
 }
-
-
-/* =========================================================
-   TOP
-   ========================================================= */
 
 .system-top {
     position: absolute;
-
-    top: 22px;
-    left: 22px;
-    right: 22px;
-
+    top: 24px;
+    left: 24px;
+    right: 24px;
     z-index: 3;
-
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
+    justify-content: flex-start;
     color: rgba(255, 255, 255, 0.85);
-
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 10px;
-
-    letter-spacing: 0.08em;
-
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
     pointer-events: none;
 }
 
 .system-number {
-    opacity: 0.7;
+    opacity: 0.78;
 }
-
-
-/* =========================================================
-   DOT
-   ========================================================= */
-
-.system-dot {
-    width: 5px;
-    height: 5px;
-
-    flex: 0 0 5px;
-
-    border-radius: 50%;
-
-    background: rgba(255, 255, 255, 0.75);
-
-    opacity: 0;
-    transform: scale(0);
-
-    transition:
-        opacity 0.35s ease,
-        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.system-card.expanded .system-dot {
-    opacity: 1;
-    transform: scale(1);
-}
-
-
-/* =========================================================
-   COLLAPSED TITLE
-   ========================================================= */
 
 .system-collapsed {
     position: absolute;
-
     left: 50%;
-    bottom: 100px;
-
+    bottom: 105px;
     width: 90%;
-
-    transform:
-        translate3d(-50%, 0, 0) rotate(-90deg);
-
+    transform: translate3d(-50%, 0, 0) rotate(-90deg);
     transform-origin: center;
-
     color: rgba(255, 255, 255, 0.92);
-
     white-space: nowrap;
-
-    font-family: var(--font-gcepicpro);
-
-    font-size: clamp(16px, 2.5vw, 28px);
-
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(16px, 2.2vw, 25px);
     letter-spacing: 1.2px;
     font-weight: 500;
-
     opacity: 1;
-
     pointer-events: none;
-
     will-change: transform, opacity;
-
     transition:
-        opacity 0.32s ease,
+        opacity 0.3s ease,
         transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .system-card.expanded .system-collapsed {
     opacity: 0;
-
-    transform:
-        translate3d(-30%, 0, 0) rotate(-90deg);
+    transform: translate3d(-30%, 0, 0) rotate(-90deg);
 }
-
-
-/* =========================================================
-   EXPANDED CONTENT
-   ========================================================= */
 
 .system-info {
     position: absolute;
-
     left: 0;
     right: 0;
     bottom: 0;
-
     z-index: 4;
-
-    padding: clamp(24px, 3vw, 38px);
-
-    color: #fff;
-
+    padding: clamp(24px, 3vw, 40px);
+    color: #ffffff;
     opacity: 0;
-
-    transform: translate3d(0, 24px, 0);
-
+    transform: translate3d(0, 22px, 0);
     pointer-events: none;
-
     will-change: opacity, transform;
-
     transition:
         opacity 0.28s ease,
         transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
@@ -421,101 +278,221 @@
 
 .system-card.expanded .system-info {
     opacity: 1;
-
     transform: translate3d(0, 0, 0);
-
     transition-delay: 0.16s;
 }
 
 .system-info-inner {
     width: 100%;
-    max-width: 680px;
+    max-width: 660px;
 }
 
-
-/* =========================================================
-   TITLE
-   ========================================================= */
-
-.system-info h2 {
-    margin: 0;
-
-    max-width: 100%;
-
-    font-family: var(--font-gcepicpro);
-
-    /*
-     * Fluid but capped.
-     *
-     * This prevents the 38px fixed size from becoming
-     * disproportionately large on narrow phones.
-     */
-    font-size: clamp(28px, 4.2vw, 68px);
-
+.system-tag {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 11px;
     font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+}
 
-    line-height: 0.94;
-
-    letter-spacing: 1px;
-
-    color: #fff;
-
-    /*
-     * Lets the browser choose better line breaks.
-     */
+.system-info h3 {
+    margin: 0;
+    max-width: 100%;
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(28px, 4vw, 62px);
+    font-weight: 600;
+    line-height: 0.96;
+    letter-spacing: 0.5px;
+    color: #ffffff;
     text-wrap: balance;
 }
 
-
-/* =========================================================
-   DESCRIPTION
-   ========================================================= */
-
 .system-info p {
     width: min(100%, 510px);
-
-    margin: 20px 0 0;
-
+    margin: 16px 0 0;
     font-family: var(--font-dm-sans), sans-serif;
-
-    font-size: clamp(16px, 1.6vw, 21px);
-
-    line-height: 1.48;
-
+    font-size: clamp(15px, 1.45vw, 19px);
+    line-height: 1.5;
     letter-spacing: -0.01em;
-
-    color: rgba(255, 255, 255, 0.76);
-
+    color: rgba(255, 255, 255, 0.78);
     text-wrap: pretty;
 }
-
-
-/* =========================================================
-   DESKTOP HOVER
-   ========================================================= */
 
 @media (hover: hover) and (pointer: fine) {
     .system-card:not(.expanded):hover .system-image {
         transform: translate3d(0, 0, 0) scale(1.065);
-
-        filter:
-            grayscale(65%) brightness(0.65) contrast(0.95);
+        filter: grayscale(65%) brightness(0.64) contrast(0.96);
     }
 }
 
+/* =========================================================
+   3. BEYOND THE WALL: SOFT PASTEL GRADIENT CARDS WITH BOXICONS
+   ========================================================= */
+.systems-beyond {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 1440px);
+    margin: 92px auto 0;
+}
+
+.beyond-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 34px;
+}
+
+.beyond-pill {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #f4f4f6;
+    border: 1px solid #e6e6ea;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #52525b;
+}
+
+.beyond-title {
+    margin: 0;
+    max-width: 680px;
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(24px, 2.8vw, 40px);
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    color: #141414;
+}
+
+.beyond-title-accent {
+    font-weight: 400;
+    color: #3f3f46;
+}
+
+.domains-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.domain-card {
+    position: relative;
+    min-height: 300px;
+    padding: 30px 32px 34px;
+    border-radius: 22px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+    transition:
+        opacity 0.55s ease var(--card-delay, 0s),
+        transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay, 0s),
+        box-shadow 0.28s ease,
+        border-color 0.28s ease;
+}
+
+.systems-beyond.is-visible .domain-card {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.domain-card:hover {
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.045);
+}
+
+.domain-card--amber {
+    background: linear-gradient(
+        180deg,
+        #f8d39c 0%,
+        #fbe8cb 48%,
+        #faf7f2 100%
+    );
+}
+
+.domain-card--lavender {
+    background: linear-gradient(
+        180deg,
+        #dcd5fb 0%,
+        #ece8fd 48%,
+        #f8f7fc 100%
+    );
+}
+
+.domain-card--sage {
+    background: linear-gradient(
+        180deg,
+        #cde2d8 0%,
+        #e3efe9 48%,
+        #f5f9f7 100%
+    );
+}
+
+/* Boxicon Top-Left Anchor */
+.domain-card-icon {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: #18181b;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.domain-card-icon i {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.domain-card:hover .domain-card-icon {
+    transform: translateY(-2px);
+}
+
+.domain-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.domain-card h4 {
+    margin: 0;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: clamp(18px, 1.35vw, 21px);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: #141414;
+}
+
+.domain-card p {
+    margin: 0;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 14px;
+    line-height: 1.58;
+    color: #4b4b53;
+    text-wrap: pretty;
+}
 
 /* =========================================================
    TABLET
    ========================================================= */
-
-@media (max-width: 1000px) {
+@media (max-width: 1024px) {
     .systems-section {
-        margin-top: -64px;
-        padding: 100px 20px;
+        padding: 96px 24px 100px;
     }
 
     .systems-intro {
-        margin-bottom: 22px;
+        margin-bottom: 56px;
     }
 
     .systems-wall {
@@ -523,126 +500,83 @@
     }
 
     .system-card {
-        border-radius: 28px;
-
-        transition:
-            flex 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-            border-radius 0.45s ease;
+        border-radius: 26px;
     }
 
-    .system-info {
-        padding: 28px;
+    .domains-grid {
+        grid-template-columns: 1fr;
     }
 
-    .system-info h2 {
-        font-size: clamp(30px, 5vw, 52px);
-    }
-
-    .system-info p {
-        font-size: clamp(16px, 2vw, 20px);
+    .domain-card {
+        min-height: 230px;
+        gap: 28px;
     }
 }
-
 
 /* =========================================================
    MOBILE
    ========================================================= */
-
 @media (max-width: 700px) {
     .systems-section {
-        margin-top: -36px;
-
-        min-height: 100vh;
-
-        padding:
-            10% 14px 80px;
+        padding: 72px 16px 80px;
     }
 
     .systems-intro {
+        margin-bottom: 42px;
+    }
+
+    .systems-about-pill {
         margin-bottom: 18px;
     }
 
-    .systems-intro h1 {
-        font-size: clamp(16px, 4.2vw, 22px);
+    .systems-statement {
+        font-size: clamp(20px, 5.6vw, 28px);
+        line-height: 1.35;
     }
 
-    /*
-     * Mobile cards are vertical.
-     */
+    .intro-line {
+        display: inline;
+    }
+
     .systems-wall {
         height: auto;
-
         display: flex;
         flex-direction: column;
-
-        gap: 7px;
+        gap: 8px;
     }
 
     .system-card,
     .system-card.expanded {
         flex: none;
-
         width: 100%;
-
-        height: 106px;
-
+        height: 98px;
         border-radius: 18px;
-
-        /*
-         * Much shorter animation on mobile.
-         *
-         * 1 second is unnecessarily expensive on phones.
-         */
         transition:
             height 0.48s cubic-bezier(0.22, 1, 0.36, 1),
             border-radius 0.35s ease;
     }
 
     .system-card.expanded {
-        /*
-         * Use viewport-based sizing rather than a fixed
-         * 390px so phones of different heights behave better.
-         */
-        height: clamp(360px, 68vh, 620px);
+        height: clamp(340px, 64vh, 500px);
     }
 
-    /*
-     * Mobile image doesn't need aggressive animation.
-     */
     .system-image {
         transform: translate3d(0, 0, 0) scale(1.02);
-
-        /*
-         * Filter animation is expensive on mobile.
-         * Keep the image treatment almost constant.
-         */
-        filter:
-            grayscale(35%) brightness(0.64) contrast(0.96);
-
-        transition:
-            transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+        filter: grayscale(35%) brightness(0.62) contrast(0.96);
+        transition: transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .system-card.expanded .system-image {
         transform: translate3d(0, 0, 0) scale(1);
-
-        filter:
-            grayscale(15%) brightness(0.70) contrast(0.98);
+        filter: grayscale(15%) brightness(0.68) contrast(0.98);
     }
 
-    /*
-     * Horizontal mobile title.
-     */
     .system-collapsed {
-        left: 22px;
+        left: 20px;
         bottom: 50%;
-
-        width: calc(100% - 44px);
-
+        width: calc(100% - 40px);
         transform: translate3d(0, 50%, 0);
-
-        font-size: clamp(16px, 4.8vw, 26px);
-
+        font-size: clamp(16px, 4.6vw, 22px);
         letter-spacing: 0.8px;
     }
 
@@ -657,151 +591,63 @@
     }
 
     .system-info {
-        padding: clamp(22px, 6vw, 30px);
-
+        padding: 22px 20px 26px;
         transform: translate3d(0, 18px, 0);
-
-        /*
-         * Reserve space from the bottom so the text doesn't
-         * sit against the rounded edge.
-         */
-        padding-bottom: clamp(24px, 7vw, 38px);
     }
 
     .system-card.expanded .system-info {
         transform: translate3d(0, 0, 0);
     }
 
-    .system-info-inner {
-        max-width: 100%;
-    }
-
-    .system-info h2 {
-        /*
-         * This is deliberately smaller than your old fixed 38px.
-         * It gives narrower phones more consistent wrapping.
-         */
-        font-size: clamp(28px, 7.2vw, 40px);
-
-        line-height: 0.94;
-
-        letter-spacing: 0.7px;
+    .system-info h3 {
+        font-size: clamp(26px, 7vw, 38px);
+        line-height: 0.98;
     }
 
     .system-info p {
         width: 100%;
-        max-width: 100%;
-
-        margin-top: 18px;
-
-        font-size: clamp(16px, 4.6vw, 20px);
-
-        line-height: 1.48;
-    }
-
-    /*
-     * No hover behavior on touch devices.
-     */
-    .system-card:hover .system-image {
-        transform: translate3d(0, 0, 0) scale(1.02);
-    }
-}
-
-
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 400px) {
-    .systems-section {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-
-    .systems-wall {
-        gap: 6px;
-    }
-
-    .system-card,
-    .system-card.expanded {
-        border-radius: 16px;
-    }
-
-    .system-card {
-        height: 100px;
-    }
-
-    .system-card.expanded {
-        height: clamp(340px, 70vh, 520px);
-    }
-
-    .system-collapsed {
-        left: 18px;
-        width: calc(100% - 36px);
-
-        font-size: clamp(15px, 4.5vw, 21px);
-    }
-
-    .system-top {
-        top: 16px;
-        left: 18px;
-        right: 18px;
-    }
-
-    .system-info {
-        padding: 20px;
-    }
-
-    .system-info h2 {
-        font-size: clamp(26px, 7vw, 32px);
-    }
-
-    .system-info p {
-        margin-top: 16px;
-        font-size: 16px;
+        margin-top: 12px;
+        font-size: 15px;
         line-height: 1.5;
     }
-}
 
+    .systems-beyond {
+        margin-top: 56px;
+    }
 
-/* =========================================================
-   VERY SHORT PHONES
-   ========================================================= */
-
-@media (max-width: 700px) and (max-height: 700px) {
-    .system-card.expanded {
-        height: min(500px, 74vh);
+    .domain-card {
+        min-height: 210px;
+        padding: 24px;
+        border-radius: 18px;
+        gap: 24px;
     }
 }
-
 
 /* =========================================================
    REDUCED MOTION
    ========================================================= */
-
 @media (prefers-reduced-motion: reduce) {
-
     .system-card,
     .system-image,
     .system-info,
     .system-collapsed,
-    .system-dot,
-    .intro-line {
+    .intro-line,
+    .domain-card,
+    .domain-card-icon {
         transition: none !important;
         animation: none !important;
     }
 
-    .intro-line {
+    .intro-line,
+    .domain-card {
         opacity: 1;
         transform: none;
     }
 }
 
-
 /* =========================================================
    LOADING / SKELETON
    ========================================================= */
-
 .systems-loading {
     min-height: 100vh;
 }
@@ -809,222 +655,90 @@
 .systems-intro-skeleton {
     opacity: 1 !important;
     transform: none !important;
+    align-items: center;
 }
 
 .skeleton-line {
     position: relative;
-
     display: block;
-
     overflow: hidden;
-
     background: #eeeeee;
 }
 
 .skeleton-line::after {
     position: absolute;
-
     inset: 0;
-
     content: "";
-
-    background:
-        linear-gradient(90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.75) 50%,
-            transparent 100%);
-
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.75) 50%,
+        transparent 100%
+    );
     transform: translate3d(-100%, 0, 0);
+    animation: accordion-skeleton-shimmer 1.5s ease-in-out infinite;
+}
 
-    animation:
-        accordion-skeleton-shimmer 1.5s ease-in-out infinite;
+.skeleton-intro-pill {
+    width: 92px;
+    height: 24px;
+    margin-bottom: 22px;
+    border-radius: 999px;
 }
 
 .skeleton-intro-line {
-    height: 18px;
-    margin-bottom: 10px;
-    border-radius: 4px;
+    height: 24px;
+    margin-bottom: 12px;
+    border-radius: 6px;
 }
 
-.skeleton-intro-large {
-    width: min(720px, 70vw);
-}
+.skeleton-intro-large { width: min(680px, 78vw); }
+.skeleton-intro-medium { width: min(580px, 68vw); }
+.skeleton-intro-small { width: min(460px, 54vw); }
 
-.skeleton-intro-medium {
-    width: min(610px, 62vw);
-}
-
-.skeleton-intro-small {
-    width: min(480px, 48vw);
-}
-
-
-/* =========================================================
-   SKELETON WALL
-   ========================================================= */
-
-.systems-wall-skeleton {
-    opacity: 1 !important;
-}
-
-.system-card-skeleton {
-    position: relative;
-    overflow: hidden;
-}
-
-.system-skeleton-image {
-    position: absolute;
-    inset: 0;
-
-    background: #eeeeee;
-}
+.systems-wall-skeleton { opacity: 1 !important; }
+.system-card-skeleton { position: relative; overflow: hidden; }
+.system-skeleton-image { position: absolute; inset: 0; background: #eeeeee; }
 
 .system-skeleton-image::after {
     position: absolute;
-
     inset: 0;
-
     content: "";
-
-    background:
-        linear-gradient(90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.65) 50%,
-            transparent 100%);
-
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.65) 50%,
+        transparent 100%
+    );
     transform: translate3d(-100%, 0, 0);
-
-    animation:
-        accordion-skeleton-shimmer 1.7s ease-in-out infinite;
+    animation: accordion-skeleton-shimmer 1.7s ease-in-out infinite;
 }
 
-.system-skeleton-shade {
-    position: absolute;
-    inset: 0;
-
-    background: rgba(0, 0, 0, 0.04);
-}
-
-.system-skeleton-title {
-    position: absolute;
-
-    right: 1.5rem;
-    bottom: 1.5rem;
-    left: 1.5rem;
-
-    z-index: 2;
-}
-
-.skeleton-title-line {
-    width: 70%;
-    height: 18px;
-
-    border-radius: 4px;
-}
+.system-skeleton-shade { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.04); }
+.system-skeleton-title { position: absolute; right: 1.5rem; bottom: 1.5rem; left: 1.5rem; z-index: 2; }
+.skeleton-title-line { width: 70%; height: 18px; border-radius: 4px; }
 
 .system-skeleton-info {
     position: absolute;
-
     right: 1.5rem;
     bottom: 1.5rem;
     left: 1.5rem;
-
     z-index: 3;
-
     display: flex;
     flex-direction: column;
-
     gap: 9px;
 }
 
-.skeleton-info-title {
-    width: 60%;
-    height: 28px;
-
-    margin-bottom: 8px;
-
-    border-radius: 4px;
-}
-
-.skeleton-info-text {
-    width: 90%;
-    height: 12px;
-
-    border-radius: 3px;
-}
-
-.skeleton-info-text-two {
-    width: 82%;
-}
-
-.skeleton-info-text-three {
-    width: 65%;
-}
-
-
-/* =========================================================
-   SKELETON ANIMATION
-   ========================================================= */
+.skeleton-info-title { width: 60%; height: 28px; margin-bottom: 8px; border-radius: 4px; }
+.skeleton-info-text { width: 90%; height: 12px; border-radius: 3px; }
+.skeleton-info-text-two { width: 82%; }
 
 @keyframes accordion-skeleton-shimmer {
-    from {
-        transform: translate3d(-100%, 0, 0);
-    }
-
-    to {
-        transform: translate3d(100%, 0, 0);
-    }
+    from { transform: translate3d(-100%, 0, 0); }
+    to { transform: translate3d(100%, 0, 0); }
 }
-
-
-/* =========================================================
-   MOBILE SKELETON
-   ========================================================= */
-
-@media (max-width: 700px) {
-    .skeleton-intro-line {
-        height: 13px;
-        margin-bottom: 8px;
-    }
-
-    .skeleton-intro-large {
-        width: 90%;
-    }
-
-    .skeleton-intro-medium {
-        width: 82%;
-    }
-
-    .skeleton-intro-small {
-        width: 65%;
-    }
-
-    .system-skeleton-title {
-        right: 1rem;
-        bottom: 1rem;
-        left: 1rem;
-    }
-
-    .system-skeleton-info {
-        right: 1rem;
-        bottom: 1rem;
-        left: 1rem;
-    }
-
-    .skeleton-title-line {
-        width: 82%;
-        height: 15px;
-    }
-
-    .skeleton-info-title {
-        width: 75%;
-        height: 22px;
-    }
-}
-
 
 @media (prefers-reduced-motion: reduce) {
-
     .skeleton-line::after,
     .system-skeleton-image::after {
         animation: none;

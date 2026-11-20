@@ -76,8 +76,7 @@ export default async function Homepage() {
             <Publications
                 publications={formattedPublications}
             />
-            <Collaboration />
-            <JoinUs />
+
 
             <Footer />
         </>

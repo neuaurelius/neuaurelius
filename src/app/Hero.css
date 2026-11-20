@@ -1,479 +1,816 @@
 /* =========================================================
-               HERO CONTAINER & BACKGROUND
-               ========================================================= */
-            .hero {
-                position: relative;
-                width: 100%;
-                min-height: 100vh;
-                min-height: 100dvh;
-                overflow: hidden;
-                color: #000000;
-                isolation: isolate;
-                background: #ffffff;
-            }
+   HERO CONTAINER & ATMOSPHERIC HUMANOID VISUAL
+   ========================================================= */
+.hero {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    isolation: isolate;
+    background: #12101a;
+    overflow: hidden;
+}
 
-            /* =========================================================
-               CONTENT LAYOUT & SPACING
-               ========================================================= */
-            .hero-content {
-                position: relative;
-                z-index: 2;
-                width: 100%;
-                min-height: 100vh;
-                min-height: 100dvh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-sizing: border-box;
-                padding: 4rem 5vw;
-            }
+.cyber-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+        /* Deep violet-indigo center studio glow */
+        radial-gradient(
+            ellipse 68% 58% at 50% 34%,
+            #3b3354 0%,
+            #241f35 38%,
+            #15131f 74%,
+            #0b0a10 100%
+        ),
+        /* Subtle warm amber-bronze & muted slate undertones */
+        radial-gradient(
+            circle at 22% 76%,
+            rgba(74, 54, 30, 0.34) 0%,
+            transparent 55%
+        ),
+        radial-gradient(
+            circle at 80% 72%,
+            rgba(38, 46, 48, 0.32) 0%,
+            transparent 55%
+        );
+}
 
-            .hero-main {
-                width: 100%;
-                max-width: 1400px;
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 2rem;
-            }
+/* Soft top studio backlight blending lavender-silver with warm amber edge */
+.cyber-ambient-glow {
+    position: absolute;
+    top: -12%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 72vw;
+    height: 68vh;
+    background: radial-gradient(
+        circle,
+        rgba(176, 165, 214, 0.36) 0%,
+        rgba(148, 118, 82, 0.16) 52%,
+        transparent 75%
+    );
+    filter: blur(48px);
+}
 
-            /* =========================================================
-               TYPOGRAPHY
-               ========================================================= */
-            .hero-typography {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                justify-content: center;
-                text-align: left;
-                user-select: none;
-            }
+/* Humanoid Stage — Balanced Head & Shoulders Portrait Framing */
+.cyber-figure-stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: hidden;
+}
 
-            .hero-word {
-                position: relative;
-                display: flex;
-                align-items: baseline;
-                justify-content: flex-start;
-                width: max-content;
-                max-width: 100%;
-                white-space: nowrap;
+.cyber-figure-wrapper {
+    position: relative;
+    width: min(600px, 100vw);
+    height: 90vh;
+    margin-top: 8vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    animation: figureBreathe 11s ease-in-out infinite alternate;
+}
 
-                font-family: var(--font-gcepicpro), sans-serif;
+/* Dark gunmetal silhouette cropped cleanly across upper chest/shoulders */
+.cyber-figure-img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 4%;
+    mix-blend-mode: screen;
+    filter: contrast(1.42) brightness(0.46) saturate(0.65) blur(4.2px);
+    -webkit-mask-image: linear-gradient(
+        180deg,
+        #000000 0%,
+        #000000 42%,
+        rgba(0, 0, 0, 0.45) 58%,
+        transparent 72%
+    );
+    mask-image: linear-gradient(
+        180deg,
+        #000000 0%,
+        #000000 42%,
+        rgba(0, 0, 0, 0.45) 58%,
+        transparent 72%
+    );
+}
 
-                /* Fluid typography tuned to avoid overflow on small screens */
-                font-size: clamp(2rem, 7.5vw, 7.5rem);
-                font-weight: 800;
-                line-height: 0.92;
-                letter-spacing: -0.01em;
+/* Subtle horizontal kinetic motion-blur ghost behind the robot */
+.cyber-figure-ghost {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 4%;
+    mix-blend-mode: screen;
+    opacity: 0.26;
+    filter: blur(16px) contrast(1.3) brightness(0.48);
+    transform: translateX(22px) scale(1.02);
+    -webkit-mask-image: linear-gradient(
+        180deg,
+        #000000 0%,
+        #000000 38%,
+        transparent 66%
+    );
+    mask-image: linear-gradient(
+        180deg,
+        #000000 0%,
+        #000000 38%,
+        transparent 66%
+    );
+}
 
-                color: #000000;
-                transform-origin: left center;
-                perspective: 800px;
-                transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            }
+/* Wide horizontal crimson-orange light refraction extending past the faceplate */
+.cyber-visor-beam {
+    position: absolute;
+    z-index: 3;
+    top: 19.5%;
+    left: 50%;
+    transform: translate(-44%, -50%);
+    width: min(640px, 92vw);
+    height: 62px;
+    pointer-events: none;
+}
 
-            .hero-char {
-                position: relative;
-                display: inline-block;
-                transform-origin: 50% 80%;
-                will-change: transform;
-                transition:
-                    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                    opacity 0.45s ease,
-                    filter 0.5s ease;
-            }
+/* Vignette & bottom contrast gradient so white typography stays razor-sharp */
+.cyber-vignette {
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(16, 14, 24, 0.16) 0%,
+            rgba(16, 14, 24, 0) 35%,
+            rgba(13, 12, 19, 0.56) 70%,
+            rgba(10, 9, 14, 0.92) 100%
+        ),
+        radial-gradient(
+            circle at 50% 42%,
+            transparent 48%,
+            rgba(10, 9, 14, 0.68) 100%
+        );
+}
 
-            .hero-line-one,
-            .hero-line-two,
-            .hero-line-three {
-                margin: 0;
-            }
+/* =========================================================
+   FRACTAL / FLUTED GLASS LAYER (Between Image & Text)
+   ========================================================= */
+.cyber-fractal-glass {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    backdrop-filter: blur(14px) saturate(118%) contrast(1.06);
+    -webkit-backdrop-filter: blur(14px) saturate(118%) contrast(1.06);
+    background:
+        /* Primary vertical fluted glass slats with prismatic edge catchlights */
+        repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.055) 0px,
+            rgba(220, 213, 251, 0.025) 2px,
+            rgba(10, 9, 16, 0.18) 14px,
+            rgba(248, 211, 156, 0.03) 26px,
+            rgba(255, 255, 255, 0.065) 28px
+        ),
+        /* Secondary fine micro-rib refraction */
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 6px,
+            rgba(255, 255, 255, 0.025) 7px,
+            transparent 8px
+        );
+    /* Keeps upper visor focal area cleaner while refracting lower & outer regions */
+    -webkit-mask-image: radial-gradient(
+        ellipse 62% 52% at 50% 28%,
+        rgba(0, 0, 0, 0.35) 0%,
+        rgba(0, 0, 0, 0.85) 55%,
+        #000000 100%
+    );
+    mask-image: radial-gradient(
+        ellipse 62% 52% at 50% 28%,
+        rgba(0, 0, 0, 0.35) 0%,
+        rgba(0, 0, 0, 0.85) 55%,
+        #000000 100%
+    );
+    animation: fractalGlassShift 16s ease-in-out infinite alternate;
+}
 
-            /* =========================================================
-               HOVER EFFECTS (Desktop Only)
-               ========================================================= */
-            @media (hover: hover) and (pointer: fine) {
-                .hero-line-one:hover {
-                    transform: translateX(5px) scaleX(1.008);
-                }
+/* Subtle diagonal glass sheen sweep */
+.cyber-fractal-glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        118deg,
+        transparent 18%,
+        rgba(220, 213, 251, 0.045) 38%,
+        rgba(255, 255, 255, 0.07) 44%,
+        rgba(248, 211, 156, 0.035) 50%,
+        transparent 68%
+    );
+    mix-blend-mode: screen;
+}
 
-                .hero-line-one:hover .hero-char {
-                    transform: translateY(-3px);
-                }
+@keyframes fractalGlassShift {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        transform: translate3d(-14px, 0, 0) scale(1.015);
+    }
+}
 
-                .hero-line-two:hover {
-                    transform: translateX(8px) scaleX(1.012);
-                }
+@keyframes figureBreathe {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        transform: translate3d(-0.5%, -0.8%, 0) scale(1.018);
+    }
+}
 
-                .hero-line-two:hover .hero-char {
-                    transform: translateY(-4px) rotate(calc((var(--char-index) - 3) * 0.45deg));
-                }
+@keyframes visorPulse {
+    0% {
+        opacity: 0.9;
+        transform: scaleX(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1.03);
+    }
+}
 
-                .hero-line-three:hover {
-                    transform: translateX(4px) scaleX(1.006);
-                }
+/* =========================================================
+   CONTENT LAYOUT & SPACING (Bottom Split Layout)
+   ========================================================= */
+.hero-content {
+    position: relative;
+    z-index: 3;
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 8rem 4.5vw 5rem;
+}
 
-                .hero-line-three:hover .hero-char {
-                    transform: translateY(-3px) rotate(calc((var(--char-index) - 5) * -0.25deg));
-                }
+.hero-main {
+    width: 100%;
+    max-width: 1440px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3rem;
+}
 
-                .hero-word:hover .hero-char:nth-child(1) { transition-delay: 0s; }
-                .hero-word:hover .hero-char:nth-child(2) { transition-delay: 0.015s; }
-                .hero-word:hover .hero-char:nth-child(3) { transition-delay: 0.03s; }
-                .hero-word:hover .hero-char:nth-child(4) { transition-delay: 0.045s; }
-                .hero-word:hover .hero-char:nth-child(5) { transition-delay: 0.06s; }
-                .hero-word:hover .hero-char:nth-child(6) { transition-delay: 0.075s; }
-                .hero-word:hover .hero-char:nth-child(7) { transition-delay: 0.09s; }
-                .hero-word:hover .hero-char:nth-child(8) { transition-delay: 0.105s; }
-                .hero-word:hover .hero-char:nth-child(9) { transition-delay: 0.12s; }
-                .hero-word:hover .hero-char:nth-child(10) { transition-delay: 0.135s; }
-                .hero-word:hover .hero-char:nth-child(11) { transition-delay: 0.15s; }
-            }
+/* =========================================================
+   TYPOGRAPHY (Bottom-Left Stacked Display Headline)
+   ========================================================= */
+.hero-typography {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    text-align: left;
+    user-select: none;
+}
 
-            .hero-word:not(:hover) .hero-char {
-                transform: translateY(0) rotate(0deg);
-                transition-delay: 0s;
-            }
+.hero-word {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+    width: max-content;
+    max-width: 100%;
+    white-space: nowrap;
 
-            /* =========================================================
-               INTRODUCTION & MAIN CTA
-               ========================================================= */
-            .hero-introduction {
-                width: 100%;
-                max-width: 540px;
-                margin: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1.5rem;
-            }
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(2.1rem, 4.85vw, 4.9rem);
+    font-weight: 800;
+    line-height: 0.96;
 
-            .hero-introduction p {
-                margin: 0;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: clamp(1rem, 2vw, 1.25rem);
-                line-height: 1.6;
-                color: rgba(0, 0, 0, 0.7);
-                text-wrap: pretty;
-            }
+    color: #ffffff;
+    text-shadow: 0 6px 28px rgba(10, 9, 15, 0.45);
+    transform-origin: left center;
+    perspective: 800px;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-            .hero-cta {
-                appearance: none;
-                -webkit-appearance: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                padding: 1rem 2rem;
-                min-height: 52px;
-                border: 1px solid #111111;
-                border-radius: 999px;
-                background: #111111;
-                color: #ffffff;
-                font-family: var(--font-dm-sans), Arial, sans-serif;
-                font-size: 1rem;
-                font-weight: 500;
-                line-height: 1;
-                cursor: pointer;
-                box-sizing: border-box;
-                transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            }
+.hero-char {
+    position: relative;
+    display: inline-block;
+    transform-origin: 50% 80%;
+    will-change: transform;
+    transition:
+        transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.45s ease,
+        filter 0.5s ease;
+}
 
-            .hero-cta span {
-                display: block;
-                color: inherit;
-                font-family: inherit;
-            }
+.hero-line-one,
+.hero-line-two,
+.hero-line-three {
+    margin: 0;
+}
 
-            .hero-cta:hover {
-                background: transparent;
-                color: #111111;
-                transform: translateY(-2px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-            }
+/* =========================================================
+   HOVER EFFECTS (Desktop Only)
+   ========================================================= */
+@media (hover: hover) and (pointer: fine) {
+    .hero-line-one:hover {
+        transform: translateX(5px) scaleX(1.008);
+    }
 
-            .hero-cta:active {
-                transform: translateY(0);
-            }
+    .hero-line-one:hover .hero-char {
+        transform: translateY(-3px);
+    }
 
-            /* =========================================================
-               NEWSLETTER MODAL
-               ========================================================= */
-            .newsletter-overlay {
-                position: fixed;
-                inset: 0;
-                z-index: 9999;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 1rem;
-                background: rgba(0, 0, 0, 0.4);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                animation: newsletterOverlayIn 0.3s ease forwards;
-            }
+    .hero-line-two:hover {
+        transform: translateX(8px) scaleX(1.012);
+    }
 
-            .newsletter-modal {
-                position: relative;
-                width: 100%;
-                max-width: 480px;
-                padding: 2.5rem;
-                background: #ffffff;
-                color: #111111;
-                border-radius: 24px;
-                box-shadow: 0 30px 100px rgba(0, 0, 0, 0.22);
-                max-height: 90dvh;
-                overflow-y: auto;
-                animation: newsletterModalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            }
+    .hero-line-two:hover .hero-char {
+        transform: translateY(-4px) rotate(calc((var(--char-index) - 3) * 0.45deg));
+    }
 
-            .newsletter-close {
-                position: absolute;
-                top: 1.25rem;
-                right: 1.25rem;
-                width: 36px;
-                height: 36px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border: 0;
-                border-radius: 50%;
-                background: #f2f2f2;
-                color: #111111;
-                font-size: 24px;
-                cursor: pointer;
-                transition: background 0.2s ease, transform 0.2s ease;
-            }
+    .hero-line-three:hover {
+        transform: translateX(4px) scaleX(1.006);
+    }
 
-            .newsletter-close:hover {
-                background: #e7e7e7;
-                transform: rotate(90deg);
-            }
+    .hero-line-three:hover .hero-char {
+        transform: translateY(-3px) rotate(calc((var(--char-index) - 5) * -0.25deg));
+    }
 
-            .newsletter-heading {
-                padding-right: 2rem;
-            }
+    .hero-word:hover .hero-char:nth-child(1) { transition-delay: 0s; }
+    .hero-word:hover .hero-char:nth-child(2) { transition-delay: 0.015s; }
+    .hero-word:hover .hero-char:nth-child(3) { transition-delay: 0.03s; }
+    .hero-word:hover .hero-char:nth-child(4) { transition-delay: 0.045s; }
+    .hero-word:hover .hero-char:nth-child(5) { transition-delay: 0.06s; }
+    .hero-word:hover .hero-char:nth-child(6) { transition-delay: 0.075s; }
+    .hero-word:hover .hero-char:nth-child(7) { transition-delay: 0.09s; }
+    .hero-word:hover .hero-char:nth-child(8) { transition-delay: 0.105s; }
+    .hero-word:hover .hero-char:nth-child(9) { transition-delay: 0.12s; }
+    .hero-word:hover .hero-char:nth-child(10) { transition-delay: 0.135s; }
+    .hero-word:hover .hero-char:nth-child(11) { transition-delay: 0.15s; }
+}
 
-            .newsletter-heading h2 {
-                margin: 0;
-                font-family: var(--font-gcepicpro), sans-serif;
-                font-size: clamp(2rem, 5vw, 2.5rem);
-                line-height: 1;
-                font-weight: 400;
-            }
+.hero-word:not(:hover) .hero-char {
+    transform: translateY(0) rotate(0deg);
+    transition-delay: 0s;
+}
 
-            .newsletter-heading p {
-                margin: 0.75rem 0 0;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: 0.95rem;
-                line-height: 1.5;
-                color: #666666;
-            }
+/* =========================================================
+   BOTTOM-RIGHT DESCRIPTION & PILL CTA
+   ========================================================= */
+.hero-side-block {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 390px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.35rem;
+}
 
-            .newsletter-form {
-                margin-top: 2rem;
-            }
+.hero-introduction {
+    width: 100%;
+    margin: 0;
+}
 
-            .newsletter-form label {
-                display: block;
-                margin-bottom: 0.5rem;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: 0.85rem;
-                font-weight: 600;
-            }
+.hero-introduction p {
+    margin: 0;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: clamp(1.0625rem, 1.3vw, 1.25rem);
+    line-height: 1.58;
+    color: rgba(255, 255, 255, 0.86);
+    text-shadow: 0 2px 14px rgba(10, 9, 15, 0.55);
+    text-wrap: pretty;
+}
 
-            .newsletter-form input[type="email"] {
-                width: 100%;
-                height: 54px;
-                padding: 0 1rem;
-                border: 1px solid #e0e0e0;
-                border-radius: 12px;
-                outline: none;
-                background: #fafafa;
-                color: #111111;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: 1rem;
-                transition: all 0.2s ease;
-                box-sizing: border-box;
-            }
+.hero-cta {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.1rem;
+    padding: 0.4rem 0.4rem 0.4rem 1.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 9999px;
+    background: rgba(18, 16, 26, 0.86);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #ffffff;
+    font-family: var(--font-dm-sans), Arial, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1;
+    cursor: pointer;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.28s ease,
+                border-color 0.28s ease,
+                box-shadow 0.28s ease;
+}
 
-            .newsletter-form input[type="email"]:focus {
-                border-color: #111111;
-                background: #ffffff;
-                box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
-            }
+.hero-cta-text {
+    display: block;
+    color: inherit;
+    font-family: inherit;
+    white-space: nowrap;
+}
 
-            .newsletter-form button {
-                width: 100%;
-                height: 54px;
-                margin-top: 1rem;
-                border: 0;
-                border-radius: 12px;
-                background: #111111;
-                color: #ffffff;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.2s ease, opacity 0.2s ease;
-            }
+.hero-cta-icon {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #14121b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
 
-            .newsletter-form button:hover {
-                transform: translateY(-2px);
-            }
+.hero-cta-icon svg {
+    display: block;
+    width: 13px !important;
+    height: 13px !important;
+    min-width: 13px;
+    min-height: 13px;
+    margin: 0 !important;
+    padding: 0 !important;
+    stroke: #14121b !important;
+    stroke-width: 2 !important;
+    fill: none !important;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-            .newsletter-form button:disabled {
-                opacity: 0.6;
-                cursor: wait;
-                transform: none;
-            }
+.hero-cta:hover {
+    background: #0e0d14;
+    border-color: rgba(220, 213, 251, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.36);
+}
 
-            .newsletter-note {
-                margin: 1rem 0 0;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: 0.75rem;
-                color: #999999;
-                text-align: center;
-            }
+.hero-cta:hover .hero-cta-icon svg {
+    transform: translate(2px, -2px);
+}
 
-            .newsletter-error {
-                margin: 0.75rem 0 0;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: 0.85rem;
-                color: #d32f2f;
-                text-align: center;
-            }
+.hero-cta:active {
+    transform: translateY(0);
+}
 
-            .newsletter-honeypot {
-                position: absolute !important;
-                width: 1px !important;
-                height: 1px !important;
-                padding: 0 !important;
-                margin: -1px !important;
-                overflow: hidden !important;
-                clip: rect(0, 0, 0, 0) !important;
-                border: 0 !important;
-            }
+/* =========================================================
+   NEWSLETTER MODAL
+   ========================================================= */
+.newsletter-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(12, 11, 18, 0.68);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: newsletterOverlayIn 0.3s ease forwards;
+}
 
-            /* Modal Success State */
-            .newsletter-success {
-                text-align: center;
-                padding: 1.5rem 0 0.5rem;
-            }
+.newsletter-modal {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    padding: 2.5rem;
+    background: #ffffff;
+    color: #111111;
+    border-radius: 20px;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+    max-height: 90dvh;
+    overflow-y: auto;
+    animation: newsletterModalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
-            .newsletter-success-mark {
-                width: 64px;
-                height: 64px;
-                margin: 0 auto 1.5rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 50%;
-                background: #111111;
-                color: #ffffff;
-                font-size: 1.5rem;
-                font-weight: bold;
-                border: 2px solid transparent;
-            }
+.newsletter-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: #f2f3f5;
+    color: #111111;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
 
-            .newsletter-success h2 {
-                margin: 0;
-                font-family: var(--font-gcepicpro), sans-serif;
-                font-size: clamp(1.8rem, 5vw, 2.5rem);
-                line-height: 1.1;
-            }
+.newsletter-close:hover {
+    background: #e5e7eb;
+    transform: rotate(90deg);
+}
 
-            .newsletter-success p {
-                margin: 1rem auto 0;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: 0.95rem;
-                line-height: 1.5;
-                color: #666666;
-            }
+.newsletter-heading {
+    padding-right: 2rem;
+}
 
-            .newsletter-done {
-                margin-top: 2rem;
-                width: 100%;
-                height: 54px;
-                border: 0;
-                border-radius: 12px;
-                background: #111111;
-                color: #ffffff;
-                font-family: var(--font-dm-sans), sans-serif;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.2s ease;
-            }
+.newsletter-heading h2 {
+    margin: 0;
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    line-height: 1;
+    font-weight: 400;
+}
 
-            .newsletter-done:hover {
-                transform: translateY(-2px);
-            }
+.newsletter-heading p {
+    margin: 0.75rem 0 0;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #666666;
+}
 
-            @keyframes newsletterOverlayIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
+.newsletter-form {
+    margin-top: 2rem;
+}
 
-            @keyframes newsletterModalIn {
-                from { opacity: 0; transform: translateY(20px) scale(0.95); }
-                to { opacity: 1; transform: translateY(0) scale(1); }
-            }
+.newsletter-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
 
-            /* =========================================================
-               MOBILE RESPONSIVENESS
-               ========================================================= */
-            @media (max-width: 768px) {
-                .hero-content {
-                    padding: 6rem 1.5rem 4rem;
-                }
+.newsletter-form input[type="email"] {
+    width: 100%;
+    height: 54px;
+    padding: 0 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    outline: none;
+    background: #fafafa;
+    color: #111111;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
 
-                .hero-word {
-                    /* Tighter font scaling ensures "INTELLIGENCE" fits perfectly without overflow */
-                    font-size: clamp(1.8rem, 8vw, 4rem);
-                    letter-spacing: -0.02em;
-                }
+.newsletter-form input[type="email"]:focus {
+    border-color: #1a1726;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(26, 23, 38, 0.08);
+}
 
-                .hero-introduction {
-                    gap: 1.25rem;
-                }
+.newsletter-form button {
+    width: 100%;
+    height: 54px;
+    margin-top: 1rem;
+    border: 0;
+    border-radius: 10px;
+    background: #1a1726;
+    color: #ffffff;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
 
-                .hero-cta {
-                    width: 100%;
-                }
+.newsletter-form button:hover {
+    transform: translateY(-2px);
+}
 
-                .newsletter-modal {
-                    padding: 2rem 1.5rem;
-                    border-radius: 20px;
-                }
+.newsletter-form button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+}
 
-                .newsletter-close {
-                    top: 1rem;
-                    right: 1rem;
-                }
-            }
+.newsletter-note {
+    margin: 1rem 0 0;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.75rem;
+    color: #999999;
+    text-align: center;
+}
 
-            @media (max-width: 480px) {
-                .hero-word {
-                     /* Ensures it doesn't break boundaries on extra small phones like iPhone SE */
-                    font-size: clamp(1.6rem, 10.5vw, 2.5rem);
-                }
-            }
+.newsletter-error {
+    margin: 0.75rem 0 0;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.85rem;
+    color: #d32f2f;
+    text-align: center;
+}
 
-            /* =========================================================
-               ACCESSIBILITY: REDUCED MOTION
-               ========================================================= */
-            @media (prefers-reduced-motion: reduce) {
-                .hero-word,
-                .hero-char,
-                .hero-cta,
-                .newsletter-overlay,
-                .newsletter-modal,
-                .newsletter-close,
-                .newsletter-form button,
-                .newsletter-done {
-                    transition: none !important;
-                    animation: none !important;
-                    transform: none !important;
-                }
-            }
+.newsletter-honeypot {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    border: 0 !important;
+}
+
+/* Modal Success State */
+.newsletter-success {
+    text-align: center;
+    padding: 1.5rem 0 0.5rem;
+}
+
+.newsletter-success-mark {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #1a1726;
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 2px solid transparent;
+}
+
+.newsletter-success h2 {
+    margin: 0;
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    line-height: 1.1;
+}
+
+.newsletter-success p {
+    margin: 1rem auto 0;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #666666;
+}
+
+.newsletter-done {
+    margin-top: 2rem;
+    width: 100%;
+    height: 54px;
+    border: 0;
+    border-radius: 10px;
+    background: #1a1726;
+    color: #ffffff;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.newsletter-done:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes newsletterOverlayIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes newsletterModalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* =========================================================
+   MOBILE & TABLET RESPONSIVENESS
+   ========================================================= */
+@media (max-width: 960px) {
+    .hero-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.75rem;
+    }
+
+    .hero-word {
+        font-size: clamp(2.1rem, 8.8vw, 4.4rem);
+    }
+
+    .hero-side-block {
+        max-width: 520px;
+    }
+
+    .cyber-figure-wrapper {
+        width: 125vw;
+        height: 68vh;
+        margin-top: 8vh;
+    }
+
+    .cyber-visor-beam {
+        top: 19.5%;
+        width: 96vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 10rem 2.25rem 4rem;
+    }
+
+    .hero-word {
+        font-size: clamp(2.05rem, 9.4vw, 3.8rem);
+    }
+
+    .hero-introduction p {
+        font-size: 1rem;
+        line-height: 1.55;
+    }
+
+    .hero-cta {
+        gap: 0.85rem;
+        padding: 0.38rem 0.38rem 0.38rem 1.3rem;
+        font-size: 0.76rem;
+    }
+
+    .hero-cta-icon {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        min-height: 30px;
+    }
+
+    .hero-cta-icon svg {
+        width: 12px !important;
+        height: 12px !important;
+        min-width: 12px;
+        min-height: 12px;
+    }
+
+    .newsletter-modal {
+        padding: 2rem 1.5rem;
+        border-radius: 18px;
+    }
+
+    .newsletter-close {
+        top: 1rem;
+        right: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-word {
+        font-size: clamp(1.85rem, 9.2vw, 2.6rem);
+    }
+}
+
+/* =========================================================
+   ACCESSIBILITY: REDUCED MOTION
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+    .cyber-figure-wrapper,
+    .cyber-fractal-glass,
+    .visor-bar-primary,
+    .hero-word,
+    .hero-char,
+    .hero-cta,
+    .hero-cta-icon svg,
+    .newsletter-overlay,
+    .newsletter-modal,
+    .newsletter-close,
+    .newsletter-form button,
+    .newsletter-done {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+}

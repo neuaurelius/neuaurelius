@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 // Zero-registration invisible PoW CAPTCHA generator
 async function generateProofOfWork(nonce = 0) {
     const timestamp = Date.now();
-    // Fixed: Added backticks around the template literal
     const challenge = `pow_${timestamp}_${Math.random().toString(36).substring(2)}`;
 
     let solvedNonce = 0;
@@ -130,7 +129,140 @@ export default function Hero() {
 
     return (
         <>
+            {/* Hidden SVG Optical Filter for True Fractal / Reeded Glass Displacement */}
+            <svg
+                width="0"
+                height="0"
+                style={{ position: "absolute", pointerEvents: "none" }}
+                aria-hidden="true"
+            >
+                <defs>
+                    <filter
+                        id="fractal-glass-refraction"
+                        x="-10%"
+                        y="-10%"
+                        width="120%"
+                        height="120%"
+                        colorInterpolationFilters="sRGB"
+                    >
+                        {/* Vertical fluted ribs + organic wave distortion */}
+                        <feTurbulence
+                            type="fractalNoise"
+                            baseFrequency="0.065 0.002"
+                            numOctaves="2"
+                            seed="7"
+                            result="ribNoise"
+                        />
+                        <feTurbulence
+                            type="turbulence"
+                            baseFrequency="0.008 0.025"
+                            numOctaves="2"
+                            seed="14"
+                            result="waveNoise"
+                        />
+                        <feBlend
+                            in="ribNoise"
+                            in2="waveNoise"
+                            mode="screen"
+                            result="combinedMap"
+                        />
+
+                        {/* Displace R, G, B channels at slightly different scales for chromatic prism edges */}
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="combinedMap"
+                            scale="34"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                            result="dispRed"
+                        />
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="combinedMap"
+                            scale="24"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                            result="dispGreen"
+                        />
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="combinedMap"
+                            scale="14"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                            result="dispBlue"
+                        />
+
+                        {/* Isolate RGB channels and recombine */}
+                        <feColorMatrix
+                            in="dispRed"
+                            type="matrix"
+                            values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
+                            result="redOnly"
+                        />
+                        <feColorMatrix
+                            in="dispGreen"
+                            type="matrix"
+                            values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
+                            result="greenOnly"
+                        />
+                        <feColorMatrix
+                            in="dispBlue"
+                            type="matrix"
+                            values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
+                            result="blueOnly"
+                        />
+
+                        <feBlend
+                            in="redOnly"
+                            in2="greenOnly"
+                            mode="screen"
+                            result="rg"
+                        />
+                        <feBlend
+                            in="rg"
+                            in2="blueOnly"
+                            mode="screen"
+                            result="refracted"
+                        />
+                    </filter>
+                </defs>
+            </svg>
+
             <section className="hero">
+                {/* Atmospheric Background + Refracted Humanoid Render */}
+                <div className="cyber-hero-bg" aria-hidden="true">
+                    <div className="cyber-ambient-glow" />
+
+                    {/* SVG Fractal Glass Filter applied directly to the humanoid stage */}
+                    <div className="cyber-figure-stage">
+                        <div className="cyber-figure-wrapper">
+                            <img
+                                src="/assets/humanoid.png"
+                                alt=""
+                                className="cyber-figure-ghost"
+                            />
+                            <img
+                                src="/assets/humanoid.png"
+                                alt=""
+                                className="cyber-figure-img"
+                            />
+
+                            <div className="cyber-visor-beam">
+                                <div className="visor-bloom" />
+                                <div className="visor-bar-primary" />
+                                <div className="visor-bar-secondary" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Vertical Fluted Glass Specular Rib Lines */}
+                    <div className="cyber-fractal-ribs" />
+
+                    <div className="cyber-vignette" />
+                </div>
+
+                {/* Bottom Split Content Layout (Unfiltered, Razor-Sharp) */}
                 <div className="hero-content">
                     <div className="hero-main">
                         <div className="hero-typography">
@@ -148,20 +280,31 @@ export default function Hero() {
                             />
                         </div>
 
-                        <div className="hero-introduction">
-                            <p>
-                                We are building a humanoid robot designed to bring
-                                Generalized Embodied Intelligence into the physical
-                                world. Our first machine is in development and will
-                                be revealed soon.
-                            </p>
+                        <div className="hero-side-block">
+                            <div className="hero-introduction">
+                                <p>
+                                    We are building a humanoid robot designed to bring
+                                    Generalized Embodied Intelligence into the physical
+                                    world. Our first machine is in development and will
+                                    be revealed soon.
+                                </p>
+                            </div>
 
                             <button
                                 type="button"
                                 className="hero-cta"
                                 onClick={openNewsletter}
                             >
-                                <span>Subscribe to Newsletter</span>
+                                <span className="hero-cta-text">SUBSCRIBE NOW</span>
+                                <span className="hero-cta-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 16 16">
+                                        <path
+                                            d="M4.5 11.5L11.5 4.5M11.5 4.5H5.5M11.5 4.5V10.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                    </svg>
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -191,7 +334,7 @@ export default function Hero() {
                             <div className="newsletter-success">
                                 <h2>Thank you for Subscribing</h2>
                                 <p>
-                                    We'll let you know when something important happens.
+                                    We&apos;ll let you know when something important happens.
                                 </p>
                                 <button
                                     type="button"

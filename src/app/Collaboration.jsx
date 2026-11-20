@@ -9,8 +9,7 @@ export default function Collaboration() {
             aria-labelledby="preincubated-title"
         >
             <div className="preincubated-inner">
-
-                {/* LOGOS */}
+                {/* LEFT: LOGOS */}
                 <div className="preincubated-branding">
                     <div className="preincubated-logo aic-logo">
                         <img
@@ -31,21 +30,21 @@ export default function Collaboration() {
                     </div>
                 </div>
 
-                {/* AFFILIATION */}
+                {/* CENTER-RIGHT: STRUCTURED AFFILIATION */}
                 <div className="preincubated-content">
                     <span className="preincubated-eyebrow">
-                        PREINCUBATED AT
+                        Preincubated at
                     </span>
 
-                    <h2 id="preincubated-title">
-                        Atal Incubation Center
-                    </h2>
+                    <span className="preincubated-divider" aria-hidden="true" />
 
-                    <p>
-                        Manipal University Jaipur
-                    </p>
+                    <div className="preincubated-details">
+                        <h2 id="preincubated-title">
+                            Atal Incubation Center
+                        </h2>
+                        <p>Manipal University Jaipur</p>
+                    </div>
                 </div>
-
             </div>
         </section>
     );
