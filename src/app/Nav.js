@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 export default function Nav() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [navHidden, setNavHidden] = useState(false);
+    const [isPastHero, setIsPastHero] = useState(false);
 
     const menuRef = useRef(null);
     const lastScrollY = useRef(0);
@@ -46,12 +47,17 @@ export default function Nav() {
 
 
     /* ====================================================
-       HIDE NAVIGATION WHEN SCROLLING DOWN
+       HIDE NAVIGATION ON SCROLL DOWN & TRACK HERO EXIT
     ==================================================== */
 
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
+            const heroThreshold = window.innerHeight - 80;
+
+            setIsPastHero(
+                pathname !== "/" || currentScrollY > heroThreshold
+            );
 
             if (
                 currentScrollY <= 0 ||
@@ -68,6 +74,7 @@ export default function Nav() {
         };
 
         lastScrollY.current = window.scrollY;
+        handleScroll();
 
         window.addEventListener(
             "scroll",
@@ -83,7 +90,7 @@ export default function Nav() {
                 handleScroll
             );
         };
-    }, []);
+    }, [pathname]);
 
 
     /* ====================================================
@@ -103,8 +110,9 @@ export default function Nav() {
 
     return (
         <nav
-            className={`nav ${navHidden ? "nav-hidden" : ""
-                }`}
+            className={`nav ${navHidden ? "nav-hidden" : ""} ${
+                isPastHero ? "past-hero" : ""
+            }`}
         >
             <div className="nav-container">
 

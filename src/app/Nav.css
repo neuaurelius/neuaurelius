@@ -4,7 +4,7 @@
 
 .nav {
     background: transparent;
-    color: var(--foreground);
+    color: #ffffff;
 
     position: fixed;
     top: 0;
@@ -17,7 +17,12 @@
     z-index: 100;
 
     transition:
-        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.35s ease;
+}
+
+.nav.past-hero {
+    color: #111111;
 }
 
 
@@ -46,7 +51,7 @@
 
 
 /* ========================================================
-   BRAND / LOGO
+   BRAND / LOGO — LIQUID GLASS
 ======================================================== */
 
 .nav-brand {
@@ -63,8 +68,21 @@
 
     box-sizing: border-box;
 
-    background: var(--background);
-    border: 0.5px solid var(--light-border);
+    /* Liquid Glass (In-Hero / White Foreground) */
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.22) 0%,
+        rgba(255, 255, 255, 0.08) 100%
+    );
+    backdrop-filter: blur(24px) saturate(180%) brightness(0.95);
+    -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(0.95);
+
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.16),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.65),
+        inset 0 -1.5px 2px rgba(255, 255, 255, 0.15);
+
     border-radius: 999px;
 
     overflow: hidden;
@@ -73,11 +91,58 @@
 
     transition:
         width 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-        padding 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        padding 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.4s ease,
+        background 0.4s ease,
+        border-color 0.4s ease;
+}
+
+/* Liquid Glass (Past Hero / Black Foreground) */
+.nav.past-hero .nav-brand {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.62) 0%,
+        rgba(255, 255, 255, 0.32) 100%
+    );
+    backdrop-filter: blur(24px) saturate(190%) brightness(1.04);
+    -webkit-backdrop-filter: blur(24px) saturate(190%) brightness(1.04);
+
+    border-color: rgba(255, 255, 255, 0.72);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.9),
+        inset 0 -1.5px 2px rgba(255, 255, 255, 0.25);
 }
 
 
-.nav-brand>img:first-child {
+.nav-brand:hover {
+    width: 180px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0.12) 100%
+    );
+    box-shadow:
+        0 12px 36px rgba(0, 0, 0, 0.2),
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.8),
+        inset 0 -1.5px 2px rgba(255, 255, 255, 0.2);
+}
+
+.nav.past-hero .nav-brand:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.75) 0%,
+        rgba(255, 255, 255, 0.42) 100%
+    );
+    box-shadow:
+        0 12px 36px rgba(0, 0, 0, 0.1),
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.95),
+        inset 0 -1.5px 2px rgba(255, 255, 255, 0.3);
+}
+
+
+.nav-brand > img:first-child,
+.nav-brand > a:first-child img {
     position: relative;
 
     width: 40px;
@@ -87,10 +152,20 @@
 
     z-index: 2;
 
+    /* White inside hero */
+    filter: brightness(0) invert(1);
+
     transform: translateX(0) scale(1);
 
     transition:
-        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.35s ease;
+}
+
+/* Black outside hero */
+.nav.past-hero .nav-brand > img:first-child,
+.nav.past-hero .nav-brand > a:first-child img {
+    filter: brightness(0);
 }
 
 
@@ -116,7 +191,8 @@
 
     transform-origin: left center;
 
-    filter: blur(2px);
+    /* White inside hero */
+    filter: brightness(0) invert(1) blur(2px);
 
     pointer-events: none;
 
@@ -126,6 +202,11 @@
         filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Black outside hero */
+.nav.past-hero .nav-brand .textLogo {
+    filter: brightness(0) blur(2px);
+}
+
 
 .nav-brand:hover .textLogo {
     opacity: 1;
@@ -133,7 +214,7 @@
     transform:
         translateY(-50%) translateX(0) scaleX(1);
 
-    filter: blur(0);
+    filter: brightness(0) invert(1) blur(0);
 
     transition-delay:
         0.12s,
@@ -141,20 +222,19 @@
         0.04s;
 }
 
-
-.nav-brand:hover {
-    width: 180px;
+.nav.past-hero .nav-brand:hover .textLogo {
+    filter: brightness(0) blur(0);
 }
 
 
-.nav-brand:hover>img:first-child {
+.nav-brand:hover > img:first-child,
+.nav-brand:hover > a:first-child img {
     transform: translateX(0) scale(0.96);
 }
 
 
 /* ========================================================
-   MENU MORPH
-   CLOSED STATE
+   MENU MORPH — LIQUID GLASS (CLOSED STATE)
 ======================================================== */
 
 .menu-morph {
@@ -168,40 +248,58 @@
 
     box-sizing: border-box;
 
-    background: #fff;
+    /* Liquid Glass (In-Hero / White Foreground) */
+    background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.24) 0%,
+        rgba(255, 255, 255, 0.08) 100%
+    );
+    backdrop-filter: blur(26px) saturate(180%) brightness(0.95);
+    -webkit-backdrop-filter: blur(26px) saturate(180%) brightness(0.95);
 
-    border: 1px solid #dedede;
+    border: 1px solid rgba(255, 255, 255, 0.48);
+    box-shadow:
+        0 8px 28px rgba(0, 0, 0, 0.15),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.7),
+        inset 0 -1.5px 2px rgba(255, 255, 255, 0.15);
 
     border-radius: 999px;
 
-    /*
-     * Clips the inner toggle during the morph.
-     * This is important because the close button
-     * should NEVER visually escape the outer menu.
-     */
     overflow: hidden;
 
     z-index: 120;
 
     transform-origin: top center;
 
-    box-shadow:
-        0 0 0 rgba(0, 0, 0, 0);
-
-    /*
-     * Slightly longer and synchronized animation.
-     */
     transition:
         width 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         height 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.5s ease,
+        border-color 0.5s ease,
         box-shadow 0.5s ease;
+}
+
+/* Liquid Glass (Past Hero / Black Foreground) */
+.nav.past-hero .menu-morph {
+    background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.62) 0%,
+        rgba(255, 255, 255, 0.32) 100%
+    );
+    backdrop-filter: blur(26px) saturate(190%) brightness(1.04);
+    -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(1.04);
+
+    border-color: rgba(255, 255, 255, 0.72);
+    box-shadow:
+        0 8px 28px rgba(0, 0, 0, 0.08),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.92),
+        inset 0 -1.5px 2px rgba(255, 255, 255, 0.25);
 }
 
 
 /* ========================================================
-   MENU MORPH
-   OPEN STATE
+   MENU MORPH — LIQUID GLASS (OPEN STATE)
 ======================================================== */
 
 .menu-morph.is-open {
@@ -210,20 +308,50 @@
 
     border-radius: 28px;
 
+    /* Smoked glass inside hero for white links */
+    background: linear-gradient(
+        155deg,
+        rgba(25, 25, 30, 0.52) 0%,
+        rgba(25, 25, 30, 0.36) 100%
+    );
+
+    border-color: rgba(255, 255, 255, 0.42);
+
     box-shadow:
-        0 22px 50px rgba(0, 0, 0, 0.09);
+        0 24px 54px rgba(0, 0, 0, 0.25),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.65),
+        inset 0 -2px 4px rgba(255, 255, 255, 0.15);
 
     transition:
         width 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         height 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.5s ease,
+        border-color 0.5s ease,
         box-shadow 0.5s ease;
+}
+
+/* Bright frosted glass outside hero for black links */
+.nav.past-hero .menu-morph.is-open {
+    background: linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.72) 0%,
+        rgba(255, 255, 255, 0.44) 100%
+    );
+
+    border-color: rgba(255, 255, 255, 0.78);
+
+    box-shadow:
+        0 24px 54px rgba(0, 0, 0, 0.12),
+        0 4px 12px rgba(0, 0, 0, 0.04),
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.95),
+        inset 0 -2px 4px rgba(255, 255, 255, 0.3);
 }
 
 
 /* ========================================================
-   MENU TOGGLE
-   CLOSED STATE
+   MENU TOGGLE (CLOSED STATE)
 ======================================================== */
 
 .menu-toggle {
@@ -243,9 +371,9 @@
 
     border-radius: 999px;
 
-    background: #fff;
+    background: transparent;
 
-    color: #111;
+    color: #ffffff;
 
     display: flex;
     align-items: center;
@@ -269,26 +397,25 @@
 
     transform-origin: top center;
 
-    /*
-     * The toggle itself morphs at the same speed as
-     * the outer container.
-     */
     transition:
         top 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         left 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         width 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         height 0.65s cubic-bezier(0.22, 1, 0.36, 1),
         border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-        border-color 0.25s ease;
+        background 0.35s ease,
+        border-color 0.25s ease,
+        box-shadow 0.35s ease,
+        color 0.35s ease;
+}
+
+.nav.past-hero .menu-toggle {
+    color: #111111;
 }
 
 
 /* ========================================================
-   MENU TOGGLE
-   OPEN STATE
-
-   The close button does NOT instantly become a large
-   rectangle. It grows together with the menu.
+   MENU TOGGLE (OPEN STATE)
 ======================================================== */
 
 .menu-morph.is-open .menu-toggle {
@@ -301,19 +428,39 @@
 
     border-radius: 22px;
 
-    border-color: #dedede;
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.08),
+        inset 0 1px 1px rgba(255, 255, 255, 0.45);
 
-    /*
-     * Tiny delay allows the outer menu to visibly begin
-     * expanding before the inner close control follows it.
-     */
     transition:
         top 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
         left 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
         width 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
         height 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
         border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.03s,
-        border-color 0.25s ease 0.18s;
+        background 0.35s ease 0.15s,
+        border-color 0.25s ease 0.18s,
+        box-shadow 0.35s ease 0.18s,
+        color 0.35s ease;
+}
+
+.nav.past-hero .menu-morph.is-open .menu-toggle {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.04),
+        inset 0 1px 1px rgba(255, 255, 255, 0.85);
+}
+
+
+.menu-morph.is-open .menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.nav.past-hero .menu-morph.is-open .menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.6);
 }
 
 
@@ -344,12 +491,17 @@
 
     border-radius: 999px;
 
-    background: currentColor;
+    background: #ffffff;
 
     transform-origin: center;
 
     transition:
-        transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+        transform 0.5s cubic-bezier(0.76, 0, 0.24, 1),
+        background 0.35s ease;
+}
+
+.nav.past-hero .menu-icon span {
+    background: #111111;
 }
 
 
@@ -410,17 +562,21 @@
     left: 0;
     top: 0;
 
+    color: #ffffff;
+
     white-space: nowrap;
 
     transition:
         opacity 0.3s ease,
-        transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+        transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.35s ease;
 }
 
+.nav.past-hero .menu-text,
+.nav.past-hero .close-text {
+    color: #111111;
+}
 
-/* ========================================================
-   MENU TEXT
-======================================================== */
 
 .menu-text {
     opacity: 1;
@@ -430,10 +586,6 @@
 }
 
 
-/* ========================================================
-   CLOSE TEXT
-======================================================== */
-
 .close-text {
     opacity: 0;
 
@@ -441,10 +593,6 @@
         translateX(12px);
 }
 
-
-/* ========================================================
-   OPEN TEXT MORPH
-======================================================== */
 
 .menu-morph.is-open .menu-text {
     opacity: 0;
@@ -462,9 +610,6 @@
     transform:
         translateX(0);
 
-    /*
-     * Appears after the menu has started expanding.
-     */
     transition-delay: 0.25s;
 }
 
@@ -529,7 +674,7 @@
 .menu-label {
     margin: 0 0 15px 0;
 
-    color: #888;
+    color: rgba(255, 255, 255, 0.65);
 
     font-family:
         var(--font-dm-sans),
@@ -542,6 +687,12 @@
     letter-spacing: 0.6px;
 
     text-transform: uppercase;
+
+    transition: color 0.35s ease;
+}
+
+.nav.past-hero .menu-label {
+    color: #666666;
 }
 
 
@@ -591,7 +742,7 @@
     margin: 0;
     padding: 0;
 
-    color: #111;
+    color: #ffffff;
 
     text-decoration: none;
 
@@ -612,7 +763,11 @@
     transition:
         transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
         opacity 0.45s ease,
-        color 0.3s ease;
+        color 0.35s ease;
+}
+
+.nav.past-hero .menu-list a {
+    color: #111111;
 }
 
 
@@ -631,56 +786,44 @@
 .menu-list li:hover a {
     opacity: 1;
 
-    color: #000;
+    color: #ffffff;
 }
 
+.nav.past-hero .menu-list li:hover a {
+    color: #000000;
+}
 
-/* ========================================================
-   ITEMS ABOVE HOVERED ITEM
-======================================================== */
 
 .menu-list li:has(~ li:hover) {
     transform:
         translateY(-5px) scale(0.97);
 
-    opacity: 0.62;
+    opacity: 0.55;
 }
 
 
 .menu-list li:has(~ li:hover) a {
-    opacity: 0.62;
+    opacity: 0.55;
 }
 
 
-/* ========================================================
-   ITEMS BELOW HOVERED ITEM
-======================================================== */
-
-.menu-list li:hover~li {
+.menu-list li:hover ~ li {
     transform:
         translateY(5px) scale(0.97);
 
-    opacity: 0.62;
+    opacity: 0.55;
 }
 
 
-.menu-list li:hover~li a {
-    opacity: 0.62;
+.menu-list li:hover ~ li a {
+    opacity: 0.55;
 }
 
 
-/* ========================================================
-   ADDITIONAL DISTANCE FADE
-======================================================== */
-
-.menu-list li:has(~ li:hover)~li:has(~ li:hover) {
-    opacity: 0.45;
+.menu-list li:has(~ li:hover) ~ li:has(~ li:hover) {
+    opacity: 0.38;
 }
 
-
-/* ========================================================
-   HOVERED LINK
-======================================================== */
 
 .menu-list li:hover a {
     transform:
@@ -691,10 +834,14 @@
 
 
 .menu-list a:hover {
-    color: #000;
+    color: #ffffff;
 
     transform:
         translateY(-1px) scale(1.04);
+}
+
+.nav.past-hero .menu-list a:hover {
+    color: #000000;
 }
 
 
@@ -719,10 +866,6 @@
     }
 
 
-    /* -----------------------------------------------
-       CLOSED MENU
-    ----------------------------------------------- */
-
     .menu-morph {
         right: 1rem;
 
@@ -730,10 +873,6 @@
         height: 50px;
     }
 
-
-    /* -----------------------------------------------
-       OPEN MENU
-    ----------------------------------------------- */
 
     .menu-morph.is-open {
         width:
@@ -748,10 +887,6 @@
     }
 
 
-    /* -----------------------------------------------
-       INNER TOGGLE
-    ----------------------------------------------- */
-
     .menu-morph.is-open .menu-toggle {
         top: 8px;
         left: 8px;
@@ -764,10 +899,6 @@
         border-radius: 22px;
     }
 
-
-    /* -----------------------------------------------
-       CONTENT
-    ----------------------------------------------- */
 
     .menu-content {
         left: 24px;
