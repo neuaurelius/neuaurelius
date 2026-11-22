@@ -11,6 +11,7 @@ import JoinUs from "./JoinUs";
 import Roadmap from "./Roadmap";
 import Faq from "./Faq";
 import ScrollReveal from "@/components/ScrollReveal";
+import Contact from "@/components/contact";
 
 const featuredPublicationsQuery = `
     *[
@@ -77,11 +78,16 @@ export default async function Homepage() {
                             <ScrollReveal variant="fade-up" duration={800}>
                                 <AccordionWall />
                             </ScrollReveal>
-
+                            <ScrollReveal variant="fade-up" duration={800} delay={60}>
+                                <Publications />
+                            </ScrollReveal>
 
                             <ScrollReveal variant="fade-up" duration={800} delay={60}>
                                 <Faq />
-                            </ScrollReveal>
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={800} delay={60}>
+            <Contact />
+        </ScrollReveal>
                         <ScrollReveal variant="fade-in" duration={700}>
                             <Footer />
                         </ScrollReveal>        </>

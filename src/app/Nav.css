@@ -10,8 +10,11 @@
     width: 100%;
     padding: 1rem 0;
     z-index: 100;
+
     transform: translate3d(0, 0, 0);
     transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+
+    isolation: isolate;
 }
 
 .nav.past-hero {
@@ -26,22 +29,25 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     width: 100%;
     max-width: 1450px;
     margin: 0 auto;
     padding: 0 2rem;
+
     box-sizing: border-box;
     z-index: 110;
 }
 
 /* ========================================================
-   BRAND / LOGO — TRUE LIQUID GLASS DROPLET
+   BRAND / LOGO
 ======================================================== */
 .nav-brand {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+
     width: 60px;
     height: 60px;
     padding: 0 10px;
@@ -52,8 +58,6 @@
         rgba(255, 255, 255, 0.14) 0%,
         rgba(255, 255, 255, 0.05) 100%
     );
-    backdrop-filter: blur(8px) saturate(140%);
-    -webkit-backdrop-filter: blur(8px) saturate(140%);
 
     border: 1px solid rgba(255, 255, 255, 0.24);
     box-shadow:
@@ -64,9 +68,8 @@
     overflow: hidden;
     cursor: pointer;
 
-    transform: translate3d(0, 0, 0);
     transition:
-        width 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+        width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
         background-color 0.3s ease,
         border-color 0.3s ease;
 }
@@ -88,8 +91,8 @@
 .nav.past-hero .nav-brand {
     background: linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.76) 0%,
-        rgba(255, 255, 255, 0.52) 100%
+        rgba(255, 255, 255, 0.82) 0%,
+        rgba(255, 255, 255, 0.62) 100%
     );
     border-color: rgba(0, 0, 0, 0.08);
     box-shadow:
@@ -97,16 +100,27 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
-.nav-brand:hover {
-    width: 184px;
-    border-color: rgba(255, 255, 255, 0.36);
+@media (hover: hover) and (pointer: fine) {
+    .nav-brand:hover {
+        width: 184px;
+        border-color: rgba(255, 255, 255, 0.36);
+    }
+
+    .nav.past-hero .nav-brand:hover {
+        border-color: rgba(0, 0, 0, 0.14);
+    }
+
+    .nav-brand:hover .textLogo {
+        opacity: 1;
+        transform: translate3d(0, -50%, 0) scale(1);
+        transition-delay: 0.06s, 0.02s;
+    }
+
+    .nav-brand:hover > a:first-child img {
+        transform: translate3d(0, 0, 0) scale(0.96);
+    }
 }
 
-.nav.past-hero .nav-brand:hover {
-    border-color: rgba(0, 0, 0, 0.14);
-}
-
-.nav-brand > img:first-child,
 .nav-brand > a:first-child img {
     position: relative;
     width: 40px;
@@ -115,10 +129,9 @@
     z-index: 2;
     filter: brightness(0) invert(1);
     transform: translate3d(0, 0, 0) scale(1);
-    transition: transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.nav.past-hero .nav-brand > img:first-child,
 .nav.past-hero .nav-brand > a:first-child img {
     filter: brightness(0);
 }
@@ -138,139 +151,113 @@
     transform-origin: left center;
     pointer-events: none;
     transition:
-        opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav.past-hero .nav-brand .textLogo {
     filter: brightness(0);
 }
 
-.nav-brand:hover .textLogo {
-    opacity: 1;
-    transform: translate3d(0, -50%, 0) scale(1);
-    transition-delay: 0.06s, 0.02s;
-}
-
-.nav-brand:hover > img:first-child,
-.nav-brand:hover > a:first-child img {
-    transform: translate3d(0, 0, 0) scale(0.96);
-}
-
 /* ========================================================
-   MENU MORPH — TRUE LIQUID GLASS DROPLET
+   MENU MORPH — 100% GPU-COMPOSITED (ZERO WIDTH/HEIGHT ANIMATION)
 ======================================================== */
 .menu-morph {
     position: absolute;
     top: 0;
     right: 2rem;
-    width: 112px;
-    height: 50px;
-    box-sizing: border-box;
-
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.14) 0%,
-        rgba(255, 255, 255, 0.05) 100%
-    );
-    backdrop-filter: blur(8px) saturate(140%);
-    -webkit-backdrop-filter: blur(8px) saturate(140%);
-
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    box-shadow:
-        0 8px 24px -6px rgba(0, 0, 0, 0.32),
-        inset 0 1px 0 rgba(255, 255, 255, 0.38);
-
-    border-radius: 25px;
-    overflow: hidden;
+    width: min(295px, calc(100vw - 4rem));
+    height: 300px;
+    max-height: calc(100dvh - 5rem);
+    pointer-events: none;
     z-index: 120;
-
-    transform: translate3d(0, 0, 0);
-    transform-origin: top right;
-
-    transition:
-        width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.28s ease,
-        border-color 0.28s ease;
 }
 
-.menu-morph::before {
+.menu-morph.is-open {
+    pointer-events: auto;
+}
+
+/* Expanded Card Surface: Scales smoothly from top-right pill origin */
+.menu-surface {
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    transform-origin: top right;
+
+    /* Closed state matches 112x50 pill proportion via GPU scale */
+    transform: translate3d(0, 0, 0) scale(0.38, 0.167);
+    opacity: 0;
+
+    background: linear-gradient(
+        165deg,
+        rgba(26, 24, 36, 0.92) 0%,
+        rgba(14, 13, 20, 0.96) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow:
+        0 24px 52px -8px rgba(0, 0, 0, 0.48),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32);
+
+    transition:
+        transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.24s ease;
+}
+
+.menu-surface::before {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
     background: radial-gradient(
         80% 50% at 50% 0%,
-        rgba(255, 255, 255, 0.24) 0%,
+        rgba(255, 255, 255, 0.2) 0%,
         rgba(255, 255, 255, 0) 100%
     );
     pointer-events: none;
-    z-index: 15;
 }
 
-.nav.past-hero .menu-morph {
+.nav.past-hero .menu-surface {
     background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.76) 0%,
-        rgba(255, 255, 255, 0.52) 100%
+        165deg,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(248, 249, 252, 0.92) 100%
     );
     border-color: rgba(0, 0, 0, 0.08);
     box-shadow:
-        0 8px 24px -6px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.95);
-}
-
-/* ========================================================
-   MENU MORPH — OPEN STATE
-======================================================== */
-.menu-morph.is-open {
-    width: 295px;
-    height: 300px;
-    border-radius: 28px;
-
-    background: linear-gradient(
-        165deg,
-        rgba(26, 24, 36, 0.82) 0%,
-        rgba(14, 13, 20, 0.9) 100%
-    );
-    backdrop-filter: blur(12px) saturate(140%);
-    -webkit-backdrop-filter: blur(12px) saturate(140%);
-
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow:
-        0 24px 52px -8px rgba(0, 0, 0, 0.48),
-        inset 0 1px 0 rgba(255, 255, 255, 0.32);
-}
-
-.nav.past-hero .menu-morph.is-open {
-    background: linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.88) 0%,
-        rgba(248, 249, 252, 0.78) 100%
-    );
-    border-color: rgba(0, 0, 0, 0.08);
-    box-shadow:
-        0 24px 50px -8px rgba(0, 0, 0, 0.12),
+        0 24px 50px -8px rgba(0, 0, 0, 0.14),
         inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
+.menu-morph.is-open .menu-surface {
+    transform: translate3d(0, 0, 0) scale(1, 1);
+    opacity: 1;
+}
+
 /* ========================================================
-   MENU TOGGLE
+   MENU TOGGLE PILL (Fixed Dimensions, GPU-Translated When Open)
 ======================================================== */
 .menu-toggle {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    width: 112px;
+    height: 50px;
     padding: 0;
     box-sizing: border-box;
+    pointer-events: auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 
-    border: 1px solid transparent;
-    border-radius: 999px;
-    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 25px;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.14) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    box-shadow:
+        0 8px 24px -6px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38);
     color: #ffffff;
 
     display: flex;
@@ -283,25 +270,30 @@
     font-size: 0.95rem;
     font-weight: 500;
     z-index: 10;
-    overflow: hidden;
 
+    transform: translate3d(0, 0, 0);
     transition:
-        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
         background-color 0.25s ease,
-        border-color 0.25s ease;
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 .nav.past-hero .menu-toggle {
     color: #111111;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.82) 0%,
+        rgba(255, 255, 255, 0.62) 100%
+    );
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow:
+        0 8px 24px -6px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .menu-morph.is-open .menu-toggle {
-    transform: translate3d(8px, 8px, 0);
-    width: calc(100% - 16px);
-    height: 50px;
+    transform: translate3d(-10px, 10px, 0);
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.14);
@@ -309,17 +301,19 @@
 }
 
 .nav.past-hero .menu-morph.is-open .menu-toggle {
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(0, 0, 0, 0.05);
     border-color: rgba(0, 0, 0, 0.06);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-.menu-morph.is-open .menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.14);
-}
+@media (hover: hover) and (pointer: fine) {
+    .menu-morph.is-open .menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.14);
+    }
 
-.nav.past-hero .menu-morph.is-open .menu-toggle:hover {
-    background: rgba(0, 0, 0, 0.07);
+    .nav.past-hero .menu-morph.is-open .menu-toggle:hover {
+        background: rgba(0, 0, 0, 0.08);
+    }
 }
 
 /* ========================================================
@@ -341,7 +335,7 @@
     border-radius: 999px;
     background: #ffffff;
     transform-origin: center;
-    transition: transform 0.38s cubic-bezier(0.76, 0, 0.24, 1);
+    transition: transform 0.36s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .nav.past-hero .menu-icon span {
@@ -358,16 +352,16 @@
 
 .menu-morph.is-open .menu-icon span:first-child {
     transform: translate3d(0, 0, 0) rotate(45deg);
-    transition-delay: 0.1s;
+    transition-delay: 0.08s;
 }
 
 .menu-morph.is-open .menu-icon span:last-child {
     transform: translate3d(0, 0, 0) rotate(-45deg);
-    transition-delay: 0.1s;
+    transition-delay: 0.08s;
 }
 
 /* ========================================================
-   MENU / CLOSE TEXT WRAPPER
+   MENU / CLOSE TEXT
 ======================================================== */
 .menu-toggle-text {
     position: relative;
@@ -386,8 +380,8 @@
     color: #ffffff;
     white-space: nowrap;
     transition:
-        opacity 0.22s ease,
-        transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity 0.2s ease,
+        transform 0.34s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav.past-hero .menu-text,
@@ -413,41 +407,28 @@
 .menu-morph.is-open .close-text {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition-delay: 0.15s;
+    transition-delay: 0.12s;
 }
 
 /* ========================================================
-   MENU CONTENT
+   MENU CONTENT & STAGGERED ITEMS
 ======================================================== */
 .menu-content {
     position: absolute;
-    top: 80px;
+    top: 76px;
     left: 24px;
     right: 24px;
-    bottom: 24px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    opacity: 0;
-    transform: translate3d(0, 8px, 0);
     pointer-events: none;
-    transition:
-        opacity 0.14s ease,
-        transform 0.14s ease;
+    z-index: 5;
 }
 
 .menu-morph.is-open .menu-content {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
     pointer-events: auto;
-    transition:
-        opacity 0.32s ease 0.16s,
-        transform 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.16s;
 }
 
-/* ========================================================
-   MENU LIST & HOVER
-======================================================== */
 .menu-section {
     margin: 0;
 }
@@ -466,44 +447,62 @@
     display: flex;
     align-items: center;
     transform-origin: left center;
+
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
     transition:
-        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.28s ease;
+        opacity 0.18s ease,
+        transform 0.18s ease;
+}
+
+.menu-morph.is-open .menu-list li {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition:
+        opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(0.12s + (var(--item-index, 0) * 0.045s));
 }
 
 .menu-list a {
     display: block;
+    width: 100%;
     margin: 0;
     padding: 0;
     color: #ffffff;
     text-decoration: none;
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 2rem;
+    font-size: clamp(1.65rem, 5vw, 2rem);
     font-weight: 500;
-    line-height: 2;
+    line-height: 46px;
     opacity: 0.92;
-    transform: translate3d(0, 0, 0);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     transition:
-        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.24s ease;
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.22s ease;
 }
 
 .nav.past-hero .menu-list a {
     color: #111111;
 }
 
-.menu-list:hover li {
-    opacity: 0.52;
-    transform: scale(0.98);
-}
+@media (hover: hover) and (pointer: fine) {
+    .menu-morph.is-open .menu-list:hover li {
+        opacity: 0.5;
+        transform: translate3d(0, 0, 0) scale(0.98);
+        transition-delay: 0s;
+    }
 
-.menu-list:hover li:hover {
-    opacity: 1;
-    transform: translate3d(4px, 0, 0) scale(1.05);
-}
+    .menu-morph.is-open .menu-list:hover li:hover {
+        opacity: 1;
+        transform: translate3d(4px, 0, 0) scale(1.04);
+        transition-delay: 0s;
+    }
 
-.menu-list li:hover a {
-    opacity: 1;
+    .menu-list li:hover a {
+        opacity: 1;
+    }
 }
 
 /* ========================================================
@@ -517,32 +516,21 @@
 
     .menu-morph {
         right: 1rem;
-    }
-
-    .menu-morph.is-open {
-        width: min(295px, calc(100vw - 32px));
-        height: min(300px, calc(100vh - 32px));
-    }
-
-    .menu-content {
-        top: 86px;
+        width: min(295px, calc(100vw - 2rem));
     }
 }
 
-@media (max-width: 340px) {
-    .menu-morph.is-open {
-        width: calc(100vw - 32px);
-        border-radius: 28px;
+@media (max-width: 360px) {
+    .menu-morph {
+        height: 284px;
     }
 
     .menu-morph.is-open .menu-toggle {
-        transform: translate3d(7px, 7px, 0);
-        width: calc(100% - 14px);
-        height: 48px;
-        border-radius: 21px;
+        transform: translate3d(-8px, 8px, 0);
     }
 
     .menu-content {
+        top: 72px;
         left: 20px;
         right: 20px;
     }
@@ -554,4 +542,23 @@
 .nav-hidden {
     transform: translate3d(0, -100%, 0);
     pointer-events: none;
+}
+
+/* ========================================================
+   ACCESSIBILITY: REDUCED MOTION
+======================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .nav,
+    .nav-brand,
+    .nav-brand > a:first-child img,
+    .nav-brand .textLogo,
+    .menu-surface,
+    .menu-toggle,
+    .menu-icon span,
+    .menu-text,
+    .close-text,
+    .menu-list li,
+    .menu-list a {
+        transition: none !important;
+    }
 }

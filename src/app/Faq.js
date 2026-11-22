@@ -9,87 +9,116 @@ const faqCategories = [
         label: "General & Vision",
         items: [
             {
+                question: "What is Neuaurelius?",
+                answer:
+                    "Neuaurelius Private Limited is a research-driven technology company working at the intersection of robotics, artificial intelligence, and advanced engineering. Our objective is to develop technologies that enable intelligent systems to interact with, understand, and operate in the physical world.",
+            },
+            {
+                question: "What is the primary vision of Neuaurelius?",
+                answer:
+                    "Our vision is to advance Generalized Embodied Intelligence by developing systems that can perceive their surroundings, reason about situations, adapt to changing conditions, and interact with the physical world.",
+            },
+            {
                 question: "What is Generalized Embodied Intelligence?",
                 answer:
-                    "Rather than programming a machine for a single repetitive task, Generalized Embodied Intelligence integrates spatial perception, reasoning, and compliant physical control so a humanoid robot can adapt across unstructured, human-centered environments.",
+                    "Generalized Embodied Intelligence refers to the development of intelligent systems that combine perception, reasoning, learning, and physical interaction. Unlike conventional automation designed around predefined tasks, this approach aims to enable machines to respond and adapt to unfamiliar environments and situations.",
             },
             {
-                question: "When will Neuaurelius reveal its first humanoid robot?",
+                question: "What areas does Neuaurelius focus its research on?",
                 answer:
-                    "Our first full-scale machine is currently undergoing subsystem validation and chassis integration. Major engineering milestones and our reveal window will be shared first through our research publications and newsletter.",
-            },
-            {
-                question: "How is Neuaurelius approaching hardware and software integration?",
-                answer:
-                    "We co-design our compliant actuation, power distribution, and onboard compute stack alongside our control policies—ensuring tight latency bounds between perception and physical execution.",
-            },
-            {
-                question: "Will the platform be deployed commercially or in research pilots first?",
-                answer:
-                    "Our initial rollout focuses on controlled operational pilots in structured indoor environments before scaling toward broader commercial deployment.",
-            },
-        ],
-    },
-    {
-        id: "architecture",
-        label: "Hardware & Actuation",
-        items: [
-            {
-                question: "Why focus on proprioceptive and compliant actuation?",
-                answer:
-                    "Compliant, backdrivable actuators allow the robot to sense and regulate external contact forces directly through motor current and joint feedback—critical for safe, repeatable physical manipulation around humans.",
-            },
-            {
-                question: "How does the power architecture support sustained operation?",
-                answer:
-                    "We are designing a high-efficiency power distribution bus and thermal layout tailored to compact humanoid form factors, minimizing energy losses during continuous locomotion and manipulation.",
-            },
-            {
-                question: "Does the robot rely on cloud compute or onboard inference?",
-                answer:
-                    "Core perception, spatial planning, and low-level motor control loops run deterministically onboard so the system remains responsive and safe regardless of network connectivity.",
-            },
-        ],
-    },
-    {
-        id: "domains",
-        label: "Target Environments",
-        items: [
-            {
-                question: "Which environments are your systems designed to operate in?",
-                answer:
-                    "We are researching architectures across three core domains: everyday workplace and logistics operations, clinical and surgical assistance, and autonomous scientific exploration in hazardous field environments.",
-            },
-            {
-                question: "How do you ensure physical safety around human teams?",
-                answer:
-                    "Safety is enforced across both mechanical and software layers through passive mechanical compliance, real-time force-limiting control loops, and deterministic human-in-the-loop oversight.",
-            },
-            {
-                question: "Can the platform adapt to existing human workspaces?",
-                answer:
-                    "Yes. A bipedal humanoid form factor is specifically chosen so the machine can navigate stairs, doorways, and standard workbenches without requiring costly facility retrofits.",
+                    "Our research interests span several interconnected domains, including computational cognition, embodied intelligence, robotic systems, intelligent actuation, energy storage, and efficient computing architectures.",
             },
         ],
     },
     {
         id: "research",
-        label: "Research & Inquiries",
+        label: "Research & Technology",
         items: [
             {
-                question: "Where can I read Neuaurelius's technical papers and updates?",
+                question: "What makes Neuaurelius different from conventional robotics companies?",
                 answer:
-                    "Our latest technical notes, architecture breakdowns, and engineering milestones are published directly in the Publications section on this site and sent via our newsletter.",
+                    "Neuaurelius approaches robotics as an integrated intelligence and engineering challenge. Rather than treating intelligence, mechanical systems, actuation, and energy management as isolated components, we explore how these disciplines can work together to enable more capable physical systems.",
             },
             {
-                question: "How can academic labs or partners collaborate with you?",
+                question: "Is Neuaurelius developing its own technologies?",
                 answer:
-                    "We welcome institutional exchanges, component partnerships, and research inquiries. Reach out at post@neuaurelius.com—please do not send confidential or proprietary material without a prior agreement.",
+                    "Yes. Our research focuses on exploring and developing proprietary technological approaches across intelligent systems and supporting engineering disciplines. Specific architectures, methodologies, and technical developments remain subject to ongoing research and intellectual property considerations.",
+                ctaLabel: "Discuss investment or strategic backing",
+                ctaTopic: "investments",
             },
+            {
+                question: "What is the current stage of development?",
+                answer:
+                    "Neuaurelius is currently between the ideation and prototyping stages, with its research activities at approximately Technology Readiness Level 2 (TRL 2). Our work is focused on developing technical foundations, evaluating research directions, and progressing toward experimental validation.",
+            },
+            {
+                question: "Does Neuaurelius focus only on robotics?",
+                answer:
+                    "No. Robotics is an important application area, but our broader research interests include the computational, mechanical, and energy-related technologies required to build advanced intelligent systems.",
+            },
+        ],
+    },
+    {
+        id: "collaboration",
+        label: "Research & Collaboration",
+        items: [
+            {
+                question: "Does Neuaurelius collaborate with universities and research institutions?",
+                answer:
+                    "Yes. We welcome academic collaborations, interdisciplinary research initiatives, and institutional partnerships. We are particularly interested in working with researchers, professors, laboratories, and institutions whose expertise aligns with our research interests.",
+                ctaLabel: "Propose an academic or lab collaboration",
+                ctaTopic: "research",
+            },
+            {
+                question: "Are there opportunities for students and interns?",
+                answer:
+                    "Yes. Neuaurelius offers opportunities for students and emerging researchers interested in contributing to research and engineering initiatives. Opportunities may span software, electronics, robotics, mechanical engineering, computational systems, and related disciplines.",
+                ctaLabel: "Apply for internships & research roles",
+                ctaTopic: "internships",
+            },
+            {
+                question: "Can researchers or professors join the advisory network?",
+                answer:
+                    "We welcome discussions with experienced researchers, academics, and industry professionals interested in contributing through research guidance, technical mentorship, and institutional collaboration.",
+                ctaLabel: "Connect regarding advisory roles",
+                ctaTopic: "research",
+            },
+            {
+                question: "How can an organisation collaborate with Neuaurelius?",
+                answer:
+                    "Organisations interested in research partnerships, technical collaboration, component development, or institutional engagement can contact our team directly. Collaboration proposals are evaluated based on technical relevance and mutual objectives.",
+                ctaLabel: "Submit a collaboration inquiry",
+                ctaTopic: "research",
+            },
+        ],
+    },
+    {
+        id: "inquiries",
+        label: "Company & Inquiries",
+        items: [
             {
                 question: "Where is Neuaurelius based?",
                 answer:
-                    "Neuaurelius Pvt Ltd operates with its corporate and R&D base at the Atal Incubation Center, Manipal University Jaipur, and its registered office in the Greater Kolkata Metropolitan Area, West Bengal.",
+                    "Neuaurelius Private Limited operates from its corporate and research ecosystem at the Atal Incubation Centre, Manipal University Jaipur, Rajasthan, with its registered office in the Greater Kolkata Metropolitan Area, West Bengal, India.",
+            },
+            {
+                question: "How can I contact Neuaurelius?",
+                answer:
+                    "For general inquiries, research collaborations, institutional partnerships, and other professional communications, you can reach our team at post@neuaurelius.com or submit a direct inquiry below.",
+                ctaLabel: "Open the contact form",
+                ctaTopic: "general",
+            },
+            {
+                question: "Where can I find updates about Neuaurelius?",
+                answer:
+                    "Updates regarding our research activities, publications, institutional collaborations, and organisational developments will be shared through our official website and communication channels.",
+            },
+            {
+                question: "Can I request technical information about ongoing research?",
+                answer:
+                    "Yes. General information about our research interests and publicly disclosed developments can be requested through our official communication channels. Certain technical information may remain confidential due to ongoing research and intellectual property considerations.",
+                ctaLabel: "Request technical brief",
+                ctaTopic: "general",
             },
         ],
     },
@@ -113,11 +142,23 @@ export default function Faq() {
         setOpenIndex((prev) => (prev === index ? -1 : index));
     };
 
+    const handleNavigateToContact = (topic = "general") => {
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(
+                new CustomEvent("neuaurelius:select-contact", {
+                    detail: { topic },
+                })
+            );
+            const target = document.getElementById("contact");
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
+    };
+
     return (
         <section id="faq" className="faq-section">
             <div className="faq-card">
-
-
                 {/* Centered Header */}
                 <div className="faq-header">
                     <span className="faq-pill">FAQ</span>
@@ -125,7 +166,15 @@ export default function Faq() {
                     <p className="faq-subtitle">
                         Our platform is built to bring Generalized Embodied
                         Intelligence into the physical world. Explore technical
-                        details across our architecture and research focus.
+                        details across our architecture and research focus, or{" "}
+                        <button
+                            type="button"
+                            className="faq-inline-link"
+                            onClick={() => handleNavigateToContact("general")}
+                        >
+                            contact our team directly
+                        </button>
+                        .
                     </p>
                 </div>
 
@@ -198,7 +247,26 @@ export default function Faq() {
 
                                     <div className="faq-panel">
                                         <div className="faq-panel-inner">
-                                            <p>{item.answer}</p>
+                                    <p>{item.answer}
+                                      <br />
+                                      {item.ctaLabel && (
+                                          <button
+                                              type="button"
+                                              className="faq-answer-cta"
+                                              onClick={() =>
+                                                  handleNavigateToContact(
+                                                      item.ctaTopic
+                                                  )
+                                              }
+                                          >
+                                              <span>{item.ctaLabel}</span>
+                                              <i
+                                                  className="bx bx-right-arrow-alt"
+                                                  aria-hidden="true"
+                                              />
+                                          </button>
+                                      )}</p>
+
                                         </div>
                                     </div>
                                 </div>

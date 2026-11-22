@@ -13,19 +13,19 @@ export default function Nav() {
 
     const menuRef = useRef(null);
     const lastScrollY = useRef(0);
-    const ticking = useRef(false);
+
+    const isPastHeroRef = useRef(false);
+    const navHiddenRef = useRef(false);
 
     const pathname = usePathname();
 
-
     /* ====================================================
-       CLOSE MENU WHEN CLICKING OUTSIDE
+       CLOSE MENU ON OUTSIDE POINTER TAP OR ESCAPE KEY
     ==================================================== */
-
     useEffect(() => {
         if (!menuOpen) return;
 
-        const handleOutsideClick = (event) => {
+        const handleOutsidePointer = (event) => {
             if (
                 menuRef.current &&
                 !menuRef.current.contains(event.target)
@@ -34,16 +34,27 @@ export default function Nav() {
             }
         };
 
-        document.addEventListener("mousedown", handleOutsideClick);
-        return () => document.removeEventListener("mousedown", handleOutsideClick);
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener("pointerdown", handleOutsidePointer);
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("pointerdown", handleOutsidePointer);
+            document.removeEventListener("keydown", handleKeyDown);
+        };
     }, [menuOpen]);
 
-
     /* ====================================================
-       RAF-THROTTLED SCROLL HANDLER (ZERO REDUNDANT RENDERS)
+       OPTIMISED RAF-THROTTLED SCROLL HANDLER
     ==================================================== */
-
     useEffect(() => {
+        let rafId = null;
+
         const updateScrollState = () => {
             const currentScrollY = window.scrollY;
             const heroThreshold = window.innerHeight - 80;
@@ -51,24 +62,38 @@ export default function Nav() {
             const nextPastHero =
                 pathname !== "/" || currentScrollY > heroThreshold;
 
-            setIsPastHero((prev) =>
-                prev !== nextPastHero ? nextPastHero : prev
-            );
+            if (nextPastHero !== isPastHeroRef.current) {
+                isPastHeroRef.current = nextPastHero;
+                setIsPastHero(nextPastHero);
+            }
 
-            if (currentScrollY <= 0 || currentScrollY < lastScrollY.current) {
-                setNavHidden((prev) => (prev ? false : prev));
-            } else if (currentScrollY > lastScrollY.current + 4) {
-                setNavHidden((prev) => (!prev ? true : prev));
+            let nextNavHidden = navHiddenRef.current;
+
+            if (menuOpen) {
+                nextNavHidden = false;
+            } else if (
+                currentScrollY <= 0 ||
+                currentScrollY < lastScrollY.current
+            ) {
+                nextNavHidden = false;
+            } else if (
+                currentScrollY > lastScrollY.current + 4
+            ) {
+                nextNavHidden = true;
+            }
+
+            if (nextNavHidden !== navHiddenRef.current) {
+                navHiddenRef.current = nextNavHidden;
+                setNavHidden(nextNavHidden);
             }
 
             lastScrollY.current = currentScrollY;
-            ticking.current = false;
+            rafId = null;
         };
 
         const onScroll = () => {
-            if (!ticking.current) {
-                window.requestAnimationFrame(updateScrollState);
-                ticking.current = true;
+            if (rafId === null) {
+                rafId = window.requestAnimationFrame(updateScrollState);
             }
         };
 
@@ -76,23 +101,25 @@ export default function Nav() {
         updateScrollState();
 
         window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-    }, [pathname]);
 
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+            if (rafId !== null) {
+                window.cancelAnimationFrame(rafId);
+            }
+        };
+    }, [pathname, menuOpen]);
 
     /* ====================================================
        SECTION LINKS
     ==================================================== */
-
     const sectionLink = (section) => {
         return pathname === "/" ? `#${section}` : `/#${section}`;
     };
 
-
     /* ====================================================
        RENDER
     ==================================================== */
-
     return (
         <nav
             className={`nav ${navHidden ? "nav-hidden" : ""} ${
@@ -100,10 +127,9 @@ export default function Nav() {
             }`}
         >
             <div className="nav-container">
-
                 {/* LOGO */}
                 <div className="nav-brand">
-                    <Link href="/">
+                    <Link href="/" aria-label="Neuaurelius Home">
                         <Image
                             src="/assets/logo/neuaureliusLogo_1.svg"
                             alt="Neuaurelius Logo"
@@ -113,10 +139,10 @@ export default function Nav() {
                         />
                     </Link>
 
-                    <Link href="/">
+                    <Link href="/" tabIndex={-1} aria-hidden="true">
                         <Image
                             src="/assets/logo/textLogo.svg"
-                            alt="Neuaurelius Text Logo"
+                            alt="Neuaurelius"
                             width={200}
                             height={40}
                             priority
@@ -125,11 +151,15 @@ export default function Nav() {
                     </Link>
                 </div>
 
-                {/* MENU MORPH CONTAINER */}
+                {/* COMPOSITED MENU MORPH WRAPPER */}
                 <div
                     ref={menuRef}
                     className={`menu-morph ${menuOpen ? "is-open" : ""}`}
                 >
+                    {/* GPU-Scaled Drawer Surface (Animates strictly via transform + opacity) */}
+                    <div className="menu-surface" aria-hidden="true" />
+
+                    {/* Trigger Pill */}
                     <button
                         type="button"
                         className="menu-toggle"
@@ -148,10 +178,11 @@ export default function Nav() {
                         </span>
                     </button>
 
+                    {/* Staggered Navigation Links */}
                     <div className="menu-content">
                         <div className="menu-section">
                             <ul className="menu-list">
-                                <li>
+                                <li style={{ "--item-index": 0 }}>
                                     <Link
                                         href={sectionLink("aboutus")}
                                         onClick={() => setMenuOpen(false)}
@@ -159,15 +190,8 @@ export default function Nav() {
                                         About Us
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link
-                                        href={sectionLink("career")}
-                                        onClick={() => setMenuOpen(false)}
-                                    >
-                                        Career
-                                    </Link>
-                                </li>
-                                <li>
+
+                                <li style={{ "--item-index": 1 }}>
                                     <Link
                                         href={sectionLink("publications")}
                                         onClick={() => setMenuOpen(false)}
@@ -175,7 +199,17 @@ export default function Nav() {
                                         Publications
                                     </Link>
                                 </li>
-                                <li>
+
+                                <li style={{ "--item-index": 2 }}>
+                                    <Link
+                                        href={sectionLink("faq")}
+                                        onClick={() => setMenuOpen(false)}
+                                    >
+                                        FAQs
+                                    </Link>
+                                </li>
+
+                                <li style={{ "--item-index": 3 }}>
                                     <Link
                                         href={sectionLink("contact")}
                                         onClick={() => setMenuOpen(false)}
@@ -187,7 +221,6 @@ export default function Nav() {
                         </div>
                     </div>
                 </div>
-
             </div>
         </nav>
     );
