@@ -1,20 +1,15 @@
 /* ========================================================
    NAVIGATION
 ======================================================== */
-
 .nav {
     background: transparent;
     color: #ffffff;
-
     position: fixed;
     top: 0;
     left: 0;
-
     width: 100%;
     padding: 1rem 0;
     z-index: 100;
-
-    will-change: transform;
     transform: translate3d(0, 0, 0);
     transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -23,67 +18,55 @@
     color: #111111;
 }
 
-
 /* ========================================================
    NAV CONTAINER
 ======================================================== */
-
 .nav-container {
     position: relative;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     width: 100%;
     max-width: 1450px;
     margin: 0 auto;
     padding: 0 2rem;
-
     box-sizing: border-box;
     z-index: 110;
 }
 
-
 /* ========================================================
-   BRAND / LOGO — GPU-ACCELERATED LIQUID DROPLET
+   BRAND / LOGO — TRUE LIQUID GLASS DROPLET
 ======================================================== */
-
 .nav-brand {
     position: relative;
-
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
     width: 60px;
     height: 60px;
     padding: 0 10px;
     box-sizing: border-box;
 
     background: linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.16) 0%,
-        rgba(255, 255, 255, 0.04) 45%,
-        rgba(255, 255, 255, 0.09) 100%
+        180deg,
+        rgba(255, 255, 255, 0.14) 0%,
+        rgba(255, 255, 255, 0.05) 100%
     );
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
 
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.24);
     box-shadow:
-        0 10px 25px -5px rgba(0, 0, 0, 0.35),
-        inset 0 1px 1px rgba(255, 255, 255, 0.55),
-        inset 0 -1px 1.5px rgba(255, 255, 255, 0.18);
+        0 8px 24px -6px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38);
 
     border-radius: 999px;
     overflow: hidden;
     cursor: pointer;
 
-    contain: layout paint;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     transition:
-        width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        width 0.48s cubic-bezier(0.22, 1, 0.36, 1),
         background-color 0.3s ease,
         border-color 0.3s ease;
 }
@@ -94,8 +77,8 @@
     inset: 0;
     border-radius: inherit;
     background: radial-gradient(
-        80% 50% at 30% 0%,
-        rgba(255, 255, 255, 0.24) 0%,
+        85% 55% at 30% 0%,
+        rgba(255, 255, 255, 0.26) 0%,
         rgba(255, 255, 255, 0) 100%
     );
     pointer-events: none;
@@ -104,25 +87,23 @@
 
 .nav.past-hero .nav-brand {
     background: linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.72) 0%,
-        rgba(255, 255, 255, 0.42) 50%,
-        rgba(255, 255, 255, 0.58) 100%
+        180deg,
+        rgba(255, 255, 255, 0.76) 0%,
+        rgba(255, 255, 255, 0.52) 100%
     );
-    border-color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.08);
     box-shadow:
-        0 8px 24px -4px rgba(0, 0, 0, 0.1),
-        inset 0 1px 1px rgba(255, 255, 255, 1),
-        inset 0 -1px 1.5px rgba(255, 255, 255, 0.4);
+        0 8px 24px -6px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .nav-brand:hover {
     width: 184px;
-    border-color: rgba(255, 255, 255, 0.38);
+    border-color: rgba(255, 255, 255, 0.36);
 }
 
 .nav.past-hero .nav-brand:hover {
-    border-color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.14);
 }
 
 .nav-brand > img:first-child,
@@ -132,10 +113,9 @@
     height: 40px;
     flex-shrink: 0;
     z-index: 2;
-
     filter: brightness(0) invert(1);
     transform: translate3d(0, 0, 0) scale(1);
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav.past-hero .nav-brand > img:first-child,
@@ -148,22 +128,18 @@
     position: absolute;
     top: 50%;
     left: 58px;
-
     width: 100px;
     height: 40px;
     object-fit: contain;
     margin: 0;
-
     opacity: 0;
     filter: brightness(0) invert(1);
-    transform: translate3d(-14px, -50%, 0) scale(0.95);
+    transform: translate3d(-12px, -50%, 0) scale(0.96);
     transform-origin: left center;
     pointer-events: none;
-
-    /* GPU-only transition: opacity + transform (no filter animation) */
     transition:
-        opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav.past-hero .nav-brand .textLogo {
@@ -173,7 +149,7 @@
 .nav-brand:hover .textLogo {
     opacity: 1;
     transform: translate3d(0, -50%, 0) scale(1);
-    transition-delay: 0.08s, 0.02s;
+    transition-delay: 0.06s, 0.02s;
 }
 
 .nav-brand:hover > img:first-child,
@@ -181,49 +157,43 @@
     transform: translate3d(0, 0, 0) scale(0.96);
 }
 
-
 /* ========================================================
-   MENU MORPH — GPU-ACCELERATED LIQUID DROPLET
+   MENU MORPH — TRUE LIQUID GLASS DROPLET
 ======================================================== */
-
 .menu-morph {
     position: absolute;
     top: 0;
     right: 2rem;
-
     width: 112px;
     height: 50px;
     box-sizing: border-box;
 
     background: linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.16) 0%,
-        rgba(255, 255, 255, 0.04) 45%,
-        rgba(255, 255, 255, 0.09) 100%
+        180deg,
+        rgba(255, 255, 255, 0.14) 0%,
+        rgba(255, 255, 255, 0.05) 100%
     );
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
 
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.24);
     box-shadow:
-        0 10px 25px -5px rgba(0, 0, 0, 0.35),
-        inset 0 1px 1px rgba(255, 255, 255, 0.55),
-        inset 0 -1px 1.5px rgba(255, 255, 255, 0.18);
+        0 8px 24px -6px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38);
 
-    border-radius: 999px;
+    border-radius: 25px;
     overflow: hidden;
     z-index: 120;
 
-    contain: layout paint;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     transform-origin: top right;
 
     transition:
-        width 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        border-radius 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.3s ease,
-        border-color 0.3s ease;
+        width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.28s ease,
+        border-color 0.28s ease;
 }
 
 .menu-morph::before {
@@ -232,8 +202,8 @@
     inset: 0;
     border-radius: inherit;
     background: radial-gradient(
-        75% 45% at 50% 0%,
-        rgba(255, 255, 255, 0.22) 0%,
+        80% 50% at 50% 0%,
+        rgba(255, 255, 255, 0.24) 0%,
         rgba(255, 255, 255, 0) 100%
     );
     pointer-events: none;
@@ -242,66 +212,57 @@
 
 .nav.past-hero .menu-morph {
     background: linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.72) 0%,
-        rgba(255, 255, 255, 0.42) 50%,
-        rgba(255, 255, 255, 0.58) 100%
+        180deg,
+        rgba(255, 255, 255, 0.76) 0%,
+        rgba(255, 255, 255, 0.52) 100%
     );
-    border-color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.08);
     box-shadow:
-        0 8px 24px -4px rgba(0, 0, 0, 0.1),
-        inset 0 1px 1px rgba(255, 255, 255, 1),
-        inset 0 -1px 1.5px rgba(255, 255, 255, 0.4);
+        0 8px 24px -6px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
-
 
 /* ========================================================
    MENU MORPH — OPEN STATE
 ======================================================== */
-
 .menu-morph.is-open {
     width: 295px;
     height: 300px;
-    border-radius: 30px;
+    border-radius: 28px;
 
     background: linear-gradient(
         165deg,
-        rgba(24, 26, 32, 0.72) 0%,
-        rgba(14, 15, 20, 0.82) 100%
+        rgba(26, 24, 36, 0.82) 0%,
+        rgba(14, 13, 20, 0.9) 100%
     );
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
 
-    border-color: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.22);
     box-shadow:
-        0 24px 52px -6px rgba(0, 0, 0, 0.45),
-        inset 0 1px 1px rgba(255, 255, 255, 0.45),
-        inset 0 -1px 1.5px rgba(255, 255, 255, 0.12);
+        0 24px 52px -8px rgba(0, 0, 0, 0.48),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 
 .nav.past-hero .menu-morph.is-open {
     background: linear-gradient(
         165deg,
-        rgba(255, 255, 255, 0.84) 0%,
-        rgba(250, 252, 255, 0.68) 100%
+        rgba(255, 255, 255, 0.88) 0%,
+        rgba(248, 249, 252, 0.78) 100%
     );
-    border-color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.08);
     box-shadow:
-        0 24px 50px -6px rgba(0, 0, 0, 0.14),
-        inset 0 1px 1px rgba(255, 255, 255, 1),
-        inset 0 -1px 1.5px rgba(255, 255, 255, 0.4);
+        0 24px 50px -8px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
 }
-
 
 /* ========================================================
    MENU TOGGLE
 ======================================================== */
-
 .menu-toggle {
     position: absolute;
     top: 0;
     left: 0;
-
     width: 100%;
     height: 100%;
     padding: 0;
@@ -325,10 +286,10 @@
     overflow: hidden;
 
     transition:
-        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        width 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        border-radius 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
         background-color 0.25s ease,
         border-color 0.25s ease;
 }
@@ -337,22 +298,20 @@
     color: #111111;
 }
 
-/* Use translate3d instead of animating top/left */
 .menu-morph.is-open .menu-toggle {
     transform: translate3d(8px, 8px, 0);
     width: calc(100% - 16px);
     height: 50px;
-    border-radius: 22px;
-
+    border-radius: 20px;
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.18);
-    box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.32);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
 .nav.past-hero .menu-morph.is-open .menu-toggle {
-    background: rgba(255, 255, 255, 0.55);
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.06);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .menu-morph.is-open .menu-toggle:hover {
@@ -360,34 +319,29 @@
 }
 
 .nav.past-hero .menu-morph.is-open .menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.72);
+    background: rgba(0, 0, 0, 0.07);
 }
-
 
 /* ========================================================
    MENU ICON
 ======================================================== */
-
 .menu-icon {
     position: relative;
     width: 18px;
     height: 18px;
     flex-shrink: 0;
-    overflow: hidden;
 }
 
 .menu-icon span {
     position: absolute;
     left: 1px;
     top: 8px;
-
     width: 17px;
     height: 1.7px;
     border-radius: 999px;
     background: #ffffff;
-
     transform-origin: center;
-    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+    transition: transform 0.38s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .nav.past-hero .menu-icon span {
@@ -404,19 +358,17 @@
 
 .menu-morph.is-open .menu-icon span:first-child {
     transform: translate3d(0, 0, 0) rotate(45deg);
-    transition-delay: 0.12s;
+    transition-delay: 0.1s;
 }
 
 .menu-morph.is-open .menu-icon span:last-child {
     transform: translate3d(0, 0, 0) rotate(-45deg);
-    transition-delay: 0.12s;
+    transition-delay: 0.1s;
 }
-
 
 /* ========================================================
    MENU / CLOSE TEXT WRAPPER
 ======================================================== */
-
 .menu-toggle-text {
     position: relative;
     display: block;
@@ -433,10 +385,9 @@
     top: 0;
     color: #ffffff;
     white-space: nowrap;
-
     transition:
-        opacity 0.25s ease,
-        transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity 0.22s ease,
+        transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav.past-hero .menu-text,
@@ -462,14 +413,12 @@
 .menu-morph.is-open .close-text {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition-delay: 0.18s;
+    transition-delay: 0.15s;
 }
-
 
 /* ========================================================
    MENU CONTENT
 ======================================================== */
-
 .menu-content {
     position: absolute;
     top: 80px;
@@ -477,34 +426,28 @@
     right: 24px;
     bottom: 24px;
     box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
-
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 8px, 0);
     pointer-events: none;
-
     transition:
-        opacity 0.15s ease,
-        transform 0.15s ease;
+        opacity 0.14s ease,
+        transform 0.14s ease;
 }
 
 .menu-morph.is-open .menu-content {
     opacity: 1;
     transform: translate3d(0, 0, 0);
     pointer-events: auto;
-
     transition:
-        opacity 0.35s ease 0.2s,
-        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+        opacity 0.32s ease 0.16s,
+        transform 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.16s;
 }
 
-
 /* ========================================================
-   MENU LIST & HOVER (GPU-ONLY, ZERO :has() REFLOW)
+   MENU LIST & HOVER
 ======================================================== */
-
 .menu-section {
     margin: 0;
 }
@@ -523,10 +466,9 @@
     display: flex;
     align-items: center;
     transform-origin: left center;
-
     transition:
-        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.3s ease;
+        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.28s ease;
 }
 
 .menu-list a {
@@ -535,24 +477,21 @@
     padding: 0;
     color: #ffffff;
     text-decoration: none;
-
     font-family: var(--font-dm-sans), sans-serif;
     font-size: 2rem;
     font-weight: 500;
     line-height: 2;
-
     opacity: 0.92;
     transform: translate3d(0, 0, 0);
     transition:
-        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.25s ease;
+        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.24s ease;
 }
 
 .nav.past-hero .menu-list a {
     color: #111111;
 }
 
-/* Lightweight sibling dimming without expensive :has() selector matching */
 .menu-list:hover li {
     opacity: 0.52;
     transform: scale(0.98);
@@ -567,11 +506,9 @@
     opacity: 1;
 }
 
-
 /* ========================================================
    TABLET / MOBILE
 ======================================================== */
-
 @media (max-width: 768px) {
     .nav-container {
         padding-left: 1rem;
@@ -611,11 +548,9 @@
     }
 }
 
-
 /* ========================================================
    NAV HIDDEN ON SCROLL
 ======================================================== */
-
 .nav-hidden {
     transform: translate3d(0, -100%, 0);
     pointer-events: none;

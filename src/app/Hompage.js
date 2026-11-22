@@ -8,6 +8,9 @@ import { sanityClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Footer from "./Footer";
 import JoinUs from "./JoinUs";
+import Roadmap from "./Roadmap";
+import Faq from "./Faq";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const featuredPublicationsQuery = `
     *[
@@ -71,14 +74,16 @@ export default async function Homepage() {
 
             <Hero />
 
-            <AccordionWall id="aboutus" />
-
-            <Publications
-                publications={formattedPublications}
-            />
+                            <ScrollReveal variant="fade-up" duration={800}>
+                                <AccordionWall />
+                            </ScrollReveal>
 
 
-            <Footer />
-        </>
+                            <ScrollReveal variant="fade-up" duration={800} delay={60}>
+                                <Faq />
+                            </ScrollReveal>
+                        <ScrollReveal variant="fade-in" duration={700}>
+                            <Footer />
+                        </ScrollReveal>        </>
     );
 }

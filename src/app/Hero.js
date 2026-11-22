@@ -2,26 +2,7 @@
 
 import "./Hero.css";
 import { useState, useEffect } from "react";
-
-// Zero-registration invisible PoW CAPTCHA generator
-async function generateProofOfWork(nonce = 0) {
-    const timestamp = Date.now();
-    const challenge = `pow_${timestamp}_${Math.random().toString(36).substring(2)}`;
-
-    let solvedNonce = 0;
-    while (true) {
-        const msg = `${challenge}:${solvedNonce}`;
-        const msgBuffer = new TextEncoder().encode(msg);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-
-        if (hashHex.startsWith("000")) {
-            return { challenge, nonce: solvedNonce, hash: hashHex };
-        }
-        solvedNonce++;
-    }
-}
+import NewsletterCard from "../components/NewsletterCard";
 
 function AnimatedWord({ text, className = "", lineIndex = 0 }) {
     return (
@@ -50,10 +31,6 @@ function AnimatedWord({ text, className = "", lineIndex = 0 }) {
 export default function Hero() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [newsletterOpen, setNewsletterOpen] = useState(false);
-    const [email, setEmail] = useState("");
-    const [website, setWebsite] = useState("");
-    const [status, setStatus] = useState("idle");
-    const [message, setMessage] = useState("");
 
     // Trigger choreographed entrance on first paint
     useEffect(() => {
@@ -63,6 +40,18 @@ export default function Hero() {
         return () => cancelAnimationFrame(frame);
     }, []);
 
+    // Auto-open newsletter modal when visited via shareable query link (?newsletter=true or ?subscribe=1)
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (
+            params.get("newsletter") === "true" ||
+            params.get("subscribe") === "1"
+        ) {
+            setNewsletterOpen(true);
+        }
+    }, []);
+
+    // Lock body scroll while modal is open
     useEffect(() => {
         if (!newsletterOpen) {
             document.body.style.overflow = "";
@@ -76,71 +65,34 @@ export default function Hero() {
         };
     }, [newsletterOpen]);
 
+    // Close modal on Escape key
+    useEffect(() => {
+        if (!newsletterOpen) return;
+
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                setNewsletterOpen(false);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [newsletterOpen]);
+
     const openNewsletter = () => {
         setNewsletterOpen(true);
-        setStatus("idle");
-        setMessage("");
     };
 
     const closeNewsletter = () => {
         setNewsletterOpen(false);
 
-        setTimeout(() => {
-            setEmail("");
-            setWebsite("");
-            setStatus("idle");
-            setMessage("");
-        }, 200);
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (status === "loading") return;
-
-        setStatus("loading");
-        setMessage("");
-
-        try {
-            const powToken = await generateProofOfWork();
-
-            const response = await fetch("/api/subscribe", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    website,
-                    captchaToken: powToken,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (response.status === 409 || data.code === "ALREADY_EXISTS" || data.alreadySubscribed) {
-                setStatus("already_subscribed");
-                setMessage(data.message || "This email is already subscribed to our newsletter.");
-                return;
-            }
-
-            if (!response.ok || !data.success) {
-                throw new Error(
-                    data.message || "Unable to subscribe right now."
-                );
-            }
-
-            setStatus("success");
-            setMessage(data.message || "You're subscribed.");
-            setEmail("");
-        } catch (error) {
-            setStatus("error");
-            setMessage(
-                error.message || "Something went wrong. Please try again."
-            );
+        const url = new URL(window.location.href);
+        if (url.searchParams.has("newsletter") || url.searchParams.has("subscribe")) {
+            url.searchParams.delete("newsletter");
+            url.searchParams.delete("subscribe");
+            window.history.replaceState({}, "", url.pathname + url.hash);
         }
     };
-
     return (
         <>
             {/* Hidden SVG Optical Filter for True Fractal / Reeded Glass Displacement */}
@@ -337,112 +289,7 @@ export default function Hero() {
                         }
                     }}
                 >
-                    <div className="newsletter-modal">
-                        <button
-                            type="button"
-                            className="newsletter-close"
-                            onClick={closeNewsletter}
-                            aria-label="Close newsletter"
-                        >
-                            ×
-                        </button>
-
-                        {status === "success" ? (
-                            <div className="newsletter-success">
-                                <h2>Thank you for Subscribing</h2>
-                                <p>
-                                    We&apos;ll let you know when something important happens.
-                                </p>
-                                <button
-                                    type="button"
-                                    className="newsletter-done"
-                                    onClick={closeNewsletter}
-                                >
-                                    Done
-                                </button>
-                            </div>
-                        ) : status === "already_subscribed" ? (
-                            <div className="newsletter-success">
-                                <div className="newsletter-success-mark">
-                                    ℹ
-                                </div>
-                                <h2>Already Subscribed</h2>
-                                <p>{message}</p>
-                                <button
-                                    type="button"
-                                    className="newsletter-done"
-                                    onClick={closeNewsletter}
-                                >
-                                    Done
-                                </button>
-                            </div>
-                        ) : (
-                            <>
-                                <div className="newsletter-heading">
-                                    <h2>Stay in the loop.</h2>
-                                    <p>
-                                        Follow the development of our first machine
-                                        and what comes next.
-                                    </p>
-                                </div>
-
-                                <form
-                                    className="newsletter-form"
-                                    onSubmit={handleSubmit}
-                                >
-                                    <input
-                                        type="text"
-                                        name="website"
-                                        value={website}
-                                        onChange={(event) =>
-                                            setWebsite(event.target.value)
-                                        }
-                                        tabIndex="-1"
-                                        autoComplete="off"
-                                        className="newsletter-honeypot"
-                                        aria-hidden="true"
-                                    />
-
-                                    <label htmlFor="newsletter-email">
-                                        Email address
-                                    </label>
-
-                                    <input
-                                        id="newsletter-email"
-                                        type="email"
-                                        name="email"
-                                        placeholder="you@example.com"
-                                        value={email}
-                                        onChange={(event) =>
-                                            setEmail(event.target.value)
-                                        }
-                                        autoComplete="email"
-                                        required
-                                        disabled={status === "loading"}
-                                    />
-
-                                    <button
-                                        type="submit"
-                                        disabled={status === "loading"}
-                                    >
-                                        {status === "loading"
-                                            ? "Verifying & Subscribing..."
-                                            : "Subscribe"}
-                                    </button>
-
-                                    {status === "error" && (
-                                        <p className="newsletter-error">
-                                            {message}
-                                        </p>
-                                    )}
-
-                                    <p className="newsletter-note">
-                                        No noise. Only important updates from Neuaurelius.
-                                    </p>
-                                </form>
-                            </>
-                        )}
-                    </div>
+                    <NewsletterCard onClose={closeNewsletter} />
                 </div>
             )}
         </>

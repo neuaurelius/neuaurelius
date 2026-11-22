@@ -16,9 +16,9 @@
     margin: 0 auto;
     padding: clamp(2.25rem, 4.5vw, 4rem) clamp(1.75rem, 4.5vw, 4.25rem);
     background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: none;
     border-radius: 28px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
+    box-shadow: none;
     box-sizing: border-box;
 }
 
@@ -298,9 +298,9 @@
     margin: 0 auto;
     padding: clamp(2.25rem, 4.5vw, 4rem) clamp(1.75rem, 4.5vw, 4.25rem);
     background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: none;
     border-radius: 28px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
+    box-shadow: none;
     box-sizing: border-box;
 }
 
