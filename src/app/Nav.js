@@ -8,16 +8,20 @@ import { usePathname } from "next/navigation";
 
 export default function Nav() {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [navHidden, setNavHidden] = useState(false);
-    const [isPastHero, setIsPastHero] = useState(false);
 
+    const navRef = useRef(null);
     const menuRef = useRef(null);
     const lastScrollY = useRef(0);
-
-    const isPastHeroRef = useRef(false);
-    const navHiddenRef = useRef(false);
+    const menuOpenRef = useRef(false);
 
     const pathname = usePathname();
+
+    useEffect(() => {
+        menuOpenRef.current = menuOpen;
+        if (menuOpen && navRef.current) {
+            navRef.current.classList.remove("nav-hidden");
+        }
+    }, [menuOpen]);
 
     /* ====================================================
        CLOSE MENU ON OUTSIDE POINTER TAP OR ESCAPE KEY
@@ -50,65 +54,50 @@ export default function Nav() {
     }, [menuOpen]);
 
     /* ====================================================
-       OPTIMISED RAF-THROTTLED SCROLL HANDLER
+       INSTANT ZERO-REACT-OVERHEAD SCROLL HANDLER
     ==================================================== */
     useEffect(() => {
-        let rafId = null;
+        const navEl = navRef.current;
+        if (!navEl) return;
 
-        const updateScrollState = () => {
+        const heroEl = pathname === "/" ? document.querySelector(".hero") : null;
+
+        const syncNavState = () => {
             const currentScrollY = window.scrollY;
-            const heroThreshold = window.innerHeight - 80;
 
-            const nextPastHero =
-                pathname !== "/" || currentScrollY > heroThreshold;
+            // 1. Instant theme switch based on actual Hero bottom edge
+            const isPastHero =
+                pathname !== "/"
+                    ? true
+                    : heroEl
+                      ? heroEl.getBoundingClientRect().bottom <= 48
+                      : currentScrollY > window.innerHeight - 48;
 
-            if (nextPastHero !== isPastHeroRef.current) {
-                isPastHeroRef.current = nextPastHero;
-                setIsPastHero(nextPastHero);
-            }
+            navEl.classList.toggle("past-hero", isPastHero);
 
-            let nextNavHidden = navHiddenRef.current;
-
-            if (menuOpen) {
-                nextNavHidden = false;
-            } else if (
-                currentScrollY <= 0 ||
-                currentScrollY < lastScrollY.current
-            ) {
-                nextNavHidden = false;
-            } else if (
-                currentScrollY > lastScrollY.current + 4
-            ) {
-                nextNavHidden = true;
-            }
-
-            if (nextNavHidden !== navHiddenRef.current) {
-                navHiddenRef.current = nextNavHidden;
-                setNavHidden(nextNavHidden);
+            // 2. Hide/show nav on scroll direction
+            if (menuOpenRef.current || currentScrollY <= 0) {
+                navEl.classList.remove("nav-hidden");
+            } else if (currentScrollY < lastScrollY.current) {
+                navEl.classList.remove("nav-hidden");
+            } else if (currentScrollY > lastScrollY.current + 4) {
+                navEl.classList.add("nav-hidden");
             }
 
             lastScrollY.current = currentScrollY;
-            rafId = null;
-        };
-
-        const onScroll = () => {
-            if (rafId === null) {
-                rafId = window.requestAnimationFrame(updateScrollState);
-            }
         };
 
         lastScrollY.current = window.scrollY;
-        updateScrollState();
+        syncNavState();
 
-        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("scroll", syncNavState, { passive: true });
+        window.addEventListener("resize", syncNavState, { passive: true });
 
         return () => {
-            window.removeEventListener("scroll", onScroll);
-            if (rafId !== null) {
-                window.cancelAnimationFrame(rafId);
-            }
+            window.removeEventListener("scroll", syncNavState);
+            window.removeEventListener("resize", syncNavState);
         };
-    }, [pathname, menuOpen]);
+    }, [pathname]);
 
     /* ====================================================
        SECTION LINKS
@@ -122,9 +111,8 @@ export default function Nav() {
     ==================================================== */
     return (
         <nav
-            className={`nav ${navHidden ? "nav-hidden" : ""} ${
-                isPastHero ? "past-hero" : ""
-            }`}
+            ref={navRef}
+            className={`nav ${pathname !== "/" ? "past-hero" : ""}`}
         >
             <div className="nav-container">
                 {/* LOGO */}
@@ -156,7 +144,7 @@ export default function Nav() {
                     ref={menuRef}
                     className={`menu-morph ${menuOpen ? "is-open" : ""}`}
                 >
-                    {/* GPU-Scaled Drawer Surface (Animates strictly via transform + opacity) */}
+                    {/* GPU-Scaled Drawer Surface */}
                     <div className="menu-surface" aria-hidden="true" />
 
                     {/* Trigger Pill */}

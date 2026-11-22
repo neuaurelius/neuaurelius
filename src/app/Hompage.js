@@ -2,7 +2,7 @@ import Nav from "./Nav";
 import Hero from "./Hero";
 import AccordionWall from "./AccordianWall";
 import Publications from "./Publications";
-import Collaboration from "./Collaboration"
+import Collaboration from "./Collaboration";
 
 import { sanityClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -10,7 +10,6 @@ import Footer from "./Footer";
 import JoinUs from "./JoinUs";
 import Roadmap from "./Roadmap";
 import Faq from "./Faq";
-import ScrollReveal from "@/components/ScrollReveal";
 import Contact from "@/components/contact";
 
 const featuredPublicationsQuery = `
@@ -42,11 +41,7 @@ async function getFeaturedPublications() {
             }
         );
     } catch (error) {
-        console.error(
-            "Failed to fetch featured publications:",
-            error
-        );
-
+        console.error("Failed to fetch featured publications:", error);
         return [];
     }
 }
@@ -54,42 +49,27 @@ async function getFeaturedPublications() {
 export default async function Homepage() {
     const publications = await getFeaturedPublications();
 
-    const formattedPublications = publications.map(
-        (publication) => ({
-            ...publication,
-
-            coverImage: publication.coverImage
-                ? urlFor(publication.coverImage)
-                    .width(1800)
-                    .height(1200)
-                    .fit("crop")
-                    .auto("format")
-                    .url()
-                : null,
-        })
-    );
+    const formattedPublications = (publications || []).map((publication) => ({
+        ...publication,
+        coverImage: publication.coverImage
+            ? urlFor(publication.coverImage)
+                  .width(1800)
+                  .height(1200)
+                  .fit("crop")
+                  .auto("format")
+                  .url()
+            : null,
+    }));
 
     return (
         <>
             <Nav />
-
             <Hero />
-
-                            <ScrollReveal variant="fade-up" duration={80}>
-                                <AccordionWall />
-                            </ScrollReveal>
-
-                                <Publications
-                                    publications={formattedPublications}/>
-
-                            <ScrollReveal variant="fade-up" duration={80} >
-                                <Faq />
-        </ScrollReveal>
-        <ScrollReveal variant="fade-up" duration={80} >
+            <AccordionWall />
+            <Publications publications={formattedPublications} />
+            <Faq />
             <Contact />
-        </ScrollReveal>
-                        <ScrollReveal variant="fade-in" duration={70}>
-                            <Footer />
-                        </ScrollReveal>        </>
+            <Footer />
+        </>
     );
 }
