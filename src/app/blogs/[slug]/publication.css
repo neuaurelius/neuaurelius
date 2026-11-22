@@ -1,972 +1,731 @@
+/* =========================================================
+   SINGLE PUBLICATION / ARTICLE PAGE (Neuaurelius Editorial)
+   ========================================================= */
 .publication-page {
-  width: 100%;
-  padding: 150px 24px 180px;
+    width: 100%;
+    padding: 9.5rem 4.5vw 10rem;
+    background: #ffffff;
+    color: #141416;
+    box-sizing: border-box;
 }
 
+/* =========================================================
+   HEADER
+   ========================================================= */
 .publication-header {
-  width: min(1100px, 100%);
-  margin: 0 auto 80px;
+    width: min(1040px, 100%);
+    margin: 0 auto 3.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #ebebee;
 }
 
 .publication-header h1 {
-  margin: 0;
-  max-width: 1000px;
-
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: clamp(42px, 6vw, 82px);
-  line-height: 0.98;
-  font-weight: 600;
-  letter-spacing: -0.055em;
-
-  color: #111;
+    margin: 0;
+    max-width: 920px;
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: clamp(2.35rem, 4.8vw, 4.35rem);
+    line-height: 1.04;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #141416;
+    text-wrap: balance;
 }
 
 .publication-meta {
-  margin-top: 32px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-
-  color: #777;
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #71717a;
 }
 
 .publication-author {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  color: #111;
-  font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.35rem 0.9rem 0.35rem 0.38rem;
+    border-radius: 999px;
+    background: #f7f7f8;
+    border: 1px solid #e7e7ea;
+    color: #141416;
+    font-weight: 600;
 }
 
 .publication-author-avatar {
-  width: 30px;
-  height: 30px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #111;
-  color: #fff;
-
-  font-size: 11px;
-  font-weight: 600;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #141416;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 600;
 }
 
 .publication-meta-right {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-
-  white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    white-space: nowrap;
 }
 
 .meta-label {
-  color: #aaa;
-  font-size: 10px;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: #dcd5fb;
+    color: #1a1726;
+    font-size: 0.72rem;
+    font-weight: 600;
 }
 
-
 /* =========================================================
-   ARTICLE
+   ARTICLE BODY & LEAD
    ========================================================= */
-
 .publication-body {
-  width: min(1100px, 100%);
-  margin: 0 auto;
+    width: min(1040px, 100%);
+    margin: 0 auto;
 }
 
 .publication-lead {
-  width: min(760px, 100%);
-  margin: 0 auto 70px;
-
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: clamp(20px, 2.2vw, 27px);
-  line-height: 1.45;
-  letter-spacing: -0.02em;
-
-  color: #444;
+    width: min(740px, 100%);
+    margin: 0 auto 3.25rem;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: clamp(1.18rem, 1.85vw, 1.48rem);
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: -0.015em;
+    color: #3f3f46;
+    text-wrap: pretty;
 }
 
 .publication-cover {
-  width: 100%;
-  margin: 0 auto 90px;
-
-  overflow: hidden;
+    width: 100%;
+    margin: 0 auto 4.5rem;
+    padding: 0.65rem;
+    border-radius: 26px;
+    background: #f7f7f8;
+    border: 1px solid #e7e7ea;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .publication-cover img {
-  display: block;
-
-  width: 100%;
-  height: auto;
-
-  object-fit: cover;
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    object-fit: cover;
 }
-
 
 /* =========================================================
    ARTICLE CONTENT
    ========================================================= */
-
 .publication-content {
-  width: min(720px, 100%);
-  margin: 0 auto;
-
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: var(--publication-font-size, 17px);
-  line-height: 1.78;
-
-  color: #252525;
-
-  transition: font-size 0.2s ease;
+    width: min(720px, 100%);
+    margin: 0 auto;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: var(--publication-font-size, 17px);
+    line-height: 1.8;
+    color: #27272a;
+    transition: font-size 0.2s ease;
 }
 
 .publication-content p {
-  margin: 0 0 1.65em;
+    margin: 0 0 1.65em;
 }
 
 .publication-content h2 {
-  margin: 2.8em 0 0.8em;
-
-  font-size: 1.65em;
-  line-height: 1.15;
-  letter-spacing: -0.035em;
-  font-weight: 600;
-
-  color: #111;
+    margin: 2.75em 0 0.75em;
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: 1.75em;
+    line-height: 1.14;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    color: #141416;
 }
 
 .publication-content h3 {
-  margin: 2.4em 0 0.7em;
-
-  font-size: 1.3em;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
-  font-weight: 600;
-
-  color: #111;
+    margin: 2.35em 0 0.65em;
+    font-family: var(--font-gcepicpro), sans-serif;
+    font-size: 1.38em;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: #141416;
 }
 
 .publication-content h4 {
-  margin: 2em 0 0.6em;
-
-  font-size: 1.1em;
-  line-height: 1.3;
-  font-weight: 600;
-
-  color: #111;
+    margin: 2em 0 0.55em;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 1.1em;
+    line-height: 1.35;
+    font-weight: 600;
+    color: #141416;
 }
 
 .publication-content strong {
-  font-weight: 650;
-  color: #111;
+    font-weight: 600;
+    color: #141416;
 }
 
 .publication-content em {
-  font-style: italic;
+    font-style: italic;
 }
 
 .publication-content a {
-  color: inherit;
-
-  text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-
-  transition: opacity 0.2s ease;
+    color: #141416;
+    text-decoration-line: underline;
+    text-decoration-color: #a1a1aa;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition:
+        text-decoration-color 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .publication-content a:hover {
-  opacity: 0.55;
+    text-decoration-color: #141416;
+    opacity: 0.72;
 }
-
 
 /* =========================================================
    LISTS
    ========================================================= */
-
 .publication-content ul,
 .publication-content ol {
-  margin: 0 0 1.7em;
-  padding-left: 1.5em;
+    margin: 0 0 1.75em;
+    padding-left: 1.45em;
 }
 
 .publication-content li {
-  margin-bottom: 0.55em;
+    margin-bottom: 0.55em;
 }
 
 .publication-content ul li::marker,
 .publication-content ol li::marker {
-  color: #999;
+    color: #71717a;
 }
-
 
 /* =========================================================
    BLOCKQUOTES
    ========================================================= */
-
 .publication-content blockquote {
-  margin: 2.5em 0;
-
-  padding: 0 0 0 24px;
-
-  border-left: 2px solid #111;
-
-  font-size: 1.15em;
-  line-height: 1.6;
-
-  color: #555;
+    margin: 2.4em 0;
+    padding: 1.35rem 1.65rem;
+    border-radius: 18px;
+    background: #f7f7f8;
+    border: 1px solid #e7e7ea;
+    border-left: 3px solid #141416;
+    font-size: 1.08em;
+    line-height: 1.65;
+    color: #3f3f46;
 }
 
+.publication-content blockquote p:last-child {
+    margin-bottom: 0;
+}
 
 /* =========================================================
    CODE
    ========================================================= */
-
 .publication-content code {
-  padding: 2px 5px;
-
-  border-radius: 4px;
-
-  background: #f2f2f2;
-
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace;
-
-  font-size: 0.88em;
+    padding: 0.18em 0.45em;
+    border-radius: 6px;
+    background: #f4f4f6;
+    border: 1px solid #e5e5e7;
+    color: #141416;
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+    font-size: 0.86em;
 }
 
 .publication-content pre {
-  width: 100%;
-
-  margin: 2em 0;
-  padding: 22px;
-
-  overflow-x: auto;
-
-  border-radius: 8px;
-
-  background: #111;
-  color: #eee;
-
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace;
-
-  font-size: 0.85em;
-  line-height: 1.6;
+    width: 100%;
+    margin: 2.1em 0;
+    padding: 1.4rem 1.6rem;
+    overflow-x: auto;
+    border-radius: 18px;
+    background: #141416;
+    border: 1px solid #27272a;
+    color: #f4f4f6;
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+    font-size: 0.85em;
+    line-height: 1.65;
+    box-sizing: border-box;
 }
 
 .publication-content pre code {
-  padding: 0;
-
-  background: transparent;
-
-  color: inherit;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
 }
-
 
 /* =========================================================
    TABLES
    ========================================================= */
-
 .publication-content table {
-  width: 100%;
-
-  margin: 2.5em 0;
-
-  border-collapse: collapse;
-
-  font-size: 0.92em;
+    width: 100%;
+    margin: 2.5em 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 16px;
+    border: 1px solid #e7e7ea;
+    overflow: hidden;
+    font-size: 0.92em;
 }
 
 .publication-content th,
 .publication-content td {
-  padding: 12px 14px;
-
-  border-bottom: 1px solid #ddd;
-
-  text-align: left;
-  vertical-align: top;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #ebebee;
+    text-align: left;
+    vertical-align: top;
 }
 
 .publication-content th {
-  font-weight: 600;
-  color: #111;
+    background: #f7f7f8;
+    font-weight: 600;
+    color: #141416;
 }
 
+.publication-content tr:last-child td {
+    border-bottom: 0;
+}
 
 /* =========================================================
    IMAGES INSIDE ARTICLE
    ========================================================= */
-
 .publication-content img {
-  display: block;
-
-  width: 100%;
-  height: auto;
-
-  margin: 2.5em 0;
-
-  border-radius: 36px;
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 2.5em 0;
+    border-radius: 22px;
+    border: 1px solid #e7e7ea;
 }
 
 .publication-content figure {
-  margin: 2.5em 0;
+    margin: 2.5em 0;
+}
+
+.publication-content figure img {
+    margin: 0;
 }
 
 .publication-content figcaption {
-  margin-top: 10px;
-
-  font-size: 12px;
-  line-height: 1.5;
-
-  color: #888;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #71717a;
+    text-align: center;
 }
-
 
 /* =========================================================
    READ-ALOUD SENTENCES
    ========================================================= */
-
 .publication-sentence {
-  border-radius: 4px;
-
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-radius: 6px;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
 }
-
-
-/*
-   Currently spoken sentence
-*/
 
 .publication-sentence-active {
-  background: rgba(0, 0, 0, 0.08);
-
-  box-shadow:
-    0 0 0 5px rgba(0, 0, 0, 0.08);
-
-  border-radius: 4px;
+    background: rgba(220, 213, 251, 0.55);
+    box-shadow: 0 0 0 4px rgba(220, 213, 251, 0.55);
+    color: #141416;
+    border-radius: 6px;
 }
 
-
 /* =========================================================
-   READING PROGRESS
+   READING PROGRESS BAR
    ========================================================= */
-
 .reading-progress {
-  position: fixed;
-
-  top: 0;
-  left: 0;
-
-  width: var(--reading-progress, 0%);
-  height: 2px;
-
-  z-index: 2000;
-
-  background: #111;
-
-  pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--reading-progress, 0%);
+    height: 3px;
+    z-index: 2000;
+    background: #141416;
+    pointer-events: none;
 }
 
-
 /* =========================================================
-   READING TOOLS
+   FLOATING READING TOOLS DOCK
    ========================================================= */
-
 .reading-tools {
-  position: fixed;
-
-  z-index: 999;
-
-  bottom: 24px;
-
-  width: min(760px, calc(100% - 48px));
-
-  margin: 0;
-
-  opacity: 1;
-  visibility: visible;
-
-  pointer-events: auto;
-
-  transition:
-    opacity 0.25s ease,
-    visibility 0.25s ease,
-    transform 0.25s ease;
+    position: fixed;
+    z-index: 999;
+    bottom: 24px;
+    width: min(740px, calc(100% - 48px));
+    margin: 0;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+        opacity 0.28s ease,
+        visibility 0.28s ease,
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-
-/* =========================================================
-   READER POSITIONS
-   ========================================================= */
-
-/*
-   Bottom center
-*/
 
 .reading-tools-center {
-  left: 50%;
-
-  transform: translateX(-50%);
+    left: 50%;
+    transform: translate3d(-50%, 0, 0);
 }
-
-
-/*
-   Bottom left
-*/
 
 .reading-tools-left {
-  left: 24px;
-
-  transform: translateX(0);
+    left: 24px;
+    transform: translate3d(0, 0, 0);
 }
-
-
-/*
-   Bottom right
-*/
 
 .reading-tools-right {
-  right: 24px;
-
-  transform: translateX(0);
+    right: 24px;
+    transform: translate3d(0, 0, 0);
 }
-
-
-/* =========================================================
-   READING TOOLS INNER
-   ========================================================= */
 
 .reading-tools-inner {
-  min-height: 58px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 20px;
-
-  padding: 9px 10px 9px 16px;
-
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-
-  background: rgba(255, 255, 255, 0.94);
-
-  box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.12);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 7px 9px 7px 18px;
+    border: 1px solid #e4e4e7;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow:
+        0 16px 40px -8px rgba(20, 20, 22, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
-
-/* =========================================================
-   READING TOOL INFO
-   ========================================================= */
-
+/* Reading Info */
 .reading-tools-info {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
 }
 
-.reading-tools-info>div {
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
+.reading-tools-info > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .reading-dot {
-  width: 7px;
-  height: 7px;
-
-  flex: 0 0 auto;
-
-  border-radius: 50%;
-
-  background: #111;
+    width: 8px;
+    height: 8px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: #141416;
+    box-shadow: 0 0 0 3px #cde2d8;
 }
 
 .reading-tools-label {
-  display: block;
-
-  font-size: 9px;
-  line-height: 1.2;
-
-  letter-spacing: 0.12em;
-  font-weight: 700;
-
-  color: #111;
-
-  white-space: nowrap;
+    display: block;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.66rem;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #141416;
+    white-space: nowrap;
 }
 
 .reading-tools-time {
-  display: block;
-
-  font-size: 10px;
-  line-height: 1.2;
-
-  color: #888;
+    display: block;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    color: #71717a;
 }
 
-
-/* =========================================================
-   READING ACTIONS
-   ========================================================= */
-
+/* Reading Actions */
 .reading-tools-actions {
-  display: flex;
-  align-items: center;
-
-  gap: 5px;
-
-  flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
 }
-
-
-/* =========================================================
-   READER BUTTONS
-   ========================================================= */
 
 .reading-tool-button {
-  height: 38px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 7px;
-
-  padding: 0 13px;
-
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 7px;
-
-  background: transparent;
-
-  color: #111;
-
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-
-  letter-spacing: 0.08em;
-
-  cursor: pointer;
-
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 14px;
+    border: 1px solid #e4e4e7;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #141416;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition:
+        background-color 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease;
 }
 
 .reading-tool-button:hover {
-  background: #f2f2f2;
+    background: #f4f4f6;
+    border-color: #d4d4d8;
 }
 
 .reading-tool-button.primary {
-  border-color: #111;
-
-  background: #111;
-
-  color: #fff;
+    border-color: #141416;
+    background: #141416;
+    color: #ffffff;
 }
 
 .reading-tool-button.primary:hover {
-  background: #2b2b2b;
-  border-color: #2b2b2b;
+    background: #27272a;
+    border-color: #27272a;
 }
-
-
-/* =========================================================
-   DIVIDER
-   ========================================================= */
 
 .reading-divider {
-  width: 1px;
-  height: 25px;
-
-  margin: 0 5px;
-
-  background: rgba(0, 0, 0, 0.12);
+    width: 1px;
+    height: 22px;
+    margin: 0 4px;
+    background: #e4e4e7;
 }
 
-
-/* =========================================================
-   FONT BUTTONS
-   ========================================================= */
-
+/* Font Size Buttons */
 .font-button {
-  width: 34px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  border: 0;
-  border-radius: 6px;
-
-  background: transparent;
-
-  color: #333;
-
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #3f3f46;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
 }
 
 .font-button:hover {
-  background: #f1f1f1;
-  color: #111;
+    background: #f4f4f6;
+    color: #141416;
 }
 
-
-/* =========================================================
-   POSITION CONTROLS
-   ========================================================= */
-
+/* Dock Position Buttons */
 .reading-position {
-  display: flex;
-  align-items: center;
-
-  gap: 2px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
 }
 
 .position-button {
-  width: 30px;
-  height: 30px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  border: 0;
-  border-radius: 5px;
-
-  background: transparent;
-
-  color: #555;
-
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 15px;
-
-  cursor: pointer;
-
-  opacity: 0.55;
-
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    opacity 0.15s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #71717a;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
 }
 
 .position-button:hover {
-  background: rgba(0, 0, 0, 0.06);
-
-  color: #111;
-
-  opacity: 1;
+    background: #f4f4f6;
+    color: #141416;
 }
 
 .position-button.active {
-  background: rgba(0, 0, 0, 0.1);
-
-  color: #111;
-
-  opacity: 1;
+    background: #141416;
+    color: #ffffff;
 }
 
-
-/* =========================================================
-   HIDE READER WHEN FOOTER IS VISIBLE
-   ========================================================= */
-
+/* Hide Reader When Footer Is Visible */
 .reading-tools-footer-visible {
-  opacity: 0;
-  visibility: hidden;
-
-  pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
-
-
-/*
-   Center position animation
-*/
 
 .reading-tools-center.reading-tools-footer-visible {
-  transform:
-    translateX(-50%) translateY(20px);
+    transform: translate3d(-50%, 20px, 0);
 }
 
-
-/*
-   Left position animation
-*/
-
-.reading-tools-left.reading-tools-footer-visible {
-  transform:
-    translateY(20px);
-}
-
-
-/*
-   Right position animation
-*/
-
+.reading-tools-left.reading-tools-footer-visible,
 .reading-tools-right.reading-tools-footer-visible {
-  transform:
-    translateY(20px);
+    transform: translate3d(0, 20px, 0);
 }
-
-
-/* =========================================================
-   SELECTION
-   ========================================================= */
 
 .publication-content ::selection {
-  background: rgba(0, 0, 0, 0.15);
+    background: rgba(220, 213, 251, 0.7);
 }
-
 
 /* =========================================================
    MOBILE
    ========================================================= */
-
 @media (max-width: 700px) {
+    .publication-page {
+        padding: 7.5rem 1.25rem 8.5rem;
+    }
 
-  .publication-page {
-    padding:
-      110px 18px 150px;
-  }
+    .publication-header {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.75rem;
+    }
 
-  .publication-header {
-    margin-bottom: 55px;
-  }
+    .publication-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.9rem;
+    }
 
-  .publication-header h1 {
-    font-size: clamp(38px, 11vw, 60px);
-  }
+    .publication-meta-right {
+        flex-wrap: wrap;
+    }
 
-  .publication-meta {
-    flex-direction: column;
+    .publication-lead {
+        margin-bottom: 2.25rem;
+        font-size: 1.12rem;
+    }
 
-    align-items: flex-start;
+    .publication-cover {
+        margin-bottom: 3rem;
+        padding: 0.45rem;
+        border-radius: 20px;
+    }
 
-    gap: 15px;
-  }
+    .publication-cover img {
+        border-radius: 15px;
+    }
 
-  .publication-meta-right {
-    flex-wrap: wrap;
-  }
+    .publication-content {
+        font-size: var(--publication-font-size, 16.5px);
+        line-height: 1.74;
+    }
 
-  .publication-lead {
-    margin-bottom: 50px;
+    .publication-content img {
+        border-radius: 16px;
+    }
 
-    font-size: 20px;
-  }
+    /* Mobile Dock */
+    .reading-tools {
+        left: 1rem;
+        right: 1rem;
+        bottom: 14px;
+        width: auto;
+    }
 
-  .publication-cover {
-    margin-bottom: 60px;
-  }
+    .reading-tools-center,
+    .reading-tools-left,
+    .reading-tools-right {
+        transform: none;
+    }
 
-  .publication-content {
-    font-size: var(--publication-font-size, 17px);
+    .reading-tools-inner {
+        min-height: auto;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 20px;
+    }
 
-    line-height: 1.72;
-  }
+    .reading-tools-info {
+        padding: 2px 4px;
+    }
 
+    .reading-tools-actions {
+        width: 100%;
+        justify-content: space-between;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
 
-  /* -----------------------------------------
-     Reader
-     ----------------------------------------- */
+    .reading-tools-actions::-webkit-scrollbar {
+        display: none;
+    }
 
-  .reading-tools {
-    left: 5vw;
-    right: 5vw;
+    .reading-tool-button {
+        height: 36px;
+        padding: 0 12px;
+        flex: 0 0 auto;
+    }
 
-    bottom: 14px;
+    .reading-divider,
+    .font-button,
+    .reading-position {
+        flex: 0 0 auto;
+    }
 
-    width: auto;
-  }
-
-  .reading-tools-center {
-    transform: none;
-  }
-
-  .reading-tools-left,
-  .reading-tools-right {
-    transform: none;
-  }
-
-  .reading-tools-inner {
-    min-height: auto;
-
-    flex-direction: column;
-
-    align-items: stretch;
-
-    gap: 8px;
-
-    padding: 10px;
-  }
-
-  .reading-tools-info {
-    padding:
-      2px 4px;
-  }
-
-  .reading-tools-actions {
-    width: 100%;
-
-    justify-content: space-between;
-
-    overflow-x: auto;
-
-    scrollbar-width: none;
-  }
-
-  .reading-tools-actions::-webkit-scrollbar {
-    display: none;
-  }
-
-  .reading-tool-button {
-    height: 36px;
-
-    padding: 0 11px;
-
-    flex: 0 0 auto;
-  }
-
-  .reading-divider {
-    flex: 0 0 auto;
-
-    height: 22px;
-
-    margin: 0 2px;
-  }
-
-  .font-button {
-    flex: 0 0 auto;
-  }
-
-  .reading-position {
-    flex: 0 0 auto;
-  }
-
-
-  /* -----------------------------------------
-     Footer hiding animation
-     ----------------------------------------- */
-
-  .reading-tools-center.reading-tools-footer-visible,
-  .reading-tools-left.reading-tools-footer-visible,
-  .reading-tools-right.reading-tools-footer-visible {
-    transform: translateY(20px);
-  }
-
-
-  /* -----------------------------------------
-     Sentence highlight
-     ----------------------------------------- */
-
-  .publication-sentence-active {
-    box-shadow:
-      0 0 0 3px rgba(0, 0, 0, 0.08);
-  }
+    .reading-tools-center.reading-tools-footer-visible,
+    .reading-tools-left.reading-tools-footer-visible,
+    .reading-tools-right.reading-tools-footer-visible {
+        transform: translate3d(0, 20px, 0);
+    }
 }
-
-
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
 
 @media (max-width: 430px) {
+    .publication-page {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
 
-  .publication-page {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-
-  .publication-header h1 {
-    font-size: 37px;
-  }
-
-  .reading-tools {
-    left: 12px;
-    right: 12px;
-
-    width: auto;
-  }
-
-  .reading-tools-label {
-    font-size: 8px;
-  }
-
-  .reading-tools-time {
-    font-size: 9px;
-  }
-
-  .reading-tool-button {
-    font-size: 8px;
-
-    padding: 0 9px;
-  }
+    .reading-tools {
+        left: 12px;
+        right: 12px;
+    }
 }
-
 
 /* =========================================================
    ACCESSIBILITY
    ========================================================= */
-
 @media (prefers-reduced-motion: reduce) {
-
-  .reading-tools,
-  .publication-sentence,
-  .font-button,
-  .position-button,
-  .reading-tool-button {
-    transition: none;
-  }
+    .reading-tools,
+    .publication-sentence,
+    .font-button,
+    .position-button,
+    .reading-tool-button {
+        transition: none !important;
+    }
 }

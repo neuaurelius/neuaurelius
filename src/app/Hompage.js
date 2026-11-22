@@ -37,7 +37,7 @@ async function getFeaturedPublications() {
             featuredPublicationsQuery,
             {},
             {
-                cache: "no-store",
+                next: { revalidate: 60 },
             }
         );
     } catch (error) {

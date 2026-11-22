@@ -1,5 +1,31 @@
 import { NextResponse } from "next/server";
 
+async function verifyProofOfWork(captchaToken) {
+    if (
+        !captchaToken ||
+        typeof captchaToken.challenge !== "string" ||
+        typeof captchaToken.nonce !== "number"
+    ) {
+        return false;
+    }
+
+    const parts = captchaToken.challenge.split("_");
+    const timestamp = Number(parts[1]);
+    if (!timestamp || Math.abs(Date.now() - timestamp) > 5 * 60 * 1000) {
+        return false;
+    }
+
+    const msgBuffer = new TextEncoder().encode(
+        `${captchaToken.challenge}:${captchaToken.nonce}`
+    );
+    const hashBuffer = await globalThis.crypto.subtle.digest("SHA-256", msgBuffer);
+    const expectedHash = Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+
+    return expectedHash.startsWith("000");
+}
+
 export async function POST(request) {
     try {
         const body = await request.json();
@@ -28,18 +54,86 @@ export async function POST(request) {
             );
         }
 
+        // 1. Verify Proof-of-Work token
+        const powValid = await verifyProofOfWork(body?.captchaToken);
+        if (!powValid) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Security verification failed. Please try again.",
+                },
+                { status: 403 }
+            );
+        }
+
+        // 2. Verify Cloudflare Turnstile token (when secret key is configured)
+        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+        const turnstileToken = body?.turnstileToken;
+
+        if (turnstileSecret) {
+            if (!turnstileToken) {
+                return NextResponse.json(
+                    {
+                        success: false,
+                        message: "Security check is still verifying. Please try again.",
+                    },
+                    { status: 400 }
+                );
+            }
+
+            const forwardedFor = request.headers.get("x-forwarded-for");
+            const clientIp = forwardedFor ? forwardedFor.split(",")[0].trim() : "";
+
+            const verifyParams = new URLSearchParams({
+                secret: turnstileSecret,
+                response: turnstileToken,
+            });
+            if (clientIp) {
+                verifyParams.set("remoteip", clientIp);
+            }
+
+            const cfResponse = await fetch(
+                "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: verifyParams,
+                }
+            );
+
+            const cfData = await cfResponse.json();
+            if (!cfData.success) {
+                console.error("Turnstile verify failed:", cfData);
+                return NextResponse.json(
+                    {
+                        success: false,
+                        message: "Bot verification failed. Please refresh and try again.",
+                    },
+                    { status: 403 }
+                );
+            }
+        }
+
         const apiKey = process.env.BREVO_API_KEY;
         const listId = Number(process.env.BREVO_LIST_ID);
 
         if (!apiKey || !listId) {
-            console.error("Brevo environment variables are missing.");
+            console.error("Missing env vars:", {
+                hasBrevoKey: Boolean(apiKey),
+                hasBrevoListId: Boolean(listId),
+            });
             return NextResponse.json(
-                { success: false, message: "Newsletter service is not configured." },
+                {
+                    success: false,
+                    message: "Newsletter service is not configured (missing Brevo env vars).",
+                },
                 { status: 500 }
             );
         }
 
-        // 1. Check if the contact already exists in Brevo
+        // 3. Check if the contact already exists in Brevo
         const checkResponse = await fetch(
             `https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`,
             {
@@ -53,8 +147,10 @@ export async function POST(request) {
 
         if (checkResponse.ok) {
             const existingContact = await checkResponse.json();
-            // Check if user is already in this specific list
-            if (existingContact.listIds?.includes(listId)) {
+            if (
+                existingContact.listIds?.includes(listId) &&
+                !existingContact.emailBlacklisted
+            ) {
                 return NextResponse.json(
                     {
                         success: false,
@@ -66,7 +162,7 @@ export async function POST(request) {
             }
         }
 
-        // 2. Add or update the contact in your list
+        // 4. Add or update the contact in your list
         const response = await fetch("https://api.brevo.com/v3/contacts", {
             method: "POST",
             headers: {
@@ -77,6 +173,7 @@ export async function POST(request) {
             body: JSON.stringify({
                 email,
                 listIds: [listId],
+                emailBlacklisted: false,
                 updateEnabled: true,
             }),
         });
@@ -106,7 +203,7 @@ export async function POST(request) {
         return NextResponse.json(
             {
                 success: false,
-                message: "Something went wrong. Please try again.",
+                message: error?.message || "Something went wrong. Please try again.",
             },
             { status: 500 }
         );

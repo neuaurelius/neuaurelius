@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import InvisibleTurnstile from "./InvisibleTurnstile";
 import "./NewsletterCard.css";
 
-// Zero-registration invisible PoW CAPTCHA generator
+// Zero-registration invisible PoW fallback generator
 async function generateProofOfWork() {
     const timestamp = Date.now();
     const challenge = `pow_${timestamp}_${Math.random().toString(36).substring(2)}`;
@@ -31,6 +32,10 @@ export default function NewsletterCard({ onClose, isStandalone = false }) {
     const [status, setStatus] = useState("idle");
     const [message, setMessage] = useState("");
     const [copied, setCopied] = useState(false);
+
+    const turnstileRef = useRef(null);
+    const [turnstileToken, setTurnstileToken] = useState("");
+
     const shareUrl =
         typeof window !== "undefined"
             ? `${window.location.origin}/?newsletter=true`
@@ -54,6 +59,11 @@ export default function NewsletterCard({ onClose, isStandalone = false }) {
         setMessage("");
 
         try {
+          const cfToken =
+              turnstileToken ||
+              turnstileRef.current?.getToken() ||
+              (await turnstileRef.current?.waitForToken(5000)) ||
+              "";
             const powToken = await generateProofOfWork();
 
             const response = await fetch("/api/subscribe", {
@@ -64,6 +74,7 @@ export default function NewsletterCard({ onClose, isStandalone = false }) {
                 body: JSON.stringify({
                     email,
                     website,
+                    turnstileToken: cfToken,
                     captchaToken: powToken,
                 }),
             });
@@ -80,6 +91,8 @@ export default function NewsletterCard({ onClose, isStandalone = false }) {
                     data.message ||
                         "This email is already subscribed to our weekly dispatch."
                 );
+                turnstileRef.current?.reset();
+                setTurnstileToken("");
                 return;
             }
 
@@ -92,11 +105,15 @@ export default function NewsletterCard({ onClose, isStandalone = false }) {
             setStatus("success");
             setMessage(data.message || "You're subscribed.");
             setEmail("");
+            turnstileRef.current?.reset();
+            setTurnstileToken("");
         } catch (error) {
             setStatus("error");
             setMessage(
                 error.message || "Something went wrong. Please try again."
             );
+            turnstileRef.current?.reset();
+            setTurnstileToken("");
         }
     };
 
@@ -186,6 +203,13 @@ export default function NewsletterCard({ onClose, isStandalone = false }) {
                             onSubmit={handleSubmit}
                             autoComplete="off"
                         >
+                            {/* Invisible Cloudflare Turnstile Captcha */}
+                            <InvisibleTurnstile
+                                ref={turnstileRef}
+                                action="newsletter_subscribe"
+                                onToken={setTurnstileToken}
+                            />
+
                             <input
                                 type="text"
                                 name="website"
@@ -231,8 +255,6 @@ export default function NewsletterCard({ onClose, isStandalone = false }) {
                                 <p className="nl-error">{message}</p>
                             )}
                         </form>
-
-
                     </>
                 )}
             </div>

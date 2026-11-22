@@ -1,3 +1,4 @@
+
 import { DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -5,11 +6,15 @@ import "./globals.css";
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 const gcepicpro = localFont({
   src: "../../public/assets/fonts/GCEPICPRO.ttf",
   variable: "--font-gcepicpro",
+  display: "swap",
+  preload: true,
 });
 
 export const metadata = {
@@ -49,7 +54,6 @@ export const metadata = {
 
   creator: "Neuaurelius",
   publisher: "Neuaurelius",
-
   applicationName: "Neuaurelius",
 
   alternates: {
@@ -105,8 +109,16 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${dmSans.variable} ${gcepicpro.variable} h-full antialiased`}
     >
-      <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+        />
+      </head>
+
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }

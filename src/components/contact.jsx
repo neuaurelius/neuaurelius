@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./Contact.css";
 
 const INQUIRY_TOPICS = [
@@ -53,13 +53,19 @@ export default function Contact() {
     const [referenceLink, setReferenceLink] = useState("");
     const [message, setMessage] = useState("");
     const [botcheck, setBotcheck] = useState(false);
+    const [honeypotText, setHoneypotText] = useState("");
 
+    const loadedAtRef = useRef(Date.now());
     const [status, setStatus] = useState("idle"); // idle | submitting | success | error
     const [errorMessage, setErrorMessage] = useState("");
 
     const activeTopic =
         INQUIRY_TOPICS.find((t) => t.id === selectedTopicId) ||
         INQUIRY_TOPICS[0];
+
+    useEffect(() => {
+        loadedAtRef.current = Date.now();
+    }, []);
 
     // Listen for deep-links triggered from FAQ items
     useEffect(() => {
@@ -85,7 +91,12 @@ export default function Contact() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (botcheck) return;
+
+        // Silent bot traps (checkbox honeypot, text honeypot, or <2s instant script submit)
+        if (botcheck || honeypotText || Date.now() - loadedAtRef.current < 2000) {
+            setStatus("success");
+            return;
+        }
 
         const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
         if (!accessKey) {
@@ -185,7 +196,7 @@ export default function Contact() {
                             onSubmit={handleSubmit}
                             autoComplete="off"
                         >
-                            {/* Spam Honeypot */}
+                            {/* Dual Spam Honeypots (Free Tier) */}
                             <input
                                 type="checkbox"
                                 name="botcheck"
@@ -193,6 +204,18 @@ export default function Contact() {
                                 onChange={(e) => setBotcheck(e.target.checked)}
                                 className="contact-honeypot"
                                 tabIndex="-1"
+                                aria-hidden="true"
+                            />
+                            <input
+                                type="text"
+                                name="company_website"
+                                value={honeypotText}
+                                onChange={(e) =>
+                                    setHoneypotText(e.target.value)
+                                }
+                                className="contact-honeypot"
+                                tabIndex="-1"
+                                autoComplete="off"
                                 aria-hidden="true"
                             />
 
