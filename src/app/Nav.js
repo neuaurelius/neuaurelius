@@ -8,11 +8,13 @@ import { usePathname } from "next/navigation";
 
 export default function Nav() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [brandExpanded, setBrandExpanded] = useState(false);
 
     const navRef = useRef(null);
     const menuRef = useRef(null);
     const lastScrollY = useRef(0);
     const menuOpenRef = useRef(false);
+    const brandTimerRef = useRef(null);
 
     const pathname = usePathname();
 
@@ -22,6 +24,40 @@ export default function Nav() {
             navRef.current.classList.remove("nav-hidden");
         }
     }, [menuOpen]);
+
+    /* ====================================================
+       CLEANUP BRAND EXPAND TIMER ON UNMOUNT
+    ==================================================== */
+    useEffect(() => {
+        return () => {
+            if (brandTimerRef.current) {
+                clearTimeout(brandTimerRef.current);
+            }
+        };
+    }, []);
+
+    /* ====================================================
+       TOUCH TAP-TO-EXPAND BRAND LOGO
+    ==================================================== */
+    const handleBrandTouchClick = (e) => {
+        const isTouch =
+            typeof window !== "undefined" &&
+            window.matchMedia("(hover: none)").matches;
+
+        if (!isTouch) return;
+
+        // First tap on mobile expands the wordmark pill; tapping again while open navigates
+        if (!brandExpanded) {
+            e.preventDefault();
+            setBrandExpanded(true);
+            if (brandTimerRef.current) {
+                clearTimeout(brandTimerRef.current);
+            }
+            brandTimerRef.current = setTimeout(() => {
+                setBrandExpanded(false);
+            }, 2600);
+        }
+    };
 
     /* ====================================================
        CLOSE MENU ON OUTSIDE POINTER TAP OR ESCAPE KEY
@@ -116,7 +152,10 @@ export default function Nav() {
         >
             <div className="nav-container">
                 {/* LOGO */}
-                <div className="nav-brand">
+                <div
+                    className={`nav-brand ${brandExpanded ? "is-expanded" : ""}`}
+                    onClick={handleBrandTouchClick}
+                >
                     <Link href="/" aria-label="Neuaurelius Home">
                         <Image
                             src="/assets/logo/neuaureliusLogo_1.svg"

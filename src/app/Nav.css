@@ -52,6 +52,8 @@
     height: 60px;
     padding: 0 10px;
     box-sizing: border-box;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 
     background: linear-gradient(
         180deg,
@@ -67,8 +69,6 @@
     border-radius: 999px;
     overflow: hidden;
     cursor: pointer;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
 
     transition:
         width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
@@ -102,7 +102,6 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
-/* Desktop Hover */
 @media (hover: hover) and (pointer: fine) {
     .nav-brand:hover {
         width: 184px;
@@ -124,30 +123,28 @@
     }
 }
 
-/* Mobile / Touch Tap & Focus Expansion */
-@media (hover: none), (pointer: coarse) {
-    .nav-brand:active,
-    .nav-brand:focus-within {
-        width: 176px;
-        border-color: rgba(255, 255, 255, 0.36);
-    }
+/* Mobile / Touch Tap-Expanded & Active Press State */
+.nav-brand.is-expanded,
+.nav-brand:active {
+    width: 184px;
+    border-color: rgba(255, 255, 255, 0.36);
+}
 
-    .nav.past-hero .nav-brand:active,
-    .nav.past-hero .nav-brand:focus-within {
-        border-color: rgba(0, 0, 0, 0.14);
-    }
+.nav.past-hero .nav-brand.is-expanded,
+.nav.past-hero .nav-brand:active {
+    border-color: rgba(0, 0, 0, 0.14);
+}
 
-    .nav-brand:active .textLogo,
-    .nav-brand:focus-within .textLogo {
-        opacity: 1;
-        transform: translate3d(0, -50%, 0) scale(1);
-        transition-delay: 0.04s, 0.01s;
-    }
+.nav-brand.is-expanded .textLogo,
+.nav-brand:active .textLogo {
+    opacity: 1;
+    transform: translate3d(0, -50%, 0) scale(1);
+    transition-delay: 0.06s, 0.02s;
+}
 
-    .nav-brand:active > a:first-child img,
-    .nav-brand:focus-within > a:first-child img {
-        transform: translate3d(0, 0, 0) scale(0.96);
-    }
+.nav-brand.is-expanded > a:first-child img,
+.nav-brand:active > a:first-child img {
+    transform: translate3d(0, 0, 0) scale(0.96);
 }
 
 .nav-brand > a:first-child img {
@@ -158,7 +155,9 @@
     z-index: 2;
     filter: brightness(0) invert(1);
     transform: translate3d(0, 0, 0) scale(1);
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.08s linear;
 }
 
 .nav.past-hero .nav-brand > a:first-child img {
@@ -181,7 +180,8 @@
     pointer-events: none;
     transition:
         opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.08s linear;
 }
 
 .nav.past-hero .nav-brand .textLogo {
@@ -213,6 +213,7 @@
     border-radius: 28px;
     transform-origin: top right;
 
+    /* Closed state matches 112x50 pill proportion via GPU scale */
     transform: translate3d(0, 0, 0) scale(0.38, 0.167);
     opacity: 0;
 
@@ -228,7 +229,9 @@
 
     transition:
         transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.24s ease;
+        opacity 0.24s ease,
+        background-color 0.08s linear,
+        border-color 0.08s linear;
 }
 
 .menu-surface::before {
@@ -262,7 +265,7 @@
 }
 
 /* ========================================================
-   MENU TOGGLE PILL
+   MENU TOGGLE PILL (Fixed Dimensions, GPU-Translated When Open)
 ======================================================== */
 .menu-toggle {
     position: absolute;
@@ -305,7 +308,7 @@
         background-color 0.08s linear,
         border-color 0.08s linear,
         color 0.08s linear,
-        box-shadow 0.25s ease;
+        box-shadow 0.08s linear;
 }
 
 .nav.past-hero .menu-toggle {
@@ -383,12 +386,12 @@
 
 .menu-morph.is-open .menu-icon span:first-child {
     transform: translate3d(0, 0, 0) rotate(45deg);
-    transition-delay: 0.08s;
+    transition-delay: 0.08s, 0s;
 }
 
 .menu-morph.is-open .menu-icon span:last-child {
     transform: translate3d(0, 0, 0) rotate(-45deg);
-    transition-delay: 0.08s;
+    transition-delay: 0.08s, 0s;
 }
 
 /* ========================================================
@@ -439,7 +442,7 @@
 .menu-morph.is-open .close-text {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition-delay: 0.12s;
+    transition-delay: 0.12s, 0.12s, 0s;
 }
 
 /* ========================================================
@@ -512,7 +515,8 @@
     -webkit-tap-highlight-color: transparent;
     transition:
         transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.22s ease;
+        opacity 0.22s ease,
+        color 0.08s linear;
 }
 
 .nav.past-hero .menu-list a {
