@@ -75,20 +75,20 @@ export default async function Homepage() {
 
             <Hero />
 
-                            <ScrollReveal variant="fade-up" duration={800}>
+                            <ScrollReveal variant="fade-up" duration={80}>
                                 <AccordionWall />
                             </ScrollReveal>
-                            <ScrollReveal variant="fade-up" duration={800} delay={60}>
-                                <Publications />
-                            </ScrollReveal>
 
-                            <ScrollReveal variant="fade-up" duration={800} delay={60}>
+                                <Publications
+                                    publications={formattedPublications}/>
+
+                            <ScrollReveal variant="fade-up" duration={80} >
                                 <Faq />
         </ScrollReveal>
-        <ScrollReveal variant="fade-up" duration={800} delay={60}>
+        <ScrollReveal variant="fade-up" duration={80} >
             <Contact />
         </ScrollReveal>
-                        <ScrollReveal variant="fade-in" duration={700}>
+                        <ScrollReveal variant="fade-in" duration={70}>
                             <Footer />
                         </ScrollReveal>        </>
     );
