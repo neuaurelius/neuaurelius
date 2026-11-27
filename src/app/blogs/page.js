@@ -1,5 +1,6 @@
 import Publications from "@/app/Publications";
-import { getAllPublications } from "@/sanity/lib/publications";
+import { sanityClient } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
 
 export const revalidate = 60;
 
@@ -24,8 +25,55 @@ export const metadata = {
   },
 };
 
+const allPublicationsQuery = `
+  *[
+    _type == "publication" &&
+    defined(slug.current)
+  ]
+  | order(publishedAt desc) {
+    _id,
+    title,
+    slug,
+    excerpt,
+    category,
+    publishedAt,
+    _updatedAt,
+    author,
+    featured,
+    coverImage
+  }
+`;
+
+async function fetchAllPublications() {
+  try {
+    return await sanityClient.fetch(
+      allPublicationsQuery,
+      {},
+      {
+        next: { revalidate: 60 },
+      }
+    );
+  } catch (error) {
+    console.error("Failed to fetch all publications:", error);
+    return [];
+  }
+}
+
 export default async function BlogsPage() {
-  const publications = (await getAllPublications()) || [];
+  const publications = await fetchAllPublications();
+
+  const formattedPublications = (publications || []).map((publication) => ({
+    ...publication,
+    coverImage: publication.coverImage
+      ? urlFor(publication.coverImage)
+          .width(900)
+          .height(600)
+          .fit("crop")
+          .quality(82)
+          .auto("format")
+          .url()
+      : null,
+  }));
 
   const collectionJsonLd = {
     "@context": "https://schema.org",
@@ -40,7 +88,7 @@ export default async function BlogsPage() {
     },
     mainEntity: {
       "@type": "ItemList",
-      itemListElement: publications
+      itemListElement: formattedPublications
         .filter((pub) => pub?.slug?.current)
         .map((pub, index) => ({
           "@type": "ListItem",
@@ -59,7 +107,7 @@ export default async function BlogsPage() {
           __html: JSON.stringify(collectionJsonLd),
         }}
       />
-      <Publications publications={publications} />
+      <Publications publications={formattedPublications} />
     </main>
   );
 }
