@@ -14,11 +14,29 @@ function urlFor(source) {
   return builder.image(source);
 }
 
-// Renders \( ... \) and $ ... $ inside any text string
+function renderKatexInline(formula, key) {
+  try {
+    const html = katex.renderToString(formula, {
+      throwOnError: false,
+      displayMode: false,
+    });
+    return (
+      <span
+        key={key}
+        className="inline-math"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    );
+  } catch {
+    return formula;
+  }
+}
+
+// Fallback parser for raw \( ... \) and $ ... $ strings
 function renderTextWithInlineMath(text) {
   if (typeof text !== "string") return text;
 
-  const regex = /(\\\((.+?)\\\)|\$([^$\n]+?)\$)/g;
+  const regex = /(\\\((.+?)\\\)|(?<!\$)\$(?!\$)([^$\n]+?)(?<!\$)\$(?!\$))/g;
   const parts = [];
   let lastIndex = 0;
   let match;
@@ -28,23 +46,8 @@ function renderTextWithInlineMath(text) {
       parts.push(text.slice(lastIndex, match.index));
     }
 
-    const formula = match[2] || match[3];
-    try {
-      const html = katex.renderToString(formula, {
-        throwOnError: false,
-        displayMode: false,
-      });
-      parts.push(
-        <span
-          key={match.index}
-          className="inline-math"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      );
-    } catch {
-      parts.push(match[0]);
-    }
-
+    const formula = (match[2] ?? match[3]).trim();
+    parts.push(renderKatexInline(formula, match.index));
     lastIndex = regex.lastIndex;
   }
 
@@ -55,7 +58,6 @@ function renderTextWithInlineMath(text) {
   return parts.length > 0 ? parts : text;
 }
 
-// Recursively traverses React children so bold/italic spans containing math also render
 function processChildren(children) {
   return React.Children.map(children, (child) => {
     if (typeof child === "string") {
@@ -92,6 +94,7 @@ export const portableTextComponents = {
   },
 
   marks: {
+    inlineMath: ({ text }) => renderKatexInline(text),
     link: ({ value, children }) => {
       const href = value?.href || "#";
       const isExternal = value?.blank !== false && href.startsWith("http");
@@ -109,7 +112,7 @@ export const portableTextComponents = {
 
   types: {
     latexBlock: ({ value }) => {
-      if (!value?.latex) return null;
+      if (!value?.latex?.trim()) return null;
       const html = katex.renderToString(value.latex, {
         throwOnError: false,
         displayMode: true,
