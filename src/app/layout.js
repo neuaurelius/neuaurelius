@@ -156,10 +156,32 @@ export default function RootLayout({ children }) {
       className={`${dmSans.variable} ${gcepicpro.variable} h-full antialiased`}
     >
       <head>
+        {/* Preload LCP Hero image for immediate browser discovery */}
+        <link
+          rel="preload"
+          as="image"
+          href="/assets/humanoid.png"
+          fetchPriority="high"
+        />
+        {/* Preconnect & non-blocking Boxicons stylesheet (eliminates 850ms render block) */}
+        <link rel="preconnect" href="https://unpkg.com" crossOrigin="" />
+        <link
+          rel="preload"
+          as="style"
+          href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+        />
         <link
           rel="stylesheet"
           href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+          media="print"
+          onLoad="this.media='all'"
         />
+        <noscript>
+          <link
+            rel="stylesheet"
+            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+          />
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

@@ -65,9 +65,12 @@ export default function PublicationCard({ publication, index }) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
       },
-      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
+      { threshold: 0.01, rootMargin: "250px 0px 250px 0px" }
     );
 
     observer.observe(el);
@@ -90,7 +93,7 @@ export default function PublicationCard({ publication, index }) {
     <article
       ref={ref}
       className={`publication-card ${visible ? "is-visible" : ""}`}
-      style={{ "--publication-delay": `${(index % 3) * 120}ms` }}
+      style={{ "--publication-delay": `${(index % 3) * 80}ms` }}
     >
       <Link href={`/blogs/${slug}`} className="publication-card-link">
         <div
@@ -102,6 +105,8 @@ export default function PublicationCard({ publication, index }) {
               src={publication.coverImage}
               alt={publication.title || "Neuaurelius Publication Cover"}
               fill
+              loading="eager"
+              decoding="async"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               style={{ objectFit: "cover" }}
             />
@@ -114,14 +119,16 @@ export default function PublicationCard({ publication, index }) {
       <div className="publication-card-content">
         <div className="publication-card-header">
           <Link href={`/blogs/${slug}`} className="publication-title-link">
-            <h3 style={{
-              fontFamily: "var(--font-gcepicpro), sans-serif",
-              fontSize: "1.5em",
-              fontWeight: 400,
-              letterSpacing: "0.02em",
-              lineHeight: 1.1,
-              margin: 0,
-            }}>
+            <h3
+              style={{
+                fontFamily: "var(--font-gcepicpro), sans-serif",
+                fontSize: "1.5em",
+                fontWeight: 400,
+                letterSpacing: "0.02em",
+                lineHeight: 1.1,
+                margin: 0,
+              }}
+            >
               {publication.title}
             </h3>
           </Link>

@@ -2,7 +2,7 @@
 
 import "./Hero.css";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import NewsletterCard from "../components/NewsletterCard";
 
 function AnimatedWord({ text, className = "", lineIndex = 0 }) {
@@ -31,13 +31,23 @@ function AnimatedWord({ text, className = "", lineIndex = 0 }) {
 
 export default function Hero() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [imageReady, setImageReady] = useState(false);
   const [newsletterOpen, setNewsletterOpen] = useState(false);
+  const mainImgRef = useRef(null);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       setIsLoaded(true);
     });
     return () => cancelAnimationFrame(frame);
+  }, []);
+
+  // Check if image was already cached before hydration
+  useEffect(() => {
+    const img = mainImgRef.current;
+    if (img && img.complete && img.naturalWidth > 0) {
+      setImageReady(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -184,21 +194,32 @@ export default function Hero() {
           <div className="cyber-ambient-glow" />
 
           <div className="cyber-figure-stage">
-            <div className="cyber-figure-wrapper">
+            <div
+              className="cyber-figure-wrapper"
+              style={{
+                opacity: imageReady ? 1 : 0,
+                transition: "opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1)",
+                willChange: "opacity",
+              }}
+            >
               <Image
                 src="/assets/humanoid.png"
                 alt=""
                 width={900}
                 height={1100}
                 priority
+                decoding="sync"
                 className="cyber-figure-ghost"
               />
               <Image
+                ref={mainImgRef}
                 src="/assets/humanoid.png"
                 alt="Neuaurelius Humanoid Robot Prototype"
                 width={900}
                 height={1100}
                 priority
+                decoding="sync"
+                onLoad={() => setImageReady(true)}
                 className="cyber-figure-img"
               />
 
