@@ -729,3 +729,60 @@
         transition: none !important;
     }
 }
+
+.publication-math-block {
+  margin: 1.75rem 0;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.inline-math .katex {
+  font-size: 1.02em;
+}
+
+.publication-inline-figure {
+  margin: 2.25rem 0;
+}
+
+.publication-inline-figure img {
+  border-radius: 6px;
+}
+
+.publication-inline-figure figcaption {
+  margin-top: 0.65rem;
+  font-size: 0.875rem;
+  opacity: 0.72;
+  text-align: center;
+}
+
+.publication-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 2rem 0;
+}
+
+.publication-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+
+.publication-table th,
+.publication-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  text-align: left;
+  vertical-align: top;
+}
+
+.publication-table th {
+  font-weight: 600;
+  background: rgba(128, 128, 128, 0.08);
+}
+
+.publication-divider {
+  border: 0;
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+  margin: 2.5rem 0;
+}

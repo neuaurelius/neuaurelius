@@ -207,7 +207,7 @@ export default function Nav() {
                 </li>
 
                 <li style={{ "--item-index": 1 }}>
-                  <Link href={sectionLink("faq")} onClick={() => setMenuOpen(false)}>
+                  <Link href={sectionLink("publications")} onClick={() => setMenuOpen(false)}>
                     Publications
                   </Link>
                 </li>

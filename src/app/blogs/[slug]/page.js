@@ -3,10 +3,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import PublicationReader from "./PublicationReader";
+import { portableTextComponents } from "./PortableTextComponents";
 import {
   getAllPublications,
   getPublicationBySlug,
 } from "@/sanity/lib/publications";
+import "katex/dist/katex.min.css";
 import "./publication.css";
 
 export const revalidate = 60;
@@ -18,11 +20,18 @@ const SITE_URL = (
 
 function calculateReadTime(blocks = []) {
   const text = blocks
-    .map((block) =>
-      block._type === "block" && block.children
-        ? block.children.map((child) => child.text).join(" ")
-        : ""
-    )
+    .map((block) => {
+      if (block._type === "block" && block.children) {
+        return block.children.map((child) => child.text).join(" ");
+      }
+      if (block._type === "latexBlock" && block.latex) {
+        return block.latex;
+      }
+      if (block._type === "table" && block.rows) {
+        return block.rows.map((r) => (r.cells || []).join(" ")).join(" ");
+      }
+      return "";
+    })
     .join(" ");
 
   const words = text.trim().split(/\s+/).filter(Boolean).length;
@@ -56,8 +65,9 @@ export async function generateMetadata({ params }) {
   }
 
   // Note: app/blogs/layout.js template automatically appends "| Neuaurelius"
-  const title = publication.title;
+  const title = publication.seoTitle || publication.title;
   const description =
+    publication.seoDescription ||
     publication.excerpt ||
     "Research and engineering publication from Neuaurelius on Generalized Embodied Intelligence.";
 
@@ -130,7 +140,7 @@ export default async function BlogPostPage({ params }) {
     notFound();
   }
 
-  const readTime = calculateReadTime(publication.body);
+  const readTime = publication.readTime || calculateReadTime(publication.body);
   const pageUrl = `${SITE_URL}/blogs/${slug}`;
   const imageUrl = publication.coverImage
     ? publication.coverImage.startsWith("http")
@@ -211,7 +221,6 @@ export default async function BlogPostPage({ params }) {
       />
 
       <main id="main-content" className="publication-page">
-
         <header className="publication-header">
           <h1>{publication.title}</h1>
 
@@ -272,7 +281,10 @@ export default async function BlogPostPage({ params }) {
           )}
 
           <div className="publication-content">
-            <PortableText value={publication.body || []} />
+            <PortableText
+              value={publication.body || []}
+              components={portableTextComponents}
+            />
           </div>
         </article>
       </main>
