@@ -91,7 +91,7 @@
    ARTICLE BODY & LEAD
    ========================================================= */
 .publication-body {
-    width: min(1040px, 100%);
+    width: min(1200px, 100%);
     margin: 0 auto;
 }
 
@@ -130,7 +130,7 @@
    ARTICLE CONTENT
    ========================================================= */
 .publication-content {
-    width: min(720px, 100%);
+    width: min(900px, 100%);
     margin: 0 auto;
     font-family: var(--font-dm-sans), sans-serif;
     font-size: var(--publication-font-size, 17px);
@@ -785,4 +785,49 @@
   border: 0;
   border-top: 1px solid rgba(128, 128, 128, 0.25);
   margin: 2.5rem 0;
+}
+/* Section headings inside article body (\section -> h1, \subsection -> h2, \subsubsection -> h3) */
+.publication-content h1 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.publication-content h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.publication-content h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 1.75rem;
+  margin-bottom: 0.6rem;
+}
+
+/* Force numbered & bulleted lists to display markers despite Tailwind/CSS resets */
+.publication-content ol {
+  list-style: decimal outside !important;
+  padding-left: 1.75rem !important;
+  margin: 1.25rem 0;
+}
+
+.publication-content ul {
+  list-style: disc outside !important;
+  padding-left: 1.75rem !important;
+  margin: 1.25rem 0;
+}
+
+.publication-content ol > li,
+.publication-content ul > li {
+  display: list-item !important;
+  margin-bottom: 0.65rem;
+  padding-left: 0.35rem;
 }

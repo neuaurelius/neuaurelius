@@ -2,10 +2,67 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function PublicationReader({
-    title,
-    readTime,
-}) {
+// Extracts clean human-readable text for SpeechSynthesis without KaTeX MathML duplicates
+function getCleanSpeechText(rootEl) {
+    const clone = rootEl.cloneNode(true);
+    clone
+        .querySelectorAll(".katex-mathml, annotation")
+        .forEach((el) => el.remove());
+    return (clone.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+// Wraps sentences in .publication-sentence spans WITHOUT destroying KaTeX, links, bold, or italic HTML
+function wrapSentencesPreservingHtml(blockEl) {
+    const createdSpans = [];
+    const walker = document.createTreeWalker(
+        blockEl,
+        NodeFilter.SHOW_TEXT,
+        {
+            acceptNode(node) {
+                if (!node.nodeValue || !node.nodeValue.trim()) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                if (
+                    node.parentElement?.closest(
+                        ".katex, .katex-mathml, code, pre, .publication-sentence"
+                    )
+                ) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                return NodeFilter.FILTER_ACCEPT;
+            },
+        }
+    );
+
+    const textNodes = [];
+    let current;
+    while ((current = walker.nextNode())) {
+        textNodes.push(current);
+    }
+
+    textNodes.forEach((textNode) => {
+        const raw = textNode.nodeValue;
+        const parts = raw.match(/[^.!?]+[.!?]+\s*|[^.!?]+$/g);
+        if (!parts || parts.length === 0) return;
+
+        const frag = document.createDocumentFragment();
+        parts.forEach((part) => {
+            const span = document.createElement("span");
+            span.className = "publication-sentence";
+            span.textContent = part;
+            frag.appendChild(span);
+            if (part.trim()) {
+                createdSpans.push(span);
+            }
+        });
+
+        textNode.parentNode?.replaceChild(frag, textNode);
+    });
+
+    return createdSpans;
+}
+
+export default function PublicationReader({ title, readTime }) {
     const [isReading, setIsReading] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [fontSize, setFontSize] = useState(17);
@@ -23,15 +80,10 @@ export default function PublicationReader({
     useEffect(() => {
         const updateProgress = () => {
             const scrollTop = window.scrollY;
-
             const documentHeight =
-                document.documentElement.scrollHeight -
-                window.innerHeight;
-
+                document.documentElement.scrollHeight - window.innerHeight;
             const progress =
-                documentHeight > 0
-                    ? (scrollTop / documentHeight) * 100
-                    : 0;
+                documentHeight > 0 ? (scrollTop / documentHeight) * 100 : 0;
 
             document.documentElement.style.setProperty(
                 "--reading-progress",
@@ -39,10 +91,7 @@ export default function PublicationReader({
             );
         };
 
-        window.addEventListener("scroll", updateProgress, {
-            passive: true,
-        });
-
+        window.addEventListener("scroll", updateProgress, { passive: true });
         updateProgress();
 
         return () => {
@@ -65,20 +114,16 @@ export default function PublicationReader({
      */
     useEffect(() => {
         const footer = document.querySelector("footer");
-
         if (!footer) return;
 
         const observer = new IntersectionObserver(
             ([entry]) => {
                 setFooterVisible(entry.isIntersecting);
             },
-            {
-                threshold: 0,
-            }
+            { threshold: 0 }
         );
 
         observer.observe(footer);
-
         return () => observer.disconnect();
     }, []);
 
@@ -92,13 +137,10 @@ export default function PublicationReader({
     }, []);
 
     /*
-     * Split article into sentence-level spans
+     * Wrap sentence segments without mutating KaTeX, links, or formatting tags
      */
     useEffect(() => {
-        const article = document.querySelector(
-            ".publication-content"
-        );
-
+        const article = document.querySelector(".publication-content");
         if (!article) return;
 
         const elements = article.querySelectorAll(
@@ -106,40 +148,12 @@ export default function PublicationReader({
         );
 
         const sentences = [];
-
         elements.forEach((element) => {
-            const text = element.textContent?.trim();
-
-            if (!text) return;
-
-            const parts = text.match(
-                /[^.!?]+[.!?]+|[^.!?]+$/g
-            );
-
-            if (!parts) return;
-
-            element.innerHTML = "";
-
-            parts.forEach((sentence) => {
-                const span = document.createElement("span");
-
-                span.className = "publication-sentence";
-                span.textContent = sentence;
-
-                element.appendChild(span);
-
-                sentences.push(span);
-            });
+            const wrapped = wrapSentencesPreservingHtml(element);
+            sentences.push(...wrapped);
         });
 
         sentencesRef.current = sentences;
-
-        return () => {
-            /*
-             * Don't leave manipulated DOM behind.
-             * React will recreate it when necessary.
-             */
-        };
     }, []);
 
     /*
@@ -156,7 +170,6 @@ export default function PublicationReader({
         });
 
         const activeSentence = sentences[index];
-
         if (activeSentence) {
             activeSentence.scrollIntoView({
                 behavior: "smooth",
@@ -172,11 +185,8 @@ export default function PublicationReader({
      */
     const clearHighlight = () => {
         sentencesRef.current.forEach((sentence) => {
-            sentence.classList.remove(
-                "publication-sentence-active"
-            );
+            sentence.classList.remove("publication-sentence-active");
         });
-
         currentSentenceRef.current = -1;
     };
 
@@ -186,9 +196,7 @@ export default function PublicationReader({
     const speakNextSentence = () => {
         const sentences = sentencesRef.current;
 
-        if (
-            sentenceIndexRef.current >= sentences.length
-        ) {
+        if (sentenceIndexRef.current >= sentences.length) {
             setIsReading(false);
             setIsPaused(false);
             clearHighlight();
@@ -196,7 +204,6 @@ export default function PublicationReader({
         }
 
         const index = sentenceIndexRef.current;
-
         const sentence = sentences[index];
 
         if (!sentence) {
@@ -205,8 +212,7 @@ export default function PublicationReader({
             return;
         }
 
-        const text = sentence.textContent?.trim();
-
+        const text = getCleanSpeechText(sentence);
         if (!text) {
             sentenceIndexRef.current += 1;
             speakNextSentence();
@@ -215,12 +221,9 @@ export default function PublicationReader({
 
         highlightSentence(index);
 
-        const utterance =
-            new SpeechSynthesisUtterance(text);
-
+        const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 0.9;
         utterance.pitch = 1;
-
         utteranceRef.current = utterance;
 
         utterance.onstart = () => {
@@ -230,7 +233,6 @@ export default function PublicationReader({
 
         utterance.onend = () => {
             sentenceIndexRef.current += 1;
-
             if (sentenceIndexRef.current < sentences.length) {
                 speakNextSentence();
             } else {
@@ -249,92 +251,56 @@ export default function PublicationReader({
         window.speechSynthesis.speak(utterance);
     };
 
-    /*
-     * Start
-     */
     const startReading = () => {
         if (!("speechSynthesis" in window)) {
-            alert(
-                "Read Aloud is not supported in this browser."
-            );
+            alert("Read Aloud is not supported in this browser.");
             return;
         }
 
         window.speechSynthesis.cancel();
-
         sentenceIndexRef.current = 0;
-
         clearHighlight();
-
         speakNextSentence();
     };
 
-    /*
-     * Pause
-     */
     const pauseReading = () => {
         window.speechSynthesis?.pause();
-
         setIsPaused(true);
     };
 
-    /*
-     * Resume
-     */
     const resumeReading = () => {
         window.speechSynthesis?.resume();
-
         setIsPaused(false);
     };
 
-    /*
-     * Stop
-     */
     const stopReading = () => {
         window.speechSynthesis?.cancel();
-
         sentenceIndexRef.current = 0;
-
         setIsReading(false);
         setIsPaused(false);
-
         clearHighlight();
     };
 
-    /*
-     * Font controls
-     */
     const increaseFont = () => {
-        setFontSize((size) =>
-            Math.min(size + 1, 22)
-        );
+        setFontSize((size) => Math.min(size + 1, 22));
     };
 
     const decreaseFont = () => {
-        setFontSize((size) =>
-            Math.max(size - 1, 15)
-        );
+        setFontSize((size) => Math.max(size - 1, 15));
     };
 
     return (
         <>
-            <div
-                className="reading-progress"
-                aria-hidden="true"
-            />
+            <div className="reading-progress" aria-hidden="true" />
 
             <section
-                className={`reading-tools reading-tools-${position} ${footerVisible
-                    ? "reading-tools-footer-visible"
-                    : ""
-                    }`}
+                className={`reading-tools reading-tools-${position} ${
+                    footerVisible ? "reading-tools-footer-visible" : ""
+                }`}
                 aria-label="Reading controls"
             >
                 <div className="reading-tools-inner">
-
-
                     <div className="reading-tools-actions">
-
                         {!isReading && (
                             <button
                                 type="button"
@@ -404,10 +370,9 @@ export default function PublicationReader({
                         <div className="reading-position">
                             <button
                                 type="button"
-                                className={`position-button ${position === "left"
-                                    ? "active"
-                                    : ""
-                                    }`}
+                                className={`position-button ${
+                                    position === "left" ? "active" : ""
+                                }`}
                                 onClick={() => setPosition("left")}
                                 aria-label="Move reader to bottom left"
                             >
@@ -416,13 +381,10 @@ export default function PublicationReader({
 
                             <button
                                 type="button"
-                                className={`position-button ${position === "center"
-                                    ? "active"
-                                    : ""
-                                    }`}
-                                onClick={() =>
-                                    setPosition("center")
-                                }
+                                className={`position-button ${
+                                    position === "center" ? "active" : ""
+                                }`}
+                                onClick={() => setPosition("center")}
                                 aria-label="Move reader to bottom center"
                             >
                                 ↓
@@ -430,17 +392,15 @@ export default function PublicationReader({
 
                             <button
                                 type="button"
-                                className={`position-button ${position === "right"
-                                    ? "active"
-                                    : ""
-                                    }`}
+                                className={`position-button ${
+                                    position === "right" ? "active" : ""
+                                }`}
                                 onClick={() => setPosition("right")}
                                 aria-label="Move reader to bottom right"
                             >
                                 ↘
                             </button>
                         </div>
-
                     </div>
                 </div>
             </section>

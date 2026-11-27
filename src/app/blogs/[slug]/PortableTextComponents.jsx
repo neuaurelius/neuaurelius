@@ -1,24 +1,14 @@
-"use client";
-
 import React from "react";
 import Image from "next/image";
 import katex from "katex";
-import createImageUrlBuilder from "@sanity/image-url";
-
-const builder = createImageUrlBuilder({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "",
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-});
-
-function urlFor(source) {
-  return builder.image(source);
-}
+import { urlFor } from "@/sanity/lib/image";
 
 function renderKatexInline(formula, key) {
   try {
-    const html = katex.renderToString(formula, {
+    const html = katex.renderToString(String(formula), {
       throwOnError: false,
       displayMode: false,
+      output: "html",
     });
     return (
       <span
@@ -32,11 +22,11 @@ function renderKatexInline(formula, key) {
   }
 }
 
-// Fallback parser for raw \( ... \) and $ ... $ strings
-function renderTextWithInlineMath(text) {
+function renderTextWithInlineMathAndLinks(text) {
   if (typeof text !== "string") return text;
 
-  const regex = /(\\\((.+?)\\\)|(?<!\$)\$(?!\$)([^$\n]+?)(?<!\$)\$(?!\$))/g;
+  const regex =
+    /(\\\((.+?)\\\)|(?<!\\)(?<!\$)\$(?!\$)([^$\n]+?)(?<!\\)(?<!\$)\$(?!\$)|(https?:\/\/[^\s<>()]+))/g;
   const parts = [];
   let lastIndex = 0;
   let match;
@@ -46,8 +36,27 @@ function renderTextWithInlineMath(text) {
       parts.push(text.slice(lastIndex, match.index));
     }
 
-    const formula = (match[2] ?? match[3]).trim();
-    parts.push(renderKatexInline(formula, match.index));
+    if (match[2] !== undefined || match[3] !== undefined) {
+      const formula = (match[2] ?? match[3]).trim();
+      parts.push(renderKatexInline(formula, match.index));
+    } else if (match[4] !== undefined) {
+      const rawUrl = match[4];
+      const cleanUrl = rawUrl.replace(/[.,;:!?)]+$/, "");
+      const trailingPunct = rawUrl.slice(cleanUrl.length);
+      parts.push(
+        <a
+          key={match.index}
+          href={cleanUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="publication-external-link"
+        >
+          {cleanUrl}
+        </a>
+      );
+      if (trailingPunct) parts.push(trailingPunct);
+    }
+
     lastIndex = regex.lastIndex;
   }
 
@@ -61,7 +70,7 @@ function renderTextWithInlineMath(text) {
 function processChildren(children) {
   return React.Children.map(children, (child) => {
     if (typeof child === "string") {
-      return renderTextWithInlineMath(child);
+      return renderTextWithInlineMathAndLinks(child);
     }
     if (React.isValidElement(child) && child.props?.children) {
       return React.cloneElement(child, {
@@ -74,7 +83,11 @@ function processChildren(children) {
 
 export const portableTextComponents = {
   block: {
-    normal: ({ children }) => <p>{processChildren(children)}</p>,
+    normal: ({ value, children }) => (
+      <p id={value?._key?.startsWith("ref-") ? value._key : undefined}>
+        {processChildren(children)}
+      </p>
+    ),
     h1: ({ children }) => <h1>{processChildren(children)}</h1>,
     h2: ({ children }) => <h2>{processChildren(children)}</h2>,
     h3: ({ children }) => <h3>{processChildren(children)}</h3>,
@@ -89,18 +102,40 @@ export const portableTextComponents = {
   },
 
   listItem: {
-    bullet: ({ children }) => <li>{processChildren(children)}</li>,
-    number: ({ children }) => <li>{processChildren(children)}</li>,
+    bullet: ({ value, children }) => (
+      <li id={value?._key?.startsWith("ref-") ? value._key : undefined}>
+        {processChildren(children)}
+      </li>
+    ),
+    number: ({ value, children }) => (
+      <li id={value?._key?.startsWith("ref-") ? value._key : undefined}>
+        {processChildren(children)}
+      </li>
+    ),
   },
 
   marks: {
-    inlineMath: ({ text }) => renderKatexInline(text),
+    inlineMath: ({ text, children }) => {
+      const formula =
+        typeof text === "string"
+          ? text
+          : Array.isArray(children)
+            ? children.join("")
+            : String(children || "");
+      return renderKatexInline(formula);
+    },
     link: ({ value, children }) => {
       const href = value?.href || "#";
-      const isExternal = value?.blank !== false && href.startsWith("http");
+      const isAnchor = href.startsWith("#");
+      const isExternal =
+        !isAnchor && value?.blank !== false && href.startsWith("http");
+
       return (
         <a
           href={href}
+          className={
+            isAnchor ? "publication-citation-link" : "publication-external-link"
+          }
           target={isExternal ? "_blank" : undefined}
           rel={isExternal ? "noopener noreferrer" : undefined}
         >
@@ -116,6 +151,7 @@ export const portableTextComponents = {
       const html = katex.renderToString(value.latex, {
         throwOnError: false,
         displayMode: true,
+        output: "html",
       });
       return (
         <div
@@ -126,8 +162,13 @@ export const portableTextComponents = {
     },
 
     image: ({ value }) => {
-      if (!value?.asset?._ref) return null;
-      const imgUrl = urlFor(value).width(1400).fit("max").auto("format").url();
+      const imgUrl =
+        value?.assetUrl ||
+        (value?.asset?._ref
+          ? urlFor(value).width(1400).fit("max").auto("format").url()
+          : null);
+
+      if (!imgUrl) return null;
 
       return (
         <figure className="publication-inline-figure">
@@ -154,7 +195,7 @@ export const portableTextComponents = {
             <thead>
               <tr>
                 {headerRow.cells.map((cell, idx) => (
-                  <th key={idx}>{renderTextWithInlineMath(cell)}</th>
+                  <th key={idx}>{renderTextWithInlineMathAndLinks(cell)}</th>
                 ))}
               </tr>
             </thead>
@@ -162,7 +203,7 @@ export const portableTextComponents = {
               {bodyRows.map((row) => (
                 <tr key={row._key}>
                   {row.cells.map((cell, idx) => (
-                    <td key={idx}>{renderTextWithInlineMath(cell)}</td>
+                    <td key={idx}>{renderTextWithInlineMathAndLinks(cell)}</td>
                   ))}
                 </tr>
               ))}

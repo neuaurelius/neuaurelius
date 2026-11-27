@@ -73,11 +73,12 @@ export async function generateMetadata({ params }) {
 
   const pageUrl = `${SITE_URL}/blogs/${slug}`;
 
-  const imageUrl = publication.coverImage
-    ? publication.coverImage.startsWith("http")
-      ? publication.coverImage
-      : `${SITE_URL}${publication.coverImage}`
-    : `${SITE_URL}/og-image.png`;
+  const imageUrl =
+    typeof publication.coverImage === "string"
+      ? publication.coverImage.startsWith("http")
+        ? publication.coverImage
+        : `${SITE_URL}${publication.coverImage}`
+      : `${SITE_URL}/og-image.png`;
 
   return {
     title,
@@ -142,11 +143,12 @@ export default async function BlogPostPage({ params }) {
 
   const readTime = publication.readTime || calculateReadTime(publication.body);
   const pageUrl = `${SITE_URL}/blogs/${slug}`;
-  const imageUrl = publication.coverImage
-    ? publication.coverImage.startsWith("http")
-      ? publication.coverImage
-      : `${SITE_URL}${publication.coverImage}`
-    : `${SITE_URL}/og-image.png`;
+  const imageUrl =
+    typeof publication.coverImage === "string"
+      ? publication.coverImage.startsWith("http")
+        ? publication.coverImage
+        : `${SITE_URL}${publication.coverImage}`
+      : `${SITE_URL}/og-image.png`;
 
   const publishedIso = publication.publishedAt
     ? new Date(publication.publishedAt).toISOString()
@@ -266,7 +268,7 @@ export default async function BlogPostPage({ params }) {
             <p className="publication-lead">{publication.excerpt}</p>
           )}
 
-          {publication.coverImage && (
+          {typeof publication.coverImage === "string" && (
             <figure className="publication-cover">
               <Image
                 src={publication.coverImage}

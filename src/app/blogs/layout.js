@@ -28,6 +28,10 @@ export const metadata = {
 export default function BlogsLayout({ children }) {
   return (
     <>
+      <link
+        rel="stylesheet"
+        href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      />
       <Nav />
       <div className="blogs-shell flex-1">{children}</div>
       <Footer />
