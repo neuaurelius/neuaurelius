@@ -211,13 +211,6 @@ export default async function BlogPostPage({ params }) {
       />
 
       <main id="main-content" className="publication-page">
-        <nav aria-label="Breadcrumb" className="publication-breadcrumb">
-          <Link href="/">Home</Link>
-          <span aria-hidden="true"> / </span>
-          <Link href="/#publications">Publications</Link>
-          <span aria-hidden="true"> / </span>
-          <span>{publication.title}</span>
-        </nav>
 
         <header className="publication-header">
           <h1>{publication.title}</h1>
