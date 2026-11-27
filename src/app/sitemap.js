@@ -1,28 +1,46 @@
 import { getAllPublications } from "@/sanity/lib/publications";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://neuaurelius.com";
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://neuaurelius.com"
+).replace(/\/$/, "");
+
+function toValidDate(dateValue) {
+  if (!dateValue) return new Date();
+  const parsed = new Date(dateValue);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+}
 
 export default async function sitemap() {
-    const publications = await getAllPublications();
+  let publications = [];
 
-    return [
-        {
-            url: siteUrl,
-            changeFrequency: "weekly",
-            priority: 1,
-        },
-        {
-            url: `${siteUrl}/blogs`,
-            changeFrequency: "daily",
-            priority: 0.9,
-        },
-        ...publications
-            .filter((publication) => publication.slug?.current)
-            .map((publication) => ({
-                url: `${siteUrl}/blogs/${publication.slug.current}`,
-                lastModified: publication.publishedAt,
-                changeFrequency: "monthly",
-                priority: 0.8,
-            })),
-    ];
+  try {
+    publications = await getAllPublications();
+  } catch (error) {
+    console.error("Sitemap fetch error:", error);
+  }
+
+  const blogEntries = (publications || [])
+    .filter((pub) => pub?.slug?.current)
+    .map((pub) => ({
+      url: `${SITE_URL}/blogs/${encodeURIComponent(pub.slug.current)}`,
+      lastModified: toValidDate(pub._updatedAt || pub.publishedAt),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    }));
+
+  return [
+    {
+      url: SITE_URL,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 1.0,
+    },
+    {
+      url: `${SITE_URL}/blogs`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    ...blogEntries,
+  ];
 }

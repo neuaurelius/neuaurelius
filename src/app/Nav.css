@@ -47,6 +47,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    text-decoration: none;
 
     width: 60px;
     height: 60px;
@@ -70,10 +71,7 @@
     overflow: hidden;
     cursor: pointer;
 
-    transition:
-        width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.08s linear,
-        border-color 0.08s linear;
+    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav-brand::before {
@@ -118,7 +116,7 @@
         transition-delay: 0.06s, 0.02s;
     }
 
-    .nav-brand:hover > a:first-child img {
+    .nav-brand:hover > img:first-of-type {
         transform: translate3d(0, 0, 0) scale(0.96);
     }
 }
@@ -142,12 +140,12 @@
     transition-delay: 0.06s, 0.02s;
 }
 
-.nav-brand.is-expanded > a:first-child img,
-.nav-brand:active > a:first-child img {
+.nav-brand.is-expanded > img:first-of-type,
+.nav-brand:active > img:first-of-type {
     transform: translate3d(0, 0, 0) scale(0.96);
 }
 
-.nav-brand > a:first-child img {
+.nav-brand > img:first-of-type {
     position: relative;
     width: 40px;
     height: 40px;
@@ -155,12 +153,10 @@
     z-index: 2;
     filter: brightness(0) invert(1);
     transform: translate3d(0, 0, 0) scale(1);
-    transition:
-        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        filter 0.08s linear;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.nav.past-hero .nav-brand > a:first-child img {
+.nav.past-hero .nav-brand > img:first-of-type {
     filter: brightness(0);
 }
 
@@ -180,8 +176,7 @@
     pointer-events: none;
     transition:
         opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-        filter 0.08s linear;
+        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav.past-hero .nav-brand .textLogo {
@@ -206,14 +201,12 @@
     pointer-events: auto;
 }
 
-/* Expanded Card Surface: Scales smoothly from top-right pill origin */
 .menu-surface {
     position: absolute;
     inset: 0;
     border-radius: 28px;
     transform-origin: top right;
 
-    /* Closed state matches 112x50 pill proportion via GPU scale */
     transform: translate3d(0, 0, 0) scale(0.38, 0.167);
     opacity: 0;
 
@@ -229,9 +222,7 @@
 
     transition:
         transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.24s ease,
-        background-color 0.08s linear,
-        border-color 0.08s linear;
+        opacity 0.24s ease;
 }
 
 .menu-surface::before {
@@ -265,7 +256,7 @@
 }
 
 /* ========================================================
-   MENU TOGGLE PILL (Fixed Dimensions, GPU-Translated When Open)
+   MENU TOGGLE PILL
 ======================================================== */
 .menu-toggle {
     position: absolute;
@@ -303,12 +294,7 @@
     z-index: 10;
 
     transform: translate3d(0, 0, 0);
-    transition:
-        transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.08s linear,
-        border-color 0.08s linear,
-        color 0.08s linear,
-        box-shadow 0.08s linear;
+    transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav.past-hero .menu-toggle {
@@ -367,9 +353,7 @@
     border-radius: 999px;
     background: #ffffff;
     transform-origin: center;
-    transition:
-        transform 0.36s cubic-bezier(0.76, 0, 0.24, 1),
-        background-color 0.08s linear;
+    transition: transform 0.36s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .nav.past-hero .menu-icon span {
@@ -386,12 +370,12 @@
 
 .menu-morph.is-open .menu-icon span:first-child {
     transform: translate3d(0, 0, 0) rotate(45deg);
-    transition-delay: 0.08s, 0s;
+    transition-delay: 0.08s;
 }
 
 .menu-morph.is-open .menu-icon span:last-child {
     transform: translate3d(0, 0, 0) rotate(-45deg);
-    transition-delay: 0.08s, 0s;
+    transition-delay: 0.08s;
 }
 
 /* ========================================================
@@ -415,8 +399,7 @@
     white-space: nowrap;
     transition:
         opacity 0.2s ease,
-        transform 0.34s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.08s linear;
+        transform 0.34s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav.past-hero .menu-text,
@@ -442,7 +425,7 @@
 .menu-morph.is-open .close-text {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition-delay: 0.12s, 0.12s, 0s;
+    transition-delay: 0.12s, 0.12s;
 }
 
 /* ========================================================
@@ -515,8 +498,7 @@
     -webkit-tap-highlight-color: transparent;
     transition:
         transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.22s ease,
-        color 0.08s linear;
+        opacity 0.22s ease;
 }
 
 .nav.past-hero .menu-list a {
@@ -586,7 +568,7 @@
 @media (prefers-reduced-motion: reduce) {
     .nav,
     .nav-brand,
-    .nav-brand > a:first-child img,
+    .nav-brand > img:first-of-type,
     .nav-brand .textLogo,
     .menu-surface,
     .menu-toggle,

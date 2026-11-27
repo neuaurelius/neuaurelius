@@ -1,4 +1,3 @@
-
 import { DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -17,10 +16,12 @@ const gcepicpro = localFont({
   preload: true,
 });
 
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://neuaurelius.com"
+).replace(/\/$/, "");
+
 export const metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://neuaurelius.com"
-  ),
+  metadataBase: new URL(SITE_URL),
 
   title: {
     default: "Neuaurelius | Generalized Embodied Intelligence",
@@ -32,6 +33,7 @@ export const metadata = {
 
   keywords: [
     "Neuaurelius",
+    "Neuaurelius Private Limited",
     "Generalized Embodied Intelligence",
     "Embodied Intelligence",
     "Artificial Intelligence",
@@ -48,7 +50,7 @@ export const metadata = {
   authors: [
     {
       name: "Neuaurelius",
-      url: "https://neuaurelius.com",
+      url: SITE_URL,
     },
   ],
 
@@ -57,7 +59,7 @@ export const metadata = {
   applicationName: "Neuaurelius",
 
   alternates: {
-    canonical: "/",
+    canonical: SITE_URL,
   },
 
   robots: {
@@ -75,7 +77,7 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "/",
+    url: SITE_URL,
     siteName: "Neuaurelius",
     title: "Neuaurelius | Generalized Embodied Intelligence",
     description:
@@ -92,6 +94,8 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
+    site: "@neuaurelius",
+    creator: "@neuaurelius",
     title: "Neuaurelius | Generalized Embodied Intelligence",
     description:
       "Independent research and engineering toward Generalized Embodied Intelligence.",
@@ -104,6 +108,48 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "Neuaurelius",
+        legalName: "Neuaurelius Private Limited",
+        alternateName: ["Neuaurelius", "Neuaurelius Robotics"],
+        url: SITE_URL,
+        logo: {
+          "@type": "ImageObject",
+          url: `${SITE_URL}/og-image.png`,
+        },
+        email: "post@neuaurelius.com",
+        sameAs: [
+          "https://www.linkedin.com/company/neuaurelius/",
+          "https://x.com/neuaurelius",
+          "https://www.instagram.com/neuaurelius/",
+          "https://github.com/neuaurelius",
+          "https://www.youtube.com/@neuaurelius",
+        ],
+        contactPoint: {
+          "@type": "ContactPoint",
+          email: "post@neuaurelius.com",
+          contactType: "customer support",
+        },
+        description:
+          "Independent research and engineering venture pursuing Generalized Embodied Intelligence through robotics, computation, energy, and materials.",
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: "Neuaurelius",
+        publisher: {
+          "@id": `${SITE_URL}/#organization`,
+        },
+      },
+    ],
+  };
+
   return (
     <html
       lang="en"
@@ -114,11 +160,15 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
       </head>
 
-      <body className="min-h-full flex flex-col">
-        {children}
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

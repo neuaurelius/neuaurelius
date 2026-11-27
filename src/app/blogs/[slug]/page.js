@@ -1,7 +1,7 @@
+import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
-import Nav from "../../Nav";
-import Footer from "../../Footer";
 import PublicationReader from "./PublicationReader";
 import {
   getAllPublications,
@@ -9,9 +9,13 @@ import {
 } from "@/sanity/lib/publications";
 import "./publication.css";
 
+export const revalidate = 60;
 export const dynamicParams = true;
 
-// Calculate actual reading time from PortableText blocks
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://neuaurelius.com"
+).replace(/\/$/, "");
+
 function calculateReadTime(blocks = []) {
   const text = blocks
     .map((block) =>
@@ -30,7 +34,7 @@ function calculateReadTime(blocks = []) {
 export async function generateStaticParams() {
   const publications = await getAllPublications();
 
-  return publications
+  return (publications || [])
     .filter((publication) => publication.slug?.current)
     .map((publication) => ({
       slug: publication.slug.current,
@@ -43,6 +47,7 @@ export async function generateMetadata({ params }) {
 
   if (!publication) {
     return {
+      title: "Publication Not Found",
       robots: {
         index: false,
         follow: false,
@@ -50,32 +55,26 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const title = `${publication.title} | Neuaurelius`;
+  // Note: app/blogs/layout.js template automatically appends "| Neuaurelius"
+  const title = publication.title;
   const description =
     publication.excerpt ||
-    "Research and engineering from Neuaurelius.";
+    "Research and engineering publication from Neuaurelius on Generalized Embodied Intelligence.";
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    "https://www.neuaurelius.com";
-
-  const pageUrl = `${siteUrl}/blogs/${slug}`;
+  const pageUrl = `${SITE_URL}/blogs/${slug}`;
 
   const imageUrl = publication.coverImage
     ? publication.coverImage.startsWith("http")
       ? publication.coverImage
-      : `${siteUrl}${publication.coverImage}`
-    : `${siteUrl}/og-image.png`;
+      : `${SITE_URL}${publication.coverImage}`
+    : `${SITE_URL}/og-image.png`;
 
   return {
     title,
     description,
-    metadataBase: new URL(siteUrl),
-
     alternates: {
       canonical: pageUrl,
     },
-
     robots: {
       index: true,
       follow: true,
@@ -87,17 +86,19 @@ export async function generateMetadata({ params }) {
         "max-video-preview": -1,
       },
     },
-
     openGraph: {
       type: "article",
-      title,
+      title: `${title} | Neuaurelius`,
       description,
       url: pageUrl,
       siteName: "Neuaurelius",
-      publishedTime: publication.publishedAt,
-      authors: publication.author
-        ? [publication.author]
-        : ["Neuaurelius"],
+      publishedTime: publication.publishedAt
+        ? new Date(publication.publishedAt).toISOString()
+        : undefined,
+      modifiedTime: publication._updatedAt
+        ? new Date(publication._updatedAt).toISOString()
+        : undefined,
+      authors: [publication.author || "Neuaurelius"],
       images: [
         {
           url: imageUrl,
@@ -107,10 +108,9 @@ export async function generateMetadata({ params }) {
         },
       ],
     },
-
     twitter: {
       card: "summary_large_image",
-      title,
+      title: `${title} | Neuaurelius`,
       description,
       images: [
         {
@@ -131,58 +131,123 @@ export default async function BlogPostPage({ params }) {
   }
 
   const readTime = calculateReadTime(publication.body);
+  const pageUrl = `${SITE_URL}/blogs/${slug}`;
+  const imageUrl = publication.coverImage
+    ? publication.coverImage.startsWith("http")
+      ? publication.coverImage
+      : `${SITE_URL}${publication.coverImage}`
+    : `${SITE_URL}/og-image.png`;
+
+  const publishedIso = publication.publishedAt
+    ? new Date(publication.publishedAt).toISOString()
+    : undefined;
+  const modifiedIso = publication._updatedAt
+    ? new Date(publication._updatedAt).toISOString()
+    : publishedIso;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": `${pageUrl}#article`,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": pageUrl,
+        },
+        headline: publication.title,
+        description:
+          publication.excerpt ||
+          "Research and engineering publication from Neuaurelius.",
+        image: [imageUrl],
+        datePublished: publishedIso,
+        dateModified: modifiedIso,
+        author: {
+          "@type": publication.author ? "Person" : "Organization",
+          name: publication.author || "Neuaurelius",
+          url: SITE_URL,
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Neuaurelius",
+          url: SITE_URL,
+          logo: {
+            "@type": "ImageObject",
+            url: `${SITE_URL}/og-image.png`,
+          },
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: SITE_URL,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Publications",
+            item: `${SITE_URL}/#publications`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: publication.title,
+            item: pageUrl,
+          },
+        ],
+      },
+    ],
+  };
 
   return (
     <>
-      <Nav />
-
-
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       <main id="main-content" className="publication-page">
+        <nav aria-label="Breadcrumb" className="publication-breadcrumb">
+          <Link href="/">Home</Link>
+          <span aria-hidden="true"> / </span>
+          <Link href="/#publications">Publications</Link>
+          <span aria-hidden="true"> / </span>
+          <span>{publication.title}</span>
+        </nav>
+
         <header className="publication-header">
-
-
-
           <h1>{publication.title}</h1>
 
           <div className="publication-meta">
-
             <div className="publication-author">
-              <span
-                className="publication-author-avatar"
-                aria-hidden="true"
-              >
+              <span className="publication-author-avatar" aria-hidden="true">
                 {(publication.author || "N")
                   .trim()
                   .slice(0, 1)
                   .toUpperCase()}
               </span>
 
-              <span>
-                {publication.author || "NEUAURELIUS"}
-              </span>
+              <span>{publication.author || "NEUAURELIUS"}</span>
             </div>
 
             <div className="publication-meta-right">
-
               {publication.publishedAt && (
                 <>
-                  <span className="meta-label">
-                    PUBLISHED
-                  </span>
+                  <span className="meta-label">PUBLISHED</span>
 
-                  <time
-                    dateTime={new Date(
-                      publication.publishedAt
-                    ).toISOString()}
-                  >
-                    {new Date(
-                      publication.publishedAt
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
+                  <time dateTime={publishedIso}>
+                    {new Date(publication.publishedAt).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
                   </time>
 
                   <span aria-hidden="true">·</span>
@@ -190,26 +255,25 @@ export default async function BlogPostPage({ params }) {
               )}
 
               <span>{readTime}</span>
-
             </div>
           </div>
-
         </header>
 
         <article className="publication-body">
-
           {publication.excerpt && (
-            <p className="publication-lead">
-              {publication.excerpt}
-            </p>
+            <p className="publication-lead">{publication.excerpt}</p>
           )}
 
           {publication.coverImage && (
             <figure className="publication-cover">
-              <img
+              <Image
                 src={publication.coverImage}
                 alt={publication.title}
-                loading="eager"
+                width={1200}
+                height={675}
+                priority
+                sizes="(max-width: 768px) 100vw, 900px"
+                style={{ width: "100%", height: "auto" }}
               />
             </figure>
           )}
@@ -217,14 +281,10 @@ export default async function BlogPostPage({ params }) {
           <div className="publication-content">
             <PortableText value={publication.body || []} />
           </div>
-
         </article>
       </main>
-      <PublicationReader
-        title={publication.title}
-        readTime={readTime}
-      />
-      <Footer />
+
+      <PublicationReader title={publication.title} readTime={readTime} />
     </>
   );
 }
