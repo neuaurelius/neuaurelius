@@ -1,6 +1,7 @@
-import Publications from "@/app/Publications";
+import BlogGrid from "./BlogGrid";
 import { sanityClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
+import "./blogs.css";
 
 export const revalidate = 60;
 
@@ -50,7 +51,7 @@ async function fetchAllPublications() {
       allPublicationsQuery,
       {},
       {
-        next: { revalidate: 60 },
+        next: { revalidate: 60, tags: ["publications"] },
       }
     );
   } catch (error) {
@@ -66,10 +67,10 @@ export default async function BlogsPage() {
     ...publication,
     coverImage: publication.coverImage
       ? urlFor(publication.coverImage)
-          .width(900)
-          .height(600)
+          .width(1200)
+          .height(800)
           .fit("crop")
-          .quality(82)
+          .quality(85)
           .auto("format")
           .url()
       : null,
@@ -100,14 +101,14 @@ export default async function BlogsPage() {
   };
 
   return (
-    <main id="main-content">
+    <main id="main-content" className="blogs-page">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(collectionJsonLd),
         }}
       />
-      <Publications publications={formattedPublications} />
+      <BlogGrid publications={formattedPublications} />
     </main>
   );
 }
