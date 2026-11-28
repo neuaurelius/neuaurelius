@@ -830,3 +830,33 @@
   margin-bottom: 0.65rem;
   padding-left: 0.35rem;
 }
+
+.publication-page {
+    overflow-x: clip;
+}
+
+.publication-body,
+.publication-content {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.publication-content p,
+.publication-content li,
+.publication-content blockquote,
+.publication-content a,
+.publication-sentence {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.publication-content ol > li,
+.publication-content ul > li {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
